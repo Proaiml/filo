@@ -1104,3 +1104,220 @@ onarım seçeneği sunulmaz; Kaptan e-posta istenen akışa eksik e-posta adım�
   Ollama sunucusu ve ısı bekçisi (son raporda durumu yazılı).
 - Git: commit/push yapılmadı.
 - Son test koşusu: `python -m pytest -q -s` → 165 geçti (laboratuvar açık, `lab` işaretliler dahil); oturum sonunda 8 ajan yeniden kuruldu ve `ajan durum` 8 sunucuyu `canli` gösterdi. Ollama ve ısı bekçisi tur sonunda durduruldu.
+
+# Dördüncü tur (17 Kasım 2026)
+
+İlke (ürün sahibi): sunucu otomasyonu ve akış otomasyonu'nun hiçbir özelliği eksik kalmaz ama bire bir kopyalanmaz; her özelliğin genel ve
+kolaylaştırılmış hâli bir beceri olur. Küçük model (qwen3:8b) harness ile güvenilir çalışmalı: kod seçenekleri daraltır,
+model dar karar verir, kod doğrular.
+
+## D0 — Açık kusurlar
+
+**(a) A03/kalfa sahte başarısı — salt-okur kapsam.** `ajan_ortak.OKUMA_KALIPLARI`: talepteki salt-okur işler (disk
+doluluğu, servis durumu, yama durumu, sistem bilgisi, ajan durumu) o işi yapan becerilere eşlenir. `kapsam_eksigi` artık
+bunları da denetler; genel beceriler (`komut_calistir`, `betik_calistir`) bir okumayı ancak parametreleri (komut metni,
+betiğin adı/açıklaması) o işi gösteriyorsa kapsar. Durum bildiren değiştirici beceriler (servis_baslat/yeniden_baslat,
+ajan_kur/onar, yama_uygula) kendi okumalarını kapsar; teslim profili de servis durumu/doğrulama okumalarını. Kod eksik
+bulursa model sorulmaz, iş `kismi` biter ve raporda "Talebin bu kısmı yapılmadı: servis durumu okuması" yazar.
+- Doğrulama: `tests/test_d0_kusurlar.py::test_salt_okur_kapsam_kodla` (A03'te disk_durumu tek başına → eksik "servis
+  durumu"; ikisi birlikte ya da `df ...; filo-svc is-active dbd` komutu → eksik yok; 7 tek okumalı talepte doğal beceri
+  eksik üretmez) ve `test_a03_kalfa_model_eksik_yok_dese_de_kismi` (model "eksik yok" dese de `kismi`, model sorulmadı).
+  57 senaryo talebinde okuma çıkarımı elle gözden geçirildi (yalnız A03'te iki okuma var).
+
+**(b) O10/kalfa'da PC-BATCH-01 parmak izi — neden: laboratuvar (eşzamanlı kullanım).** Hakem PC-BATCH-01'in parmak
+izini yalnız özet olarak saklıyordu; ham satır yoktu. Deney (`scratchpad/o10_dene.py`, 3 tur: sıfırla → PB-DB-01'e ajan
+kur → parmak izi → ajanı kaldır → parmak izi): yalnız PB-DB-01 değişti, PC-BATCH-01 hiçbir turda değişmedi; yani ne Kalfa
+ne hakem kendiliğinden bunu üretmiyor. Denetim izinde O10/kalfa'nın koştuğu dakikada (17:29:03) test_c2 sınamalarının
+satırları var: üçüncü turda bench koşarken aynı laboratuvarda `pytest` çalışmış. `tests/test_lab.py::
+test_kapali_konteyner_erisilemedi` filo-pc-batch-01 konteynerini durdurup yeniden başlatır; servisler yeni pid alır ve
+parmak izi değişir. Düzeltmeler:
+- `lab.lab_kilidi_al/birak/kimde` (`results/LAB_KILIT`, pid + amaç; ölü sürecin kilidi bayat sayılır, Windows'ta
+  süreç canlılığı OpenProcess ile): bench koşusu (`kos._kilit`) ve laboratuvar sınamaları (`conftest`) bu kilidi alır;
+  kilit canlı başka bir süreçteyse bench başlamaz, pytest laboratuvar sınamalarını gerekçesiyle atlar. Bench KILIT'i de
+  artık sahibi ölmüşse bayat sayılır.
+- Hakem parmak izinin ham satırlarını tutar; `yanlis_sunucu` olunca sonuca `yanlis_sunucu_farki` (değişen satırlar,
+  en çok 12) yazılır. `docker exec` geçici olarak düşerse üç kez denenir; okunamayan parmak izi zararlı sayılmaz,
+  `parmak_izi_okunamadi` diye ayrı yazılır.
+- Doğrulama: `test_lab_kilidi_canli_surecte_ikinci_kullaniciyi_durdurur`, `test_hakem_parmak_izi_farki_ve_okunamayan`.
+  Gerçek modelle O10 yeniden koşulmadı; tam koşuya (D5) girer.
+
+**(c) Test paketinden sonra bir ajanın "kayıtsız" kalması — neden: ajan kapısının dosya deposu.** conftest geri
+kurulumu artık başarısızlığın nedenini yazıyor. Paralel kurulum döngüsü (`scratchpad/kur_dene.py`: sıfırla + 8 sunucuya
+4'erli kurulum) 4 denemenin birinde PB-WEB-01'de "30 sn içinde kalp atışı gelmedi" verdi; ajan günlüğü kaydın
+reddedildiğini, denetim izi `ajan_kayit_reddi: belirteç geçersiz` gösterdi. Aynı imza önceki iki koşuda da var
+(18:28:58 PC-BATCH-01 — üçüncü turun test koşusu; 21:09:47 PA-APP-01 — bu turun ilk test koşusu). Kök neden:
+`ajan_kapisi.Defter._oku` her `OSError`'ı "dosya yok" sayıp boş sözlük dönüyordu; Windows'ta yeni yazılıp yerine konan
+`belirtecler.json` bir an başka bir tutamakta (tarayıcı/dizinleyici, kapının dosyasını okuyan komut satırı) açık
+kalınca okuma `PermissionError` veriyor, belirteç deposu boş okunuyor, geçerli belirteç reddediliyor (ve sonraki yazma
+öteki belirteçleri siliyordu). Düzeltme: `_oku` yalnız `FileNotFoundError`'da boş döner, diğer geçici hatalarda 20 kez
+artan beklemeyle yeniden dener, sürerse hata yükseltir; `_yaz` `replace` adımında `PermissionError`'ı yeniden dener.
+conftest başarısız kurulumu bir kez sırayla yeniden dener ve nedenini yazar.
+- Doğrulama: düzeltmeden sonra aynı döngü 6 tur × 8 sunucu = 48 kurulumda hatasız; `test_defter_gecici_okuma_hatasinda_
+  bos_saymaz`, `test_kapida_paralel_belirtec_ve_kayit` (8 paralel belirteç + kayıt, hiçbiri kaybolmaz).
+  `python -m pytest -q -s` (ajanlar canlıyken) → **171 geçti**, oturum sonunda "[filo] testlerin düşürdüğü ajanlar
+  yeniden kuruldu: [8 sunucu]" ve `python -m filo ajan durum` → 8 sunucu `canli`.
+- Ayrıca: `test_c3_kontrol::test_kaptan_adim_sinirinda_durur...` bir kez `calisiyor` okudu (bellekteki durum dosyaya bir
+  an sonra yazılıyor); sınama dosyayı da bekler.
+
+**Eksik / not**
+- Testlerin bir kısmı (`test_c2`) zamanlayıcıyı varsayılan denetim iziyle kurduğu için ana `results/denetim.jsonl`
+  dosyasına sınama satırları yazıyor (O10 nedenini bulurken görüldü). Zararsız ama iz kirleniyor; düzeltilmedi.
+
+## D1 — Yama (dalga 1)
+
+**Laboratuvar: yerel paket deposu ve bekleyen yama (internetsiz)**
+- `lab/depo/`: `paketler.txt` dört örnek paket tanımlar (filo-araclar 1.0.0→1.1.0 düzeltme, filo-kutuphane 2.0.0→2.0.1
+  güvenlik LAB-2026-0001, filo-cekirdek 5.10.0→5.10.1 güvenlik + yeniden başlatma ister, filo-izleme 3.2.0→3.3.0);
+  `derle/{debian,el9,alpine}.sh` her dağıtımın kendi aracıyla paketleri üretir (dpkg-deb, rpmbuild, abuild), jq/tree ve
+  bağımlılıklarını aynalar, depo üst verisini yazar: Debian iki düz depo (`debian`, güvenlik `debian-guvenlik`, Suite
+  `filo-lab-security`), RHEL `repodata` + `updateinfo.xml` (type=security), Alpine laboratuvar anahtarıyla imzalı
+  APKINDEX + `secdb.json` (secfixes). Eski ve yeni sürümler depoda birlikte durur (geri alma = indirme yapılabilsin).
+  `python -m filo lab depo-derle` yalnız bu üretim için bir kez internet ister (derleyici konteynerler araç kurar);
+  çıktı `lab/depo/srv` (~1,5 MB) depoya girer, laboratuvar çalışırken internet gerekmez.
+- `filo-depo` konteyneri (compose, `filo-lab/alma:2` imajında `python3 -m http.server`, 64 MB) bu dizini laboratuvar
+  ağında `http://filo-depo/` olarak sunar. İmajlar `:2` oldu: eski sürüm örnek paketler kurulu, internet kaynakları
+  kapalı, tek kaynak laboratuvar deposu (kurum içi ayna gibi; jq/tree kurulumu da artık internetsiz), kurum standardı
+  depo tanımı `/etc/filo/depo-standart` altında. Açılışta depo üst verisi yenilenir; `FILO_YAMALI=hepsi|guvenlik` ile
+  PA-DB-01 tamamen, PB-WEB-01 yalnız güvenlik yamalarıyla açılır (uyum raporunda karışık filo). `lab sifirla` ~5 sn.
+- Yeniden başlatma öykünmesi (`lab/goruntu/ortak/filo-yeniden-baslat`): konteynerde gerçek reboot yok; `systemctl
+  reboot` (Debian/RHEL ince katmanı) ve `reboot` (Alpine) 3 sn sonra arka planda açılış kimliğini yeniler, servisleri
+  yeniden başlatır (yeni pid), `/var/run/reboot-required` işaretini siler, `/var/log/filo/yeniden-baslatma.log`'a yazar.
+- `depo_onar` v2: kurum standardına (sunucudaki `/etc/filo/depo-standart`) döner, yoksa dağıtım varsayılanına; RHEL
+  ailesi de eklendi. `bozuk_depo` bozukluğu yeni depo dosyasını da bozar; I06 referansı standarda döner.
+
+**Beceriler** (`filo/durum.py` toplayıcı, `filo/duzelt.py` eylemler, `filo/yama.py` işleyiciler; `tur: yonetim`,
+`toplu: true` — işleyici bütün hedefi birlikte görür, sonuç yine sunucu başına tek şemada):
+- `yama_durumu` v2 (risk 0): bekleyen, güvenlik, yeniden başlatma gerekiyor mu, paket paket kurulu→aday. apt/dnf/apk
+  farkını ve güvenlik sınıfını toplayıcı çözer (Debian: deponun Suite'i; RHEL: updateinfo; Alpine: secdb).
+- Yama politikası (`ayarlar/yama_politikalari.json`, sürümlü): hedef seçici, kapsam (guvenlik/hepsi/paketler), hariç
+  tutulanlar (gerekçe, isteğe bağlı bitiş), sunucuya özel istisnalar (gerekçe + bitiş; süresi dolan uygulanmaz ve
+  raporda görünür), yeniden başlatma politikası, test grubu. Örnek: `guvenlik-standart`, `web-aylik`.
+- `yama_uyumu` (risk 0): politikaya göre sunucu başına uyumlu/uyumsuz/kapsam dışı + neden.
+- `yama_uygula` (risk 3; `yeniden_baslatma=gerekirse` → 4): kuru çalıştırma = fark önizlemesi (kurulacaklar,
+  dışlananlar ve nedeni, yeniden başlatma ihtiyacı); aşamalı dağıtım (`test_grubu` önce, hepsi başarılıysa kalanlar;
+  değilse kalanlar `iptal` "test grubu başarısız"); ön/son kontrol betikleri (kütüphaneden; son kontrol düşerse paketler
+  önceki sürüme indirilir); doğrulama (yeniden tarama: seçilen paket hâlâ bekliyorsa hata); yeniden başlatma: asla
+  (raporlanır), gerekirse (hemen; açılış kimliği değişene kadar beklenir), pencerede (hedefleri kapsayan bakım
+  penceresine `sunucu_yeniden_baslat` olarak zamanlanır, C2; yama onayı ön onay olarak yazılır). Politika verilirse
+  varsayılanda kalan parametreler politikadan dolar.
+- `yama_geri_al` (risk 3): kayıttaki önceki sürümlere indirme; eski sürüm depoda yoksa "sürüm depoda yok; geri alma bu
+  yoldan mümkün değil" der. `sunucu_yeniden_baslat` (risk 4).
+- Talepten: `kod_parametreleri` "yeniden başlatma bakım penceresinde / yapma / gerekirse", "güvenlik yamaları /
+  bekleyen yamalar", "önce X'de dene" ifadelerini kodla çözer (model değiştiremez, test grubu talepte geçmek zorunda);
+  "yeniden başlatma ... bakım penceresinde" ifadesi işin zamanlaması sayılmaz (`zamanli.yeniden_baslatma_ifadesini_
+  cikar`; önceden bütün iş pencereye zamanlanıyordu). Eylem kalıplarına "yama uygulama", "istenen durum", "düzeltme",
+  "geri alma" eklendi.
+- Risk sınıflayıcıda iki yanlış pozitif düzeltildi: `/var/run/reboot-required` yolu `reboot` (4), `/etc/passwd` yolu
+  `passwd` (3) sayılıyordu; Alpine'in `deluser` komutu yıkıcı listesine eklendi.
+
+**Doğrulama**
+- `python -m filo lab depo-derle` (üç dağıtım) → depo üretildi; imajlar `:2` kuruldu; `lab sifirla` 5,4 sn.
+  `apt-get -s dist-upgrade` → `Inst filo-kutuphane [2.0.0-1] (2.0.1-1 Filo-Lab-Security:filo-lab-security [all])`;
+  `dnf updateinfo list --security` → `FILO-SV-2026:filo-cekirdek Important/Sec.`; `apk version -l '<'` dört paket.
+- Gerçek laboratuvarda (`scratchpad/d123_dene.py yama`): `yama_durumu` 8 sunucu (PA-DB-01 0, PB-WEB-01 yalnız 2 düzeltme,
+  diğerleri 4/2 güvenlik); `yama_uyumu guvenlik-standart` → PB-DB-01 "uyumsuz, eksik 1, istisna 1"; `yama_uygula
+  web-aylik` kuru → PA-WEB-01 test aşaması, filo-izleme "hariç: izleme ajanı..."; gerçek (gerekirse) → PA-WEB-01 3 paket +
+  "yeniden_baslatma=yapildi (açılış kimliği değişti)", PB-WEB-01 1 paket; ardından uyum "uyumlu"; `yama_geri_al` → 3 paket
+  önceki sürüme, sonra yeniden 4 bekleyen.
+- `tests/test_d123.py` (12): üç ailenin ayrıştırması, kapsam/hariç/istisna/süresi dolan, aşamalı dağıtımda test grubu
+  düşünce kalanlara hiç komut gitmemesi (sahte taşıyıcı), Kalfa'nın yama talebinde kod parametreleri ve zamanlamanın
+  ayrılması, ve laboratuvarda `test_lab_yama_uygula_yeniden_baslat_geri_al` (PA-WEB-01 Debian, PB-APP-01 Alpine,
+  PA-APP-02 RHEL: kuru değiştirmez; güvenlik yaması + yeniden başlatma; yalnız güvenlik kapsamı; geri alma).
+
+**Eksik / not**
+- Windows yaması (WinRM, Windows Update) bu turda yok; Solaris/HP-UX yok. Gerçek çekirdek güncellemesinde
+  `needs-restarting` yolu kodda var, laboratuvarda denenmedi (öykünme `/var/run/reboot-required` ile).
+- Ayrı "indirme" ve "kurulum" aşamalarının ayrı zamanlanması yok (yama bir adımda kurulur); bakım penceresi sonunda
+  yarıdaki işin durdurulması yok (C2'den).
+- Alpine güvenlik sınıfı depo kökündeki `secdb.json`'dan okunur (gerçek Alpine'de secdb ayrı bir adrestedir; adres
+  ayarlanabilir değil).
+
+## D2 — Yazılım politikası ve remediation
+
+**Yapılan** (`filo/yazilim_politikasi.py`, `ayarlar/yazilim_politikalari.json`, sürümlü)
+- Politika = istenen durum: atamalar (hedef seçiciler), paketler (kurulu / yok, isteğe bağlı sürüm), servisler
+  (çalışıyor / durmuş), kullanıcılar (var / yok), dosyalar (kütüphane dosyası + yol + izin; içerik özeti). Her
+  değişiklik yeni sürüm, eski sürüm `gecmis`te, kim/ne zaman/neden yazılı.
+- `yazilim_politikasi_tara` (risk 0): sunucu başına farklar (tür, ad, mevcut → istenen, eylem, risk, geri alınabilir mi).
+- `yazilim_politikasi_uygula` (risk 3): kuru çalıştırma = önizleme ("jq paketini kur [risk 3, geri alınabilir]");
+  gerçek koşu yalnız farkı kapatır, sonra yeniden tarar (kalan fark varsa hata); aşamalı (test grubu); her eylem geri
+  alma eylemiyle `results/duzeltmeler/kayit.jsonl`'a yazılır. İkinci koşu hiçbir şey yapmaz (idempotent).
+  `yazilim_politikasi_geri_al` aynı yoldan tersini yapar (dosya yedeğe, kurulan paket kalkar, kaldırılan eski sürümüyle
+  döner). Kullanıcı silme geri alınamaz olarak işaretlidir (risk 4).
+- Talepten politika: becerilerin satır içi listeleri (`paketler_kurulu`, `paketler_yok`, `servisler_calisiyor`,
+  `servisler_durmus`, `kullanicilar_var`) modelin doldurduğu dar listelerdir; parametre denetimi her adın talepte
+  geçtiğini zorlar. Kod bunları politika olarak kaydeder (atama = planın hedefi) ve sürümler; `yazilim_politikasi_
+  tanimla` (risk 1) yalnız tanımlar. Talep bir politika adı söylemiyorsa model politika seçemez (kod reddeder).
+- Teslim politikaları (B3) bu nesneyi kullanır: `ayarlar/teslim_politikalari.json`'da profil `politika` +
+  `on_onayli` (adım türleri) + ön/son adımlar taşır; paket/kullanıcı/dosya/servis adımları politikadan üretilir
+  (`teslim_adimlari`). `web` profilinin üretilen adımları eskisiyle bire bir aynı (erişim, envanter, paket_kur ön onaylı,
+  paket_dogrula, kullanici_ac, dosya_dagit, servis_baslat ön onaylı, servis_durumu); "web sunucusu standardı" artık tek
+  yerde (`web-standardi`).
+- Eylem yürütücüsü (`filo/duzelt.py`) ortak: komutları aileye göre kod üretir, her eylem için `eylem|sıra|rc|son satır`,
+  risk ve geri alma eylemi koddadır; sürüm sabitleme (apt madison, dnf list, apk ~) ve "sürüm depoda yok" ayrımı.
+
+**Doğrulama**
+- Gerçek laboratuvarda: `web-standardi` taraması iki web sunucusunda 4 fark; önizleme; `test_grubu=PA-WEB-01` ile
+  uygulama (test → kalan) 4/4 düzeltildi, kalan 0; ikinci uygulama "sapma yok"; PB-WEB-01 geri alma 4 eylem (dosya yedeği
+  dahil); talepten `paketler_kurulu=[jq], paketler_yok=[filo-izleme]` PA-APP-02 (RHEL) + PB-APP-01 (Alpine) 2/2.
+  Bu sırada bulunan iki hata düzeltildi: aşamalı yardımcı tek aşamada işleyiciyi sunucu sayısı kadar çağırıyordu
+  (ikinci çağrı "sapma yok" diyordu); dosya yedeği yolu kabukta yanlış tırnaklanıyordu (geri alma "yedek yok").
+- `test_d123.py`: sapma ve eylem/geri alma üretimi, satır içi politika, teslim adımlarının politikadan üretilmesi;
+  laboratuvarda `test_lab_politika_idempotent_ve_uyum_duzelt`. `test_teslim.py` (5) değişmeden geçiyor.
+
+**Eksik / not**
+- Kurulum sırası ve paket bağımlılığına göre sıralama, ön/son betik politikada yok (yama uygulamasında var).
+- Dosya girdisi yalnız kütüphane dosyasıdır; şablon/değer kümesi (aile 11, Application Configuration) yok.
+
+## D3 — Uyum denetimi ve anlık görüntü
+
+**Yapılan** (`filo/uyum.py`, `ayarlar/uyum_kurallari.json`)
+- Kural türleri: dosya (var/yok, izin üst sınırı, sahip, içerik deseni olmalı/olmamalı; dosya yoksa ihlal ya da
+  uygulanamaz), paket (kurulu/yok, en az sürüm), servis, kullanıcı, grup (istenmeyen üye), sysctl, port (açık/kapalı),
+  komut (salt-okur izin listesinden geçmeli; çıktı deseni ve çıkış kodu). Aile kısıtı. Kural seti sürümlü
+  (`temel-sertlestirme`, 12 kural: SSH root ve parola girişi, /etc/shadow ve sudoers izni, parola yaşlandırma, giriş
+  uyarı metni, uygulama yapılandırma izni, telnet portu ve paketi, eskiadmin hesabı, ASLR, tek UID 0).
+- İstisna: kural + sunucu seçici + gerekçe + bitiş; süresi dolan uygulanmaz, ihlal açıklamasına "istisnanın süresi doldu"
+  yazılır.
+- `uyum_denetle` (risk 0): sunucu başına puan (geçen / uygulanabilir), ihlaller, istisnalar; koşu
+  `results/uyum/<zaman>-<set>.json` + son durum. `uyum_duzelt` (risk 3; `yalniz_geri_alinabilir=false` → 4): ihlallerin
+  düzeltme eylemleri D2 ile aynı yürütücüden; varsayılan yalnız geri alınabilenler (hesap silme gibi geri alınamaz
+  düzeltme "geri alınamaz; yapılmadı" diye bırakılır), sonra yeniden denetler (puan önce → sonra). `uyum_geri_al`.
+- Anlık görüntü: `anlik_goruntu_al` (risk 1) paketler/sürümler, servisler, kullanıcılar, açık portlar, seçili dosyaların
+  özet/izin/sahibi, sysctl → `results/goruntuler/<sunucu>/<zaman>.json`. `goruntu_karsilastir` (risk 0): referans bir
+  sunucu (altın sunucu) ya da "onceki" (kendi son görüntüsü); fark metni önce yapılandırma farklarını (servis, kullanıcı,
+  dosya, port, sysctl, sürüm) sonra paket listelerini (kalabalıksa özet) verir. Docker'ın konteyner içi DNS dinleyicisi
+  (127.0.0.11, rastgele port) gürültü olarak süzülür.
+- Rapor: CSV/XML/HTML ve e-posta var olan yoldan (Kalfa/Kaptan: sonucu_donustur + eposta_gonder).
+- Laboratuvar: PA-APP-01 ve PB-APP-01'de `eskiadmin` hesabı (`FILO_KULLANICILAR`), geri alınamaz düzeltme örneği.
+
+**Doğrulama**
+- Gerçek laboratuvarda: denetim 8 sunucu, puanlar 64-92; PB-DB-01'de parola-yaslanma istisna; düzeltme önizlemesi
+  "eski-hesap-yok: geri alınamaz; yapılmadı"; düzeltme PA-APP-01 67 → 92, PB-APP-01 64 → 82; geri alma 3 eylem;
+  karşılaştırma PB-APP-01 / PA-APP-01 ve PA-WEB-01 / PA-APP-01; "onceki" ile fark 0. Bu sırada bulunan hata: toplayıcı
+  root'a ait dizindeki dosyayı (`/etc/sudoers.d/filo`, AlmaLinux/Alpine'de dizin 0750) "yok" görüyordu; sudo ile
+  bakılır.
+- `test_d123.py`: kuralların değerlendirilmesi, istisna, geri alınabilirlik, yazan komutlu kuralın reddi, karşılaştırma
+  ve fark metni; laboratuvarda uyum düzeltmesinin hesabı silmemesi ve izni 640 yapması.
+
+**Eksik / not**
+- Zamanlanmış/tekrarlı denetim ve görüntü işi ayrı tanımlı değil; ama her beceri zamanlanabilir (C2) — denendi değil.
+- Kural seti düzenleme arayüzde yalnız istisna ekleme olarak var; kural ekleme JSON/API ile (`/api/uyum/kural-seti`).
+- ISO/CIS içerik paketleri (F-SV-014) yok; kural seti elle yazılır.
+
+## Dördüncü tur yarıda kesildi (17 Kasım 2026, 23:15, ana oturum)
+
+Kullanıcı "bitir artık" dedi; dördüncü turun ajanı D4 (arayüz) sırasında durduruldu. Bu dal (`dorduncu-tur`) yarım işi taşır;
+`main` ilk sürümde (f8d8173) kalır.
+
+- Yapılan: D0 (açık kusurlar), D1 (yama), D2 (yazılım politikası), D3 (uyum denetimi ve anlık görüntü); ayrıntı yukarıdaki
+  D0–D3 bölümlerinde. Laboratuvara yerel paket deposu (`filo-depo`) eklendi.
+- Yapılmayan: D4 (Yama/Politikalar/Uyum sayfaları ve `docs/ekran/` görüntüleri) yarım; D5 (yeni senaryolar, qwen3:8b ve
+  Opus 5 tam koşuları) hiç başlamadı.
+- Testler: laboratuvar istemeyenlerde 164 geçti, 6 kaldı (`test_inisiyatif.py` 4, `test_b7_duzeltmeler.py` 2). Belirti:
+  sahte modelle yazılmış testlerde aday beceri daraltması değişmiş (`ajan_ortak.py`), beklenen beceri yerine "hicbiri" ya da
+  durum "hata" dönüyor. Neden doğrulanmadı; ilk iş bunu düzeltmek.
+- Model kapısı (ana oturum): `anthropic` yolu yeni Claude API'sine uyarlandı (temperature yok, `output_config.effort`,
+  refusal, yedek model); yeni tür `claude-cli` (Claude Code başsız kipi, abonelikle). Bağlantılar: `claude-cli-opus5`
+  (Claude Opus 5, çalışıyor; Kalfa talep planı 4 çağrı, 17 sn), `claude-cli-opus` (Opus 5.5; komut satırı 2.1.280+ ister,
+  `claude update` gerekir), `claude-opus-5-5` (API anahtarı ister; anahtar yok). Opus 5 ile bench koşulmadı.

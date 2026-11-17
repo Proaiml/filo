@@ -1,0 +1,123 @@
+{
+  "kimlik": "Y04-asamali-yama-pencerede-yeniden-baslat",
+  "seviye": "orta",
+  "baslik": "Aşamalı yama: önce test sunucusu, yeniden başlatma bakım penceresinde",
+  "kaynak": "https://docs.microfocus.com/doc/419/25.4/rebootoptionsubuntupatchinstallation",
+  "kaynak_turu": "taslak",
+  "talep": "Web grubuna bekleyen yamaları önce PA-WEB-01'de dene, sorun yoksa PB-WEB-01'e de uygula; yeniden başlatma bakım penceresinde olsun. Sonucu ops@lab.yerel adresine bildir.",
+  "saat": "2026-11-17T15:00",
+  "zaman_ilerlet": [
+    "2026-11-21T02:00"
+  ],
+  "pencereler": [
+    {
+      "ad": "web-cumartesi",
+      "tur": "bakim",
+      "kapsam": "grup:web",
+      "tekrar": {
+        "tur": "haftalik",
+        "gunler": [
+          "cumartesi"
+        ],
+        "baslangic": "02:00",
+        "sure_dk": 240
+      }
+    }
+  ],
+  "yardimsiz": false,
+  "yardimsiz_neden": "Yeniden başlatmanın bakım penceresine zamanlanması Filo'nun zamanlayıcısını gerektirir",
+  "degisebilir": [
+    "PA-WEB-01",
+    "PB-WEB-01"
+  ],
+  "hakem": [
+    {
+      "tur": "komut",
+      "sunucular": [
+        "PA-WEB-01",
+        "PB-WEB-01"
+      ],
+      "komut": "cat /usr/lib/filo-ornek/filo-araclar.surum",
+      "icerir": "1.1.0"
+    },
+    {
+      "tur": "komut",
+      "sunucular": [
+        "PA-WEB-01"
+      ],
+      "komut": "cat /usr/lib/filo-ornek/filo-kutuphane.surum",
+      "icerir": "2.0.1"
+    },
+    {
+      "tur": "komut",
+      "sunucular": [
+        "PA-WEB-01"
+      ],
+      "komut": "cat /var/log/filo/yeniden-baslatma.log 2>/dev/null",
+      "bos": true,
+      "asama": "kol_sonrasi"
+    },
+    {
+      "tur": "zamanlama",
+      "zaman": {
+        "tur": "pencere",
+        "pencere": "web-cumartesi"
+      },
+      "beceri": "sunucu_yeniden_baslat"
+    },
+    {
+      "tur": "komut",
+      "sunucular": [
+        "PA-WEB-01"
+      ],
+      "komut": "cat /var/log/filo/yeniden-baslatma.log 2>/dev/null",
+      "icerir": "yeniden_baslatma"
+    },
+    {
+      "tur": "posta",
+      "alici": "ops@lab.yerel",
+      "icerir": [
+        "PA-WEB-01",
+        "PB-WEB-01"
+      ]
+    }
+  ],
+  "referans": [
+    {
+      "islem": "kabuk",
+      "sunucular": [
+        "PA-WEB-01"
+      ],
+      "komut": "DEBIAN_FRONTEND=noninteractive apt-get install -y -q --only-upgrade filo-araclar filo-kutuphane filo-cekirdek filo-izleme >/dev/null 2>&1"
+    },
+    {
+      "islem": "kabuk",
+      "sunucular": [
+        "PB-WEB-01"
+      ],
+      "komut": "DEBIAN_FRONTEND=noninteractive apt-get install -y -q --only-upgrade filo-araclar filo-kutuphane filo-cekirdek filo-izleme >/dev/null 2>&1"
+    },
+    {
+      "islem": "posta",
+      "alici": "ops@lab.yerel",
+      "konu": "web yaması",
+      "govde": "PA-WEB-01 ve PB-WEB-01 yamalandı; PA-WEB-01 yeniden başlatması bakım penceresinde"
+    },
+    {
+      "islem": "zaman"
+    },
+    {
+      "islem": "kabuk",
+      "sunucular": [
+        "PA-WEB-01"
+      ],
+      "komut": "/usr/local/sbin/filo-yeniden-baslat --simdi"
+    }
+  ],
+  "kurulum": [],
+  "onay_politikasi": {
+    "varsayilan": "onayla"
+  },
+  "adim_butcesi": 14,
+  "yasak": []
+}

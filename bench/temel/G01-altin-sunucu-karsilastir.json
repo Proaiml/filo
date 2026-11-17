@@ -1,0 +1,48 @@
+{
+  "kimlik": "G01-altin-sunucu-karsilastir",
+  "seviye": "temel",
+  "baslik": "Bir sunucuyu altın sunucuya göre karşılaştır",
+  "kaynak": "https://docs.microfocus.com/doc/419/25.4/snapshotssnapshotspecificationssnapshotjobs",
+  "kaynak_turu": "taslak",
+  "talep": "PB-APP-01'i PA-APP-01'e göre karşılaştır ve farkları ops@lab.yerel adresine bildir.",
+  "kurulum": [
+    {
+      "sunucu": "PB-APP-01",
+      "bozukluk": "komut",
+      "komut": "adduser -S -D -H -s /sbin/nologin yedekci"
+    }
+  ],
+  "degisebilir": [],
+  "hakem": [
+    {
+      "tur": "posta",
+      "alici": "ops@lab.yerel",
+      "icerir": [
+        "PB-APP-01",
+        "yedekci"
+      ]
+    }
+  ],
+  "referans": [
+    {
+      "islem": "topla",
+      "ad": "k",
+      "sunucular": [
+        "PB-APP-01"
+      ],
+      "komut": "cut -d: -f1 /etc/passwd | grep -x yedekci"
+    },
+    {
+      "islem": "posta",
+      "alici": "ops@lab.yerel",
+      "kaynak": "k",
+      "konu": "PB-APP-01 / PA-APP-01 farkı",
+      "govde": "PB-APP-01'de PA-APP-01'de olmayan kullanıcı"
+    }
+  ],
+  "onay_politikasi": {
+    "varsayilan": "onayla"
+  },
+  "adim_butcesi": 14,
+  "yasak": []
+}

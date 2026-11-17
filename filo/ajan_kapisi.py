@@ -115,16 +115,33 @@ class Defter:
         self.dizin.mkdir(parents=True, exist_ok=True)
 
     def _oku(self, yol, bos):
-        try:
-            return json.loads(yol.read_text(encoding="utf-8"))
-        except (OSError, ValueError):
-            return bos
+        """Dosya yoksa `bos`. D0-c: Windows'ta yeni yazılıp yerine konan dosya bir an başka bir süreçte (virüs tarayıcı,
+        dizinleyici, kapının dosyasını okuyan komut satırı) açık kalabilir; okuma PermissionError verir. Eskiden bu da
+        `bos` sayılıyordu: belirteç deposu boş okununca paralel kurulumda geçerli belirteç "geçersiz" diye reddediliyor,
+        sonraki yazma da öteki belirteçleri siliyordu (testlerden sonra rastgele bir ajanın kayıtsız kalması). Artık
+        geçici hata birkaç kez yeniden denenir; sürerse hata yükselir (sessizce boş sayılmaz)."""
+        for deneme in range(20):
+            try:
+                return json.loads(yol.read_text(encoding="utf-8"))
+            except FileNotFoundError:
+                return bos
+            except (OSError, ValueError):
+                if deneme == 19:
+                    raise
+                time.sleep(0.05 * (deneme + 1))
 
     def _yaz(self, yol, veri):
         yol.parent.mkdir(parents=True, exist_ok=True)
         gecici = yol.with_suffix(".yeni")
         gecici.write_text(json.dumps(veri, ensure_ascii=False, indent=1), encoding="utf-8")
-        gecici.replace(yol)
+        for deneme in range(20):
+            try:
+                gecici.replace(yol)
+                return
+            except PermissionError:
+                if deneme == 19:
+                    raise
+                time.sleep(0.05 * (deneme + 1))
 
     @property
     def kayit_yolu(self):

@@ -31,6 +31,8 @@ class Kalfa:
         self.on_onay = on_onay                   # zamanlanmış koşunun önceden onayı (zamanlayıcı verir)
         self.yasak_istisnasi = yasak_istisnasi   # operatörün yasak pencere istisnası (zamanlayıcıdaki soru cevabı)
         self.on_onay_veren = on_onay_veren       # zamanlarken önceden onay veren operatör (arayüz)
+        if zamanlayici is not None and getattr(motor, "zamanlayici", None) is None:
+            motor.zamanlayici = zamanlayici      # D1: yama sonrası yeniden başlatma bakım penceresine bu zamanlayıcıya yazılır
 
     def _kayit(self, talep):
         if self.kayit is None:
@@ -89,7 +91,7 @@ class Kalfa:
         yapi = self._kosullu_degisiklik(talep, plan)
         if yapi:
             return self._bitir("beceri_yok", yapi)
-        eksik = self._kapsam(talep, ad, bicim, alici, iz)
+        eksik = self._kapsam(talep, ad, bicim, alici, iz, plan.get("parametreler"))
         k.plan = {"ana": plan, "bicim": bicim, "alici": alici, "gerekce": secim["gerekce"], "eksik": eksik,
                   "adimlar": [ad] + (["sonucu_donustur"] if bicim else []) + (["eposta_gonder"] if alici else [])}
         try:
@@ -142,7 +144,7 @@ class Kalfa:
                 f"uygular ve bunu koşullu yapamaz. Yanlış sunucuda değişiklik yapmamak için iş başlatılmadı; Kaptan ile "
                 f"deneyin (yapılı akış kurar). Hiçbir sunucuda işlem yapılmadı.")
 
-    def _kapsam(self, talep, ad, bicim, alici, iz):
+    def _kapsam(self, talep, ad, bicim, alici, iz, parametreler=None):
         """Kalfa tek beceri yürütür. Talep bunun dışında bir iş de istiyorsa (ör. "durumuna bak VE yeniden başlat")
         iş sonunda 'bitti' değil 'kismi' denir ve yapılmayan kısım raporda yazılır (ikinci koşu I07/O11: Kalfa işin
         yarısını yapıp 'başarılı' dedi, hakem sahte başarı saydı)."""
@@ -150,12 +152,13 @@ class Kalfa:
         from .gateway import sor_json
         # Önce kod: talepteki değiştirici eylemlerden seçilen becerinin (ve zincir adımlarının) yapmadığı var mı?
         # Kodun bulduğu eksik modelin "yok" cevabıyla silinemez (ikinci koşu O11: model "yok" dedi, sahte başarı).
-        kod_eksik = kapsam_eksigi(self.motor.katalog, talep, [ad])
+        kod_eksik = kapsam_eksigi(self.motor.katalog, talep, [ad], {ad: parametreler})
         if kod_eksik:
             metin = "; ".join(kod_eksik)
-            self.kayit.olay("kapsam", f"kod denetimi: talepteki şu eylem(ler)i {ad} yapmaz: {metin}")
+            self.kayit.olay("kapsam", f"kod denetimi: talepteki şu iş(ler)i {ad} yapmaz: {metin}")
             iz.append({"soru": "kapsam (kod)", "denemeler": [], "sonuc": {"eksik": metin},
-                       "kod_notu": "talepteki değiştirici eylemler beceri kapsamıyla karşılaştırıldı; model sorulmadı"})
+                       "kod_notu": "talepteki değiştirici eylemler ve salt-okur işler beceri kapsamıyla karşılaştırıldı; "
+                                   "model sorulmadı"})
             return metin
         if self.motor.katalog[ad]["tur"] == "zincir":
             return None          # zincir beceri çok adımlı işi zaten kapsar (dönüştürülmüş akışlar); soru sorulmaz

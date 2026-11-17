@@ -26,7 +26,18 @@ onay ve denetim izi kodun işidir.
 - **Çalıştırma kimliği**: bağlantı kullanıcısı, root (sudo) ya da adı verilen kullanıcı; sunucu/grup başına izinli
   kimlikler; izinsiz kimlik planda reddedilir, sudo izin vermezse sonuç "yetki yok".
 - **Teslim politikaları**: yeni sunucuya ajan kaydolunca profilin beceri zinciri (standart paketler, kullanıcı, servis,
-  dosya, doğrulama, teslim raporu) kendiliğinden başlar; yarıda kalırsa Kaptan devralabilir.
+  dosya, doğrulama, teslim raporu) kendiliğinden başlar; yarıda kalırsa Kaptan devralabilir. Profilin değiştiren adımları
+  bağlı olduğu yazılım politikasından üretilir.
+- **Yama**: bekleyen güncellemeler ve güvenlik sınıfı (apt/dnf/apk farkını beceri çözer), yama politikası (hedef,
+  kapsam, gerekçeli ve süreli hariç tutma / istisna), uyum raporu, uygulama (kuru çalıştırma ve fark önizlemesi; önce
+  test grubu, başarılıysa kalanlar; ön/son kontrol betiği, son kontrol düşerse eski sürüme iner; yeniden başlatma asla /
+  gerekirse / bakım penceresinde), geri alma (önceki sürüme indirme; yapılamıyorsa açıkça söyler).
+- **Yazılım politikası**: istenen durum (paketler, servisler, kullanıcılar, dosyalar ve kime atandığı), sürümlü; sapma
+  taraması, önizleme, yalnız farkı kapatan ve tekrarında hiçbir şey yapmayan remediation, geri alma. "Web sunucularında
+  jq kurulu olsun, telnet olmasın" gibi bir talepten model dar listeleri doldurur, kod denetler ve politikayı kaydeder.
+- **Uyum ve anlık görüntü**: kural setleri (dosya, paket, servis, kullanıcı/grup, sysctl, port, komut çıktısı),
+  sunucu başına puan ve ihlaller, gerekçeli ve süreli istisnalar, düzeltme (varsayılan yalnız geri alınabilenler);
+  yapılandırmanın anlık görüntüsü ve iki sunucunun ya da bir sunucunun iki zamanının karşılaştırması (altın sunucu).
 
 Ayrıntılar: `docs/00-devir-notu.md` (tasarım), `docs/ilerleme.md` (ne yapıldı, nasıl doğrulandı, ne eksik).
 
@@ -43,6 +54,7 @@ Ayrıntılar: `docs/00-devir-notu.md` (tasarım), `docs/ilerleme.md` (ne yapıld
 
 ```
 python -m filo lab kur          # anahtarları üretir (lab/anahtar/, git dışında), imajları kurar, konteynerleri başlatır
+python -m filo lab depo-derle   # yalnız yerel paket deposunu yeniden üretmek için (bir kez internet ister; çıktı lab/depo/srv)
 python -m filo lab durum --erisim
 python -m filo ajan derle        # Go ajanı: go vet + go test + linux/amd64, linux/arm64, windows/amd64 (ajan/cikti/)
 python -m filo winrm-kontrol     # Windows hedefi için; Filo sistem ayarı değiştirmez, eksikse komutları söyler
@@ -68,8 +80,13 @@ python -m filo durdur            # durdurma düğmesi: bütün uzak işlemleri v
 ```
 
 Konsol sayfaları: `/` genel bakış, `/kalfa`, `/kaptan`, `/onaylar`, `/zamanlama`, `/pencereler`, `/envanter`, `/ajanlar`,
-`/teslim`, `/beceriler`,
-`/bench`, `/karsilastirma`, `/baglantilar`, `/denetim`. Mailpit: http://127.0.0.1:18025.
+`/teslim`, `/yama`, `/politikalar`, `/uyum`, `/beceriler`, `/bench`, `/karsilastirma`, `/baglantilar`, `/denetim`.
+Ekran görüntüleri: `docs/ekran/`. Mailpit: http://127.0.0.1:18025.
+
+Laboratuvarın tek paket kaynağı laboratuvar ağındaki `filo-depo` konteyneridir (kurum içi ayna gibi; internet gerekmez):
+örnek paketlerin eski sürümleri imajlarda kurulu, yeni sürümleri depoda olduğu için "bekleyen yama" tekrarlanabilir.
+Konteynerde gerçek yeniden başlatma yoktur; `systemctl reboot` / `reboot` bir öykünmedir (açılış kimliği yenilenir,
+servisler yeniden başlar).
 
 Model bağlantıları `ayarlar/baglantilar.json` içindedir; konsolun Model bağlantıları sayfasından da eklenir. API anahtarı
 ya bir ortam değişkeninin adıyla (`anahtar_ortam`) ya da git dışındaki `ayarlar/gizli.json` dosyasında durur; geri
@@ -85,8 +102,9 @@ python -m filo bench kos --kol yardimsiz kalfa kaptan --baglanti yerel-qwen3-8b 
 python -m filo bench rapor
 ```
 
-45 senaryo `bench/temel|orta|ileri/*.json` (üçüncü turda 15 yeni: zamanlama Z01-Z04, çalıştırma kimliği K01-K02, koşu
-denetimi D01-D03, akış yapıları A01-A06). Kaynakları `docs/arastirma/05-forum-vakalari.md` (OpenText forumu),
+59 senaryo `bench/temel|orta|ileri/*.json` (üçüncü turda 15 yeni: zamanlama Z01-Z04, çalıştırma kimliği K01-K02, koşu
+denetimi D01-D03, akış yapıları A01-A06; dördüncü turda 14 yeni: yama Y01-Y08, yazılım politikası P01-P04, uyum U01-U03,
+altın sunucu G01). Kaynakları `docs/arastirma/05-forum-vakalari.md` (OpenText forumu),
 `03-vaka-taslaklari.md`, `07-talep-karsilastirmasi.md`, `08`, `09`, `09b`, `09c`. Zaman isteyen senaryolarda saat sahtedir.
 
 ## Testler
@@ -94,5 +112,8 @@ denetimi D01-D03, akış yapıları A01-A06). Kaynakları `docs/arastirma/05-for
 ```
 python -m pytest            # laboratuvar isteyen testler `lab` işaretlidir, laboratuvar yoksa atlanır
 ```
+
+Laboratuvar tek kullanıcılıdır: bench koşusu ve laboratuvar sınamaları `results/LAB_KILIT` kilidini alır; biri sürerken
+öteki başlamaz (pytest laboratuvar sınamalarını gerekçesiyle atlar).
 
 Go testleri `python -m filo ajan derle` içinde konteynerde koşar.

@@ -90,6 +90,8 @@ class Kaptan:
         self.yapi_kur = yapi_kur                  # talepte yapı ipucu varsa dar sorularla yapılı akış kur (C4)
         self._hedef, self._kontrol, self._yurutucu = None, None, None
         self.model, self.motor, self.kayit, self.durdurma = model, motor, kayit, durdurma
+        if zamanlayici is not None and getattr(motor, "zamanlayici", None) is None:
+            motor.zamanlayici = zamanlayici      # D1: yama sonrası yeniden başlatma bakım penceresine bu zamanlayıcıya yazılır
         self.deneme_siniri, self.onay_bekle_sn, self.en_cok_adim = deneme_siniri, onay_bekle_sn, en_cok_adim
         self.akis_dizini = akis_dizini or AKISLAR
         n = varsayilan_inisiyatif() if inisiyatif is None else int(inisiyatif)

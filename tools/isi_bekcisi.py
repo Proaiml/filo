@@ -27,7 +27,7 @@ BEKLE, DUR, BEKCI_DUR, LOG = DURUM / "BEKLE", DURUM / "DUR", DURUM / "BEKCI_DUR"
 # pause above these, resume below those (two calm minutes in a row); stop everything above the last ones
 GPU_BEKLE, GPU_DEVAM, GPU_DUR = 76, 66, 84          # degrees C
 CPU_BEKLE, CPU_DEVAM = 70, 45                       # percent load, two minutes in a row to pause
-RAM_BEKLE, RAM_DEVAM, RAM_DUR = 3.0, 4.0, 1.5       # GB free
+RAM_BEKLE, RAM_DEVAM, RAM_DUR = 4.0, 4.5, 1.5       # GB free (dördüncü tur: 4 GB altında koşu duraklar)
 GPU_BOS_MB = 2500                                   # the card counts as free below this (our model is unloaded while paused)
 HUB = pathlib.Path(os.environ.get("FILO_HUB") or pathlib.Path.home() / "Desktop" / "hub" / "konuşmlar.txt")
 

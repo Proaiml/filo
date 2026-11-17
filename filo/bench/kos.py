@@ -31,7 +31,13 @@ def _kilit():
     BENCH_SONUC.mkdir(parents=True, exist_ok=True)
     k = BENCH_SONUC / "KILIT"
     if k.exists() and time.time() - k.stat().st_mtime < 6 * 3600:
-        raise RuntimeError(f"başka bir bench koşusu sürüyor ya da yarım kaldı ({k}); emin olunca dosyayı silin")
+        try:
+            sahibi = int(k.read_text(encoding="utf-8").strip() or 0)
+        except (OSError, ValueError):
+            sahibi = 0
+        if lab._surec_canli(sahibi):
+            raise RuntimeError(f"başka bir bench koşusu sürüyor (pid {sahibi}, {k})")
+    lab.lab_kilidi_al("bench koşusu")          # laboratuvar sınamaları (pytest) aynı anda çalışmasın (D0-b)
     k.write_text(str(os.getpid()), encoding="utf-8")
     return k
 
@@ -156,6 +162,7 @@ def dogrula(kimlikler=None, ilerle=print):
     finally:
         kilit.unlink(missing_ok=True)
         lab.sifirla()
+        lab.lab_kilidi_birak()
         if kapi:
             kapi.durdur()
     return sonuc
@@ -199,6 +206,7 @@ def kos(kimlikler, kollar, baglanti=None, ilerle=print, kosu_adi=None, seviye=No
     finally:
         kilit.unlink(missing_ok=True)
         lab.sifirla()
+        lab.lab_kilidi_birak()
         if kapi:
             kapi.durdur()
     return rapor(ad)

@@ -1,0 +1,71 @@
+{
+  "kimlik": "P01-talepten-politika",
+  "seviye": "orta",
+  "baslik": "Düz Türkçe talepten yazılım politikası ve remediation",
+  "kaynak": "https://docs.microfocus.com/doc/419/25.4/remediatingandinstallingsoftware",
+  "kaynak_turu": "taslak",
+  "talep": "Web sunucularında jq ve tree kurulu olsun, filo-izleme olmasın; farkı kapat ve sonucu ops@lab.yerel adresine bildir.",
+  "degisebilir": [
+    "PA-WEB-01",
+    "PB-WEB-01"
+  ],
+  "hakem": [
+    {
+      "tur": "paket",
+      "sunucular": [
+        "PA-WEB-01",
+        "PB-WEB-01"
+      ],
+      "paket": "jq",
+      "kurulu": true
+    },
+    {
+      "tur": "paket",
+      "sunucular": [
+        "PA-WEB-01",
+        "PB-WEB-01"
+      ],
+      "paket": "tree",
+      "kurulu": true
+    },
+    {
+      "tur": "paket",
+      "sunucular": [
+        "PA-WEB-01",
+        "PB-WEB-01"
+      ],
+      "paket": "filo-izleme",
+      "kurulu": false
+    },
+    {
+      "tur": "posta",
+      "alici": "ops@lab.yerel",
+      "icerir": [
+        "PA-WEB-01",
+        "PB-WEB-01"
+      ]
+    }
+  ],
+  "referans": [
+    {
+      "islem": "kabuk",
+      "sunucular": [
+        "PA-WEB-01",
+        "PB-WEB-01"
+      ],
+      "komut": "DEBIAN_FRONTEND=noninteractive apt-get install -y -q jq tree >/dev/null 2>&1; DEBIAN_FRONTEND=noninteractive apt-get remove -y -q filo-izleme >/dev/null 2>&1"
+    },
+    {
+      "islem": "posta",
+      "alici": "ops@lab.yerel",
+      "konu": "web politikası",
+      "govde": "PA-WEB-01, PB-WEB-01: jq ve tree kuruldu, filo-izleme kaldırıldı"
+    }
+  ],
+  "kurulum": [],
+  "onay_politikasi": {
+    "varsayilan": "onayla"
+  },
+  "adim_butcesi": 14,
+  "yasak": []
+}

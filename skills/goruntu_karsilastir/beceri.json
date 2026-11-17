@@ -1,0 +1,37 @@
+{
+  "ad": "goruntu_karsilastir",
+  "surum": 1,
+  "baslik": "Yapılandırma karşılaştır",
+  "aciklama": "Sunucuların yapılandırmasını bir referans sunucuya (altın sunucu) ya da kendi önceki anlık görüntüsüne göre karşılaştırır: yalnız birinde olan paketler, sürüm farkları, servis durumu, kullanıcılar, dosya özetleri, açık portlar.",
+  "etiketler": [
+    "karşılaştır",
+    "fark",
+    "altın sunucu",
+    "referans",
+    "snapshot",
+    "görüntü",
+    "kıyasla",
+    "göre"
+  ],
+  "risk": 0,
+  "tur": "yonetim",
+  "islem": "goruntu_karsilastir",
+  "toplu": true,
+  "zaman_asimi": 180,
+  "girdi": {
+    "referans": {
+      "tip": "metin",
+      "varsayilan": "onceki",
+      "desen": "^[A-Za-z0-9-]{2,40}$",
+      "aciklama": "referans sunucu adı (ör. PA-APP-01) ya da 'onceki' (kendi son görüntüsü)"
+    }
+  },
+  "cikti": {
+    "bicim": "anahtar_deger",
+    "alanlar": {
+      "referans": "metin",
+      "fark": "tamsayi",
+      "farklar": "metin"
+    }
+  }
+}

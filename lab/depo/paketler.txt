@@ -1,0 +1,8 @@
+# Laboratuvar paket deposunun örnek paketleri (D1). Her satır: ad eski_surum yeni_surum guvenlik(evet|hayir) yeniden_baslatma(evet|hayir) aciklama
+# İmajlara ESKİ sürüm kurulur; depoda iki sürüm de durur (geri alma = eski sürüme indirme yapılabilsin).
+# Güvenlik güncellemeleri: Debian'da ayrı "filo-lab-security" deposunda, RHEL'de updateinfo.xml (type=security),
+# Alpine'de secdb.json (secfixes) ile işaretlidir. Yeniden başlatma isteyen paket kurulunca /var/run/reboot-required yazar.
+filo-araclar 1.0.0 1.1.0 hayir hayir Filo_lab_ornek_araclari
+filo-kutuphane 2.0.0 2.0.1 evet hayir Filo_lab_ornek_kutuphanesi_(LAB-2026-0001)
+filo-cekirdek 5.10.0 5.10.1 evet evet Filo_lab_ornek_cekirdegi_(LAB-2026-0002)
+filo-izleme 3.2.0 3.3.0 hayir hayir Filo_lab_ornek_izleme_ajani

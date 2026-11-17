@@ -1,0 +1,32 @@
+{
+  "ad": "sunucu_yeniden_baslat",
+  "surum": 1,
+  "baslik": "Sunucuyu yeniden başlat",
+  "aciklama": "Sunucuyu yeniden başlatır ve yeniden açıldığını (açılış kimliği değişti) doğrular. Laboratuvarda yeniden başlatma öykünmesidir (servisler yeniden başlar, işaret silinir).",
+  "etiketler": [
+    "yeniden başlat",
+    "reboot",
+    "restart",
+    "açılış",
+    "sunucu"
+  ],
+  "risk": 4,
+  "tur": "yonetim",
+  "islem": "sunucu_yeniden_baslat",
+  "toplu": true,
+  "zaman_asimi": 300,
+  "girdi": {},
+  "kuru": {
+    "aciklama": "yeniden başlatılacak sunucular listelenir"
+  },
+  "geri_al": {
+    "geri_alinamaz": "yeniden başlatma geri alınmaz"
+  },
+  "cikti": {
+    "bicim": "anahtar_deger",
+    "alanlar": {
+      "yeniden_baslatildi": "metin",
+      "not": "metin"
+    }
+  }
+}

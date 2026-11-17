@@ -52,14 +52,14 @@ YOL = re.compile(r"^/[A-Za-z0-9_./-]{1,250}$")
 
 # ---------------------------------------------------------------- risk sınıflama (kod)
 RISK_DESENLERI = [
-    (4, r"\brm\s+-[a-zA-Z]*[rR][a-zA-Z]*\b|\bmkfs|\bdd\s+if=|\breboot\b|\bshutdown\b|\bpoweroff\b|\bhalt\b|\buserdel\b|"
+    (4, r"\brm\s+-[a-zA-Z]*[rR][a-zA-Z]*\b|\bmkfs|\bdd\s+if=|\breboot\b(?![-.])|\bshutdown\b|\bpoweroff\b|\bhalt\b|\buserdel\b|\bdeluser\b|"
         r"\bwipefs\b|\btruncate\b|\bfind\b[^|;]*-delete|Remove-Item[^|;]*-Recurse|Format-Volume|Stop-Computer|"
         r"Restart-Computer|Remove-LocalUser|:\s*>\s*/"),
     (3, r"\b(apt-get|apt|dnf|yum|microdnf)\s+(-[-\w=]+\s+)*(install|remove|purge|upgrade|reinstall|autoremove)\b|"
         r"\bapk\s+(-[-\w]+\s+)*(add|del|upgrade|fix)\b|\bdpkg\s+(-i|--configure|--remove|-r|-P|--purge)\b|"
         r"\bsystemctl\s+(-[-\w]+\s+)*(start|stop|restart|reload|enable|disable|mask)\b|"
         r"\brc-service\s+\S+\s+(start|stop|restart)\b|\bservice\s+\S+\s+(start|stop|restart)\b|"
-        r"\buseradd\b|\badduser\b|\busermod\b|\bpasswd\b|\bchpasswd\b|\bvisudo\b|\bkill\b|\bpkill\b|\bkillall\b|"
+        r"\buseradd\b|\badduser\b|\busermod\b|(?<![/\w.-])passwd\b(?![./-])|\bchpasswd\b|\bvisudo\b|\bkill\b|\bpkill\b|\bkillall\b|"
         r"Restart-Service|Stop-Service|Start-Service|Install-Package|Install-WindowsFeature|New-LocalUser|"
         r"Set-Service|Stop-Process"),
     (2, r"(?<![=!<>-])>{1,2}(?![=&])\s*[A-Za-z_/$\"'{.~-]|\btee\b|\bcp\b|\bmv\b|\bmkdir\b|\btouch\b|\bchmod\b|\bchown\b|\bsed\s+-i|\binstall\s+-[a-zA-Z]|"
@@ -103,6 +103,10 @@ def secenekler(alan):
         return betik_listesi()
     if alan.get("kaynak") == "dosyalar":
         return dosya_listesi()
+    if alan.get("kaynak") in ("yama_politikalari", "yazilim_politikalari", "kural_setleri"):
+        # D1-D3: politika ve kural seti adları ayar dosyalarından (seçenekleri kod daraltır, model yalnız seçer)
+        from . import durum
+        return durum.kayit_adlari(alan["kaynak"])
     return list(alan.get("secenekler") or [])
 
 
@@ -382,6 +386,11 @@ class Katalog:
             r, n = risk_sinifla([self.betik_oku(parametreler["betik"])])
             if r > hesap:
                 hesap, neden = r, f"betik {parametreler['betik']}: {n}"
+        # Parametreye bağlı risk (D1): ör. yama_uygula'da yeniden_baslatma=gerekirse → düzey 4 (hemen yeniden başlatma)
+        for alan, tablo in (t.get("risk_kurali") or {}).items():
+            v = str((parametreler or {}).get(alan, (t.get("girdi") or {}).get(alan, {}).get("varsayilan", "")))
+            if v in tablo and tablo[v] > hesap:
+                hesap, neden = tablo[v], f"{alan}={v} (düzey {tablo[v]})"
         if hesap > t["risk"]:
             return hesap, f"kod sınıflaması düzeyi yükseltti: {neden}"
         return t["risk"], "beyan"

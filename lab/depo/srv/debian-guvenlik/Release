@@ -1,0 +1,22 @@
+Architectures: amd64 all
+Codename: filo-lab-security
+Date: Tue, 17 Nov 2026 18:25:36 +0000
+Label: Filo-Lab-Security
+Origin: Filo-Security
+Suite: filo-lab-security
+MD5Sum:
+ 542cdc35bbec644d374c3c926b4d8338              800 Packages
+ 6f9c4b2ef3b29d66dd44917af37c745d              447 Packages.gz
+ 7f6d568bffc576bada050bda609973cc              163 Release
+SHA1:
+ ab4301b7fb6ce346266ee1dcd4bdb027f2ba4d6d              800 Packages
+ de51ab39dc6d582c02dbacf447a2dcff7de71c0a              447 Packages.gz
+ 7ec30b6b814417ef6c52d66694b15f083167a20a              163 Release
+SHA256:
+ c038ed27733f7d3bb62b9d7f9a92e3a63868cb5abe2c1f539d62910278420f28              800 Packages
+ 3eb4ada4bb4e692cd0f7423cd457fd89bca650ff6df780e26bcde9f4f851fae2              447 Packages.gz
+ e1d66796c047fbe7c31e4cf4260db9f17805108b3b4529b5657b073d232ec379              163 Release
+SHA512:
+ 47e5388b3ffdd914bd6bd62a33c075d5b7dfd368b0be034ca92342003cd3f4e1cce181f13667c533561aaec1aa4fede465d63fed670974da8cb6b8a31a4ba678              800 Packages
+ a3e50c44a0b08e0abd57734a6cd8378536d2b45723502d8a83638abe50f4aea0259662552ee2a640b3730e90171cb3e1de25811dc5ef4ae6bec82323f1b86d5c              447 Packages.gz
+ 1ba2caa001fb01439b2d83bc50d1cf5d159936cc36194986d84953fd0a07ad1c4725b2f60b5b0657b3898e2e5f345ea5e000f822f5d5e1966ab0de3e7e73a91f              163 Release

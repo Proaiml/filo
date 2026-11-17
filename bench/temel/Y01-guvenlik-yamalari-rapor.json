@@ -1,0 +1,52 @@
+{
+  "kimlik": "Y01-guvenlik-yamalari-rapor",
+  "seviye": "temel",
+  "baslik": "Bekleyen güvenlik yamalarını raporla",
+  "kaynak": "https://docs.microfocus.com/doc/419/25.4/patchesfortheserver",
+  "kaynak_turu": "taslak",
+  "talep": "PA sunucularında bekleyen güvenlik yamalarını raporla ve ops@lab.yerel adresine postala.",
+  "degisebilir": [],
+  "hakem": [
+    {
+      "tur": "posta",
+      "alici": "ops@lab.yerel",
+      "icerir": [
+        "PA-APP-01",
+        "PA-APP-02",
+        "PA-WEB-01",
+        "filo-kutuphane",
+        "filo-cekirdek"
+      ]
+    }
+  ],
+  "referans": [
+    {
+      "islem": "topla",
+      "ad": "y",
+      "sunucular": [
+        "PA-APP-01",
+        "PA-APP-02",
+        "PA-DB-01",
+        "PA-WEB-01"
+      ],
+      "komut": {
+        "debian": "apt-get -s dist-upgrade 2>/dev/null | grep '^Inst' | grep -i security | cut -d' ' -f2,3,4",
+        "rhel": "dnf -q -C updateinfo list --security --available 2>/dev/null",
+        "alpine": "apk version -l '<' 2>/dev/null | grep -E 'filo-(kutuphane|cekirdek)'"
+      }
+    },
+    {
+      "islem": "posta",
+      "alici": "ops@lab.yerel",
+      "kaynak": "y",
+      "konu": "PA bekleyen güvenlik yamaları",
+      "govde": "Bekleyen güvenlik yamaları (filo-kutuphane, filo-cekirdek); PA-DB-01 güncel"
+    }
+  ],
+  "kurulum": [],
+  "onay_politikasi": {
+    "varsayilan": "onayla"
+  },
+  "adim_butcesi": 14,
+  "yasak": []
+}

@@ -17,8 +17,11 @@ from test_ajanlar import Senaryo, erisimli, kayit, posta  # noqa: F401
 def bekle(kosul, sure=5.0):
     son = time.time() + sure
     while time.time() < son:
-        if kosul():
-            return True
+        try:
+            if kosul():
+                return True
+        except (OSError, ValueError):      # dosya o an yeniden yazılıyor
+            pass
         time.sleep(0.05)
     return False
 
@@ -83,7 +86,10 @@ def test_kaptan_adim_sinirinda_durur_kayittan_surer_ve_iptal(motor_kur, tmp_path
     th = threading.Thread(target=kap.yurut, daemon=True)
     th.start()
     assert bekle(lambda: k.durum == "duraklatildi")
-    d = json.loads((tmp_path / "isler" / f"{k.kimlik}.json").read_text(encoding="utf-8"))
+    # Bellekteki durum dosyaya bir an sonra yazılır (dördüncü turda bir kez 'calisiyor' okundu): dosya da beklenir
+    dosya = tmp_path / "isler" / f"{k.kimlik}.json"
+    assert bekle(lambda: json.loads(dosya.read_text(encoding="utf-8"))["durum"] == "duraklatildi")
+    d = json.loads(dosya.read_text(encoding="utf-8"))
     assert d["durum"] == "duraklatildi" and d["devam"]["akis_durumu"]["ust"] == 1
     assert sayac == {"servis": 1, "disk": 0}
     # konsol "yeniden başladı": eski iş parçacığı iptal edilir, kayıt yeni bir yürütücüyle kaldığı adımdan sürer

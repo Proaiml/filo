@@ -211,6 +211,9 @@ def _ajan_kolu(sinif, senaryo, env, model, dizin):
     from ..zamanlayici import Pencereler, Zamanlayici
     gecici = tempfile.mkdtemp(prefix="filo-bench-")
     kat_dizin = shutil.copytree(SKILLS, f"{gecici}/skills", ignore=shutil.ignore_patterns("gecmis"))
+    from .. import durum
+    # D1-D3: politika/kural seti ayarları ve düzeltme/görüntü kayıtları kol başına geçici kopyada (konsolun verisine karışmaz)
+    durum.yalit(pathlib.Path(gecici), senaryo.get("ayarlar"))
     den = Denetim((dizin / f"{senaryo['kimlik']}__{sinif.ad}.denetim.jsonl") if dizin else None)
     katalog = Katalog(pathlib.Path(kat_dizin), denetim=den)
     pol = Politika("bench", bench_kurali=senaryo["onay_politikasi"], denetim=den,
@@ -281,6 +284,7 @@ def _ajan_kolu(sinif, senaryo, env, model, dizin):
             zm.tik(t)
 
     def temizle():
+        durum.yalitimi_kaldir()
         shutil.rmtree(gecici, ignore_errors=True)
     return {"beyan": BEYAN.get(son_is.durum, "basarisiz"), "rapor": (son_is.rapor or son_is.hata)[:3000],
             "durum": son_is.durum, "adim": len(k.adimlar), "cagri": getattr(model, "cagri", 0) - cagri0, "is": k.kimlik,

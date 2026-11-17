@@ -21,6 +21,30 @@
       "adres": "https://api.anthropic.com",
       "model": "",
       "anahtar_ortam": "ANTHROPIC_API_KEY"
+    },
+    {
+      "ad": "claude-opus-5-5",
+      "tur": "anthropic",
+      "adres": "https://api.anthropic.com",
+      "model": "claude-opus-5-5",
+      "efor": "high",
+      "max_tokens": 16000,
+      "anahtar_ortam": "ANTHROPIC_API_KEY",
+      "zaman_asimi": 300
+    },
+    {
+      "ad": "claude-cli-opus",
+      "tur": "claude-cli",
+      "model": "claude-opus-5-5",
+      "efor": "high",
+      "zaman_asimi": 300
+    },
+    {
+      "ad": "claude-cli-opus5",
+      "tur": "claude-cli",
+      "model": "claude-opus-5",
+      "efor": "high",
+      "zaman_asimi": 300
     }
   ]
 }

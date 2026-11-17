@@ -1,31 +1,38 @@
 {
   "ad": "yama_durumu",
-  "surum": 1,
+  "surum": 2,
   "baslik": "Yama durumu",
-  "aciklama": "Bekleyen güncelleme (yama) sayısını yerel depo önbelleğinden okur; sunucuya hiçbir şey kurmaz.",
+  "aciklama": "Bekleyen güncellemeleri (yamaları) sunucu başına listeler: kaç tane, kaçı güvenlik yaması, yeniden başlatma gerekiyor mu, hangi paket hangi sürümden hangisine. apt/dnf/apk farkını ve güvenlik sınıfını (Debian güvenlik deposu, RHEL updateinfo, Alpine secdb) beceri çözer; hiçbir şey kurmaz.",
   "etiketler": [
     "yama",
     "güncelleme",
     "patch",
     "update",
     "bekleyen",
-    "uyumluluk"
+    "güvenlik yaması",
+    "security",
+    "yeniden başlatma",
+    "tarama"
   ],
   "risk": 0,
-  "tur": "uzak",
-  "zaman_asimi": 90,
+  "tur": "yonetim",
+  "islem": "yama_durumu",
+  "toplu": true,
+  "zaman_asimi": 180,
+  "girdi": {
+    "yenile": {
+      "tip": "mantik",
+      "varsayilan": true,
+      "aciklama": "depo üst verisi önce yenilensin mi"
+    }
+  },
   "cikti": {
     "bicim": "anahtar_deger",
     "alanlar": {
       "bekleyen": "tamsayi",
-      "kaynak": "metin"
+      "guvenlik": "tamsayi",
+      "yeniden_baslatma": "metin",
+      "paketler": "metin"
     }
-  },
-  "komut": {
-    "debian": "n=$(apt list --upgradable 2>/dev/null | grep -c upgradable)\necho \"bekleyen=${n:-0}\"\necho kaynak=apt",
-    "rhel": "n=$(sudo -n dnf -C -q check-update 2>/dev/null | grep -c '^[A-Za-z0-9]')\necho \"bekleyen=${n:-0}\"\necho kaynak=dnf",
-    "alpine": "n=$(apk version -l '<' 2>/dev/null | grep -vc '^Installed')\necho \"bekleyen=${n:-0}\"\necho kaynak=apk",
-    "windows": "#filo:yama\n$s = New-Object -ComObject Microsoft.Update.Session\n$n = $s.CreateUpdateSearcher().Search('IsInstalled=0').Updates.Count\n\"bekleyen=$n\"\n\"kaynak=windows-update\""
-  },
-  "girdi": {}
+  }
 }

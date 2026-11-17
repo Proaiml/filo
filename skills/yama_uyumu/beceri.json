@@ -1,0 +1,43 @@
+{
+  "ad": "yama_uyumu",
+  "surum": 1,
+  "baslik": "Yama uyum raporu",
+  "aciklama": "Bir yama politikasına göre her sunucunun uyumlu mu uyumsuz mu olduğunu ve nedenini (eksik yamalar, hariç tutulanlar, gerekçeli istisnalar, süresi dolmuş istisnalar) raporlar. Salt-okur.",
+  "etiketler": [
+    "yama",
+    "uyum",
+    "uyumlu",
+    "uyumsuz",
+    "compliance",
+    "politika",
+    "patch",
+    "rapor"
+  ],
+  "risk": 0,
+  "tur": "yonetim",
+  "islem": "yama_uyumu",
+  "toplu": true,
+  "zaman_asimi": 180,
+  "girdi": {
+    "politika": {
+      "tip": "secim",
+      "kaynak": "yama_politikalari",
+      "aciklama": "yama politikasının adı"
+    },
+    "yenile": {
+      "tip": "mantik",
+      "varsayilan": true,
+      "aciklama": "depo üst verisi önce yenilensin mi"
+    }
+  },
+  "cikti": {
+    "bicim": "anahtar_deger",
+    "alanlar": {
+      "uyum": "metin",
+      "eksik": "tamsayi",
+      "istisna": "tamsayi",
+      "yeniden_baslatma": "metin",
+      "neden": "metin"
+    }
+  }
+}

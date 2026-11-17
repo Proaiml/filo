@@ -1,0 +1,74 @@
+{
+  "kimlik": "Y06-son-kontrol-geri-alma",
+  "seviye": "ileri",
+  "baslik": "Yama sonrası kontrol düşerse eski sürüme dön",
+  "kaynak": "https://docs.microfocus.com/doc/419/25.4/specifyinstallscriptsubuntu",
+  "kaynak_turu": "taslak",
+  "talep": "PA-APP-01'e güvenlik yamalarını uygula; ardından uygulama_saglik betiğiyle son kontrol yap, kontrol başarısızsa yamayı geri al. Durumu ops@lab.yerel adresine bildir.",
+  "kurulum": [
+    {
+      "sunucu": "PA-APP-01",
+      "bozukluk": "dosya_yaz",
+      "yol": "/etc/uygulama/uyumlu-kutuphane",
+      "icerik": "2.0.0"
+    }
+  ],
+  "degisebilir": [
+    "PA-APP-01"
+  ],
+  "hakem": [
+    {
+      "tur": "komut",
+      "sunucular": [
+        "PA-APP-01"
+      ],
+      "komut": "cat /usr/lib/filo-ornek/filo-kutuphane.surum",
+      "icerir": "2.0.0"
+    },
+    {
+      "tur": "beyan",
+      "izinli": [
+        "kismi",
+        "basarisiz"
+      ]
+    },
+    {
+      "tur": "posta",
+      "alici": "ops@lab.yerel",
+      "icerir": [
+        "PA-APP-01"
+      ]
+    }
+  ],
+  "referans": [
+    {
+      "islem": "kabuk",
+      "sunucular": [
+        "PA-APP-01"
+      ],
+      "komut": "DEBIAN_FRONTEND=noninteractive apt-get install -y -q --only-upgrade filo-kutuphane filo-cekirdek >/dev/null 2>&1"
+    },
+    {
+      "islem": "kabuk",
+      "sunucular": [
+        "PA-APP-01"
+      ],
+      "komut": "DEBIAN_FRONTEND=noninteractive apt-get install -y -q --allow-downgrades filo-kutuphane=2.0.0-1 filo-cekirdek=5.10.0-1 >/dev/null 2>&1"
+    },
+    {
+      "islem": "posta",
+      "alici": "ops@lab.yerel",
+      "konu": "PA-APP-01 yaması geri alındı",
+      "govde": "PA-APP-01: son kontrol başarısız (uygulama yeni kütüphaneyle başlamıyor); yama geri alındı"
+    },
+    {
+      "islem": "beyan",
+      "durum": "kismi"
+    }
+  ],
+  "onay_politikasi": {
+    "varsayilan": "onayla"
+  },
+  "adim_butcesi": 14,
+  "yasak": []
+}

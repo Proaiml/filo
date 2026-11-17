@@ -88,6 +88,29 @@ yapıyı ajan ve kod kurar. Ayrıntı ve doğrulama: `docs/ilerleme.md` "Üçün
   devirde düzeltip sürdür) ve adımdan devam tanımlayabilir; zamanlama ve iş kaydı ölçütleri referans kolda muaftır
   (referans Filo'yu kullanmaz). Testler laboratuvarın ajan durumunu oturum sonunda geri getirir.
 
+## Dördüncü tur kararları (17 Kasım 2026)
+
+Ayrıntı ve doğrulama: `docs/ilerleme.md` "Dördüncü tur".
+
+- **Ortak çekirdek "istenen durum"**: yama, yazılım politikası, uyum ve anlık görüntü aynı salt-okur toplayıcıyı
+  (`filo/durum.py`: paketler, servisler, kullanıcılar, dosya özet/izin, içerik deseni, sysctl, portlar, bekleyen
+  güncellemeler + güvenlik sınıfı, yeniden başlatma gereği) ve aynı eylem yürütücüsünü (`filo/duzelt.py`: aileye göre
+  komut, risk ve geri alma eylemi koddadır, her uygulama `results/duzeltmeler/kayit.jsonl`'a geri alma eylemleriyle yazılır)
+  kullanır. Karşılaştırma ve değerlendirme saf Python'dur.
+- **Yönetim becerisinin toplu işleyicisi** (`tur: yonetim`, `toplu: true`): işleyici bütün hedefi birlikte görür (aşamalı
+  dağıtım: önce test grubu, başarılıysa kalanlar); sonuç yine sunucu başına tek şemada. Parametreye bağlı risk
+  (`risk_kurali`): ör. hemen yeniden başlatma düzey 4.
+- **Talepten parametreyi kod çıkarır** (`ajan_ortak.kod_parametreleri`): yeniden başlatma politikası, kapsam, test grubu,
+  referans sunucu, "yalnız geri alınabilir", adıyla anılan politika/kural seti. Model bu değerleri değiştiremez; talep bir
+  politika adı söylemiyorsa model politika seçemez. "Yeniden başlatma bakım penceresinde" işin zamanlaması değildir.
+- **Teslim politikası = yazılım politikasının kullanımı**: profil `politika` + `on_onayli` adım türleri + ön/son adım
+  taşır; değiştiren adımlar politikadan üretilir.
+- **Laboratuvar internetsiz**: tek paket kaynağı `filo-depo` (kurum içi ayna); örnek paketlerin eski sürümleri imajlarda,
+  yenileri depoda (güvenlik sınıfı dağıtımın kendi biçiminde); yeniden başlatma öykünmesi. İmajlar `:2`.
+- **Laboratuvar kilidi** (`results/LAB_KILIT`): bench ve laboratuvar sınamaları aynı anda çalışmaz.
+- **Bench yalıtımı**: harness'li kolda politika/kural ayarları ve düzeltme/görüntü kayıtları kol başına geçici kopyadadır
+  (`durum.yalit`); senaryo `ayarlar` alanıyla kendi politika içeriğini verebilir.
+
 ## Araştırmadan gelen zorunlu korumalar
 
 Kaynak: `docs/arastirma/01-sunucu-adminlik.md`, `02-akis-adminlik.md` (sondaki "Harness için çıkarımlar").
@@ -134,6 +157,12 @@ filo/
   teslim.py       yeni sunucu teslim politikası ve Kaptan devralması
   donustur.py     beceriye dönüştürme (işten ve tariften)
   karsilastirma.py sunucu/akış ile Filo karşılaştırması (07 + ölçülmüş bench)
+  durum.py        toplayıcı, anlık görüntü, karşılaştırma; politika/kural kayıtlarının sürümlenmesi (D1-D3)
+  duzelt.py       düzeltme eylemleri (paket, servis, kullanıcı, dosya, izin, satır), geri alma eylemleri ve kayıt
+  yama.py         yama durumu, politika, uyum, uygulama (aşamalı, ön/son kontrol, yeniden başlatma), geri alma
+  yazilim_politikasi.py  yazılım politikası: sapma, önizleme, remediation, geri alma, talepten politika, teslim adımları
+  uyum.py         uyum kural setleri, istisnalar, denetim ve düzeltme; anlık görüntü al / karşılaştır
+  ui_veri.py      konsolun Yama, Politikalar, Uyum sayfalarının veri uçları
 ajan/           Go ajanı (filo-ajan), testleri; ajan/cikti/ derleme çıktısı (git dışı)
   denetim.py    eklemeli denetim izi
   web.py        arayüz sunucusu + JSON API, static/ altında tek sayfa

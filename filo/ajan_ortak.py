@@ -106,13 +106,22 @@ def dayanak_var(katalog, ad, talep):
 # 'kismi' biter. Model cevabı yalnız EK bilgi olabilir; kodun bulduğu eksiği silemez.
 EYLEM_KALIPLARI = (
     ("yeniden başlatma", r"yeniden baslat\w*|\brestart\w*",
-     {"servis_yeniden_baslat", "ajan_onar"}),
+     {"servis_yeniden_baslat", "ajan_onar", "yama_uygula", "sunucu_yeniden_baslat"}),
     ("başlatma", r"(?<!yeniden )\bbaslat(?!ma\b)\w*|\bstart\b",
      {"servis_baslat", "servis_yeniden_baslat", "ajan_onar"}),
     ("dosya dağıtma", r"\bgeri koy\w*|\byerine koy\w*|\bdagit\w*|\bkopyala\w*",
      {"dosya_dagit"}),
     ("kurulum", r"\b(kur|kurun|kursun|kurulsun|kurmak|kurar|kuruver|yukle|yukleyin|yuklesin|install)\b",
-     {"paket_kur", "ajan_kur", "depo_onar"}),
+     {"paket_kur", "ajan_kur", "depo_onar", "yama_uygula", "yazilim_politikasi_uygula"}),
+    # D1-D3: yama uygulama, istenen durum ("X kurulu olsun, Y olmasın"), uyum düzeltme, geri alma
+    ("yama uygulama", r"^(?=.*\b(?:yama|guncelleme)\w*)(?=.*(?:\b(?:uygula|dagit)\w*|\byukle\b|\bkur\b))|\byamala\w*|\bpatch\w*",
+     {"yama_uygula"}),
+    ("istenen durum", r"\b(kurulu|yuklu|acik|kapali|calisir|durmus|mevcut|var)\s+(olsun|olmasin)\b|\b(olmasin|calissin|dursun|bulunsun|bulunmasin)\b|\bpolitika\w*[^.;]{0,40}?\b(uygula|sagla|getir)\w*",
+     {"yazilim_politikasi_uygula", "yazilim_politikasi_tanimla", "paket_kur", "servis_baslat", "kullanici_ac"}),
+    ("düzeltme", r"\bduzelt\w*|\bgider\w*",
+     {"uyum_duzelt", "yazilim_politikasi_uygula", "paket_onar", "depo_onar", "dosya_dagit"}),
+    ("geri alma", r"\bgeri al\w*",
+     {"yama_geri_al", "yazilim_politikasi_geri_al", "uyum_geri_al", "yama_uygula"}),
     ("onarım", r"\bonar\w*",
      {"paket_onar", "depo_onar", "ajan_onar"}),
     ("kullanıcı açma", r"\b(kullanici|hesa[pb])\w* (ac|acin|acsin|olustur\w*|ekle\w*)\b",
@@ -147,17 +156,74 @@ def kapsanan_beceriler(katalog, ad):
             continue
         out.add(b)
         yigin += [a["beceri"] for a in katalog[b].get("adimlar", [])]
+    if "yazilim_politikasi_uygula" in out:   # remediation istenen durumu kurar: paket, servis, kullanıcı, dosya
+        out |= {"paket_kur", "servis_baslat", "kullanici_ac", "dosya_dagit", "yazilim_politikasi_tanimla"}
     if "teslim_uygula" in out:          # teslim profilleri paket kurar, kullanıcı açar, servis başlatır, dosya dağıtır
-        out |= {"paket_kur", "kullanici_ac", "servis_baslat", "dosya_dagit", "depo_onar"}
+        out |= {"paket_kur", "kullanici_ac", "servis_baslat", "dosya_dagit", "depo_onar", "servis_durumu", "paket_dogrula",
+                "erisim_sinamasi", "sistem_envanteri"}
     return out
 
 
-def kapsam_eksigi(katalog, talep, yurutulen):
-    """Talepteki değiştirici eylemlerden yürütülen becerilerin hiçbirinin yapmadığı eylemler (kod denetimi)."""
+# Talepteki SALT-OKUR işler (D0-a). Üçüncü tam koşu A03/kalfa: "disk doluluğunu VE dbd servisinin durumunu kontrol et"
+# talebinde Kalfa yalnız disk_durumu'nu yürüttü, model "eksik yok" dedi ve iş 'başarılı' bitti (sahte başarı). Kod artık
+# okuma işlerini de çıkarır: (ad, kalıp, o işi yapan beceriler, genel komut/betik parametresinde o işi gösteren kalıp).
+# Genel beceriler (komut_calistir, betik_calistir) bir okuma işini ancak parametresi o işi gösteriyorsa kapsar.
+OKUMA_KALIPLARI = (
+    ("disk doluluğu", r"\bdisk\w*|\bdoluluk\w*|\bbos alan\w*",
+     {"disk_durumu"}, r"\bdf\b|\bdu\b|disk"),
+    ("servis durumu", r"\b(servis|hizmet)\w*\s+(\w+\s+)?durum\w*|\bcalisiyor mu\b|\bayakta mi\b",
+     {"servis_durumu", "servis_baslat", "servis_yeniden_baslat"}, r"systemctl|rc-service|is-active|filo-svc|\bservice\b|servis"),
+    ("yama durumu", r"\bbekleyen\s+(\w+\s+)?(yama|guncelleme)\w*|\byama\w*\s+durum\w*",
+     {"yama_durumu", "yama_uyumu", "yama_uygula"}, r"apt list|check-update|apk version|yama|guncelleme"),
+    ("sistem bilgisi", r"\bcalisma sure\w*|\buptime\b|\bcekirdek surum\w*|\bbellek\w*|\bislemci\w*|\bsistem envanter\w*",
+     {"sistem_envanteri"}, r"uptime|uname|free\b|/proc|envanter|sistem"),
+    ("ajan durumu", r"\bajan\w*\s+(\w+\s+)?durum\w*",
+     {"ajan_durumu", "ajan_kur", "ajan_onar"}, r"filo-ajan|ajan"),
+)
+GENEL_OKUMA_BECERILERI = {"komut_calistir", "betik_calistir"}
+
+
+def talep_okumalari(talep):
+    """Talepteki salt-okur işler: [(ad, eşleşen ifade, beceriler, genel parametre kalıbı)]."""
+    n = normal(talep)
+    out = []
+    for ad, kalip, beceriler, komut_kalibi in OKUMA_KALIPLARI:
+        m = re.search(kalip, n)
+        if m:
+            out.append((ad, m.group(0), beceriler, komut_kalibi))
+    return out
+
+
+def _parametre_metni(katalog, ad, parametreler):
+    p = parametreler or {}
+    metin = " ".join(str(v) for v in p.values())
+    if ad == "betik_calistir" and p.get("betik"):
+        try:
+            metin += " " + katalog.betik_meta(p["betik"]).get("aciklama", "")
+        except (OSError, ValueError):
+            pass
+    return normal(metin)
+
+
+def kapsam_eksigi(katalog, talep, yurutulen, parametreler=None):
+    """Talepteki değiştirici eylemlerden yürütülen becerilerin hiçbirinin yapmadığı eylemler ve (D0-a) talepteki salt-okur
+    işlerden hiçbir yürütülen becerinin kapsamadıkları (kod denetimi). `parametreler`: beceri adı -> parametreler
+    (genel komut/betik becerisinin hangi okumayı yaptığını anlamak için)."""
     kapsanan = set()
     for b in yurutulen:
         kapsanan |= kapsanan_beceriler(katalog, b)
-    return [f"{ad} ('{ifade}')" for ad, ifade, beceriler in talep_eylemleri(katalog, talep) if not beceriler & kapsanan]
+    eksik = [f"{ad} ('{ifade}')" for ad, ifade, beceriler in talep_eylemleri(katalog, talep) if not beceriler & kapsanan]
+    okumalar = talep_okumalari(talep)
+    for ad, ifade, beceriler, komut_kalibi in okumalar:
+        if beceriler & kapsanan:
+            continue
+        genel = [b for b in kapsanan if b in GENEL_OKUMA_BECERILERI]
+        if any(re.search(komut_kalibi, _parametre_metni(katalog, b, (parametreler or {}).get(b))) for b in genel):
+            continue
+        if not any(b in katalog for b in beceriler) and not genel:
+            continue        # katalogda bu okumayı yapan beceri yok; kapsam sorusu modele kalır
+        eksik.append(f"{ad} okuması ('{ifade}')")
+    return eksik
 
 
 def secenek_satiri(katalog, ad):
@@ -352,12 +418,91 @@ def _gecer_mi(deger, kaynak):
     return normal(str(deger)) in normal(kaynak)
 
 
+def _sunucu_bul(n, sunucu_adlari, once):
+    """Normal biçimdeki talepte `once` kalıbından hemen sonra geçen sunucu adı(ları)."""
+    adlar = sorted(sunucu_adlari, key=len, reverse=True)
+    m = re.search(once, n)
+    if not m:
+        return None
+    bulunan = []
+    for parca in re.split(r"\s*(?:,| ve )\s*", n[m.end():m.end() + 80]):
+        a = next((s for s in adlar if parca.strip().startswith(normal(s))), None)
+        if not a:
+            break
+        bulunan.append(a)
+    return ",".join(bulunan) or None
+
+
+def _yalniz_secimli(sema, kod):
+    """Kodun doldurmadığı her alan seçim/mantık türünde ve varsayılanlıysa modele sormaya gerek yok."""
+    return all(a in kod or (al.get("tip") in ("secim", "mantik") and ("varsayilan" in al or not al.get("zorunlu", True)))
+               for a, al in sema.items())
+
+
+def kod_parametreleri(sema, talep, sunucu_adlari=()):
+    """Talepten kodla çıkarılan parametre değerleri (D1-D3; küçük model için seçenek daraltma). Yalnız şemada olan ve
+    talepte açık ifadesi bulunan alanlar döner; model bu değerleri değiştiremez."""
+    n = normal(talep)
+    out = {}
+    if "yeniden_baslatma" in sema:
+        if re.search(r"(yeniden baslat\w*|reboot)[^.;,]{0,40}bakim pencere|bakim pencere\w*[^.;,]{0,25}(yeniden baslat|reboot)", n):
+            out["yeniden_baslatma"] = "pencerede"
+        elif re.search(r"yeniden baslat\w* (yapma|olmasin|gerekmez|istemiyorum)|yeniden baslatmadan|yeniden baslatilmasin|"
+                       r"yeniden baslatma yapilmasin", n):
+            out["yeniden_baslatma"] = "asla"
+        elif re.search(r"(gerekirse|gerekiyorsa|gerektiginde) (hemen )?yeniden baslat|yeniden baslat\w* gerekiyorsa", n):
+            out["yeniden_baslatma"] = "gerekirse"
+    if "kapsam" in sema and set(secenekler(sema["kapsam"])) >= {"guvenlik", "hepsi"}:
+        if re.search(r"guvenlik (yama|guncelle)", n):
+            out["kapsam"] = "guvenlik"
+        elif re.search(r"\b(tum|butun|bekleyen|mevcut)?\s*(yamalar|yamalari|guncellemeler|guncellemeleri)\b", n):
+            out["kapsam"] = "hepsi"
+    if "test_grubu" in sema:
+        s = _sunucu_bul(n, sunucu_adlari, r"\bonce\s+")
+        if s:
+            out["test_grubu"] = s
+    if "referans" in sema:
+        adlar = sorted(sunucu_adlari, key=len, reverse=True)
+        m = re.search(r"([a-z0-9-]+)['’]?\s*(?:e|a|ye|ya|ne|na)?\s*(?:gore|ile kars|referans)", n)
+        ref = next((s for s in adlar if m and normal(s) == m.group(1)), None)
+        if ref:
+            out["referans"] = ref
+        elif re.search(r"onceki (goruntu|hali|durum)|son goruntu", n):
+            out["referans"] = "onceki"
+    if "yalniz_geri_alinabilir" in sema:
+        if re.search(r"(yalniz|sadece) geri alinabil", n):
+            out["yalniz_geri_alinabilir"] = True
+        elif re.search(r"geri alinamayanlar (da|dahil)|hepsini duzelt", n):
+            out["yalniz_geri_alinabilir"] = False
+    for ad, alan in sema.items():
+        if alan.get("tip") == "secim" and alan.get("kaynak") in ("yama_politikalari", "yazilim_politikalari", "kural_setleri"):
+            se = secenekler(alan)
+            adli = [x for x in se if normal(x) in n or normal(x).replace("-", " ") in n]
+            if len(adli) == 1:
+                out[ad] = adli[0]
+            elif not adli and len(se) == 1 and alan.get("zorunlu", True) and alan.get("kaynak") == "kural_setleri":
+                out[ad] = se[0]
+    return out
+
+
 def parametre_sor(model, katalog, beceri, talep, iz, kaynak_metin=None, ek="", sunucu_adlari=()):
     """Şemadan geçmiş parametreler ya da None. Parametresiz becerilerde model çağrılmaz."""
     t = katalog[beceri]
     sema = t.get("girdi") or {}
     if not sema:
         return {}
+    kod = kod_parametreleri(sema, talep, sunucu_adlari)
+    if kod:
+        iz.append({"soru": f"parametre (kod): {beceri}", "denemeler": [], "sonuc": kod,
+                   "kod_notu": "bu değerler talepten kodla çıkarıldı; model değiştiremez"})
+        ek = (ek or "") + f"Kod talepten şunları buldu (değiştirme): {json.dumps(kod, ensure_ascii=False)}\n"
+    zorunlu_kalan = [a for a, al in sema.items() if a not in kod and al.get("zorunlu", True) and "varsayilan" not in al]
+    if kod and not zorunlu_kalan and all(a in kod or "varsayilan" in al or not al.get("zorunlu", True)
+                                         for a, al in sema.items()) and _yalniz_secimli(sema, kod):
+        try:
+            return parametre_dogrula(sema, kod)          # geri kalan her şeyin varsayılanı var: model sorulmaz
+        except SemaHatasi:
+            pass
     kaynak = (kaynak_metin or "") + " " + talep
     betik_bilgi = ""
     if any(a.get("kaynak") == "betikler" for a in sema.values()):
@@ -373,6 +518,15 @@ def parametre_sor(model, katalog, beceri, talep, iz, kaynak_metin=None, ek="", s
         if not isinstance(v, dict):
             return None, "bir JSON nesnesi yaz"
         v = {k: x for k, x in v.items() if k in sema and x not in (None, "", [])}
+        v.update(kod)                    # kodun talepten bulduğu değerler modelinkinden önce gelir
+        for a, al in sema.items():
+            if a in v and a not in kod and al.get("kaynak") in ("yama_politikalari", "yazilim_politikalari", "kural_setleri"):
+                x = normal(str(v[a]))
+                if x not in normal(talep) and x.replace("-", " ") not in normal(talep):
+                    return None, (f"{a}: {v[a]!r} talepte geçmiyor; talep bir politika/kural seti adı söylemiyorsa bu "
+                                  "parametreyi boş bırak")
+        if "test_grubu" in v and not all(normal(x.strip()) in normal(talep) for x in str(v["test_grubu"]).split(",")):
+            return None, f"test_grubu: {v['test_grubu']!r} talepte geçmiyor; yalnız talepteki sunucu adlarını yaz ya da boş bırak"
         try:
             p = parametre_dogrula(sema, v)
         except SemaHatasi as e:

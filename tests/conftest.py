@@ -19,11 +19,31 @@ def pytest_configure(config):
 
 def pytest_collection_modifyitems(config, items):
     from filo import lab
-    if any("lab" in i.keywords for i in items) and not lab.lab_var():
-        atla = pytest.mark.skip(reason="laboratuvar ayakta değil (python -m filo lab kur)")
+    if not any("lab" in i.keywords for i in items):
+        return
+    neden = None
+    if not lab.lab_var():
+        neden = "laboratuvar ayakta değil (python -m filo lab kur)"
+    else:
+        # D0-b: bench koşusu laboratuvarı kullanırken laboratuvar sınamaları konteynerleri durdurup yeniden yaratır ve
+        # koşunun hakemini yanıltır. Kilit başka bir canlı süreçteyse laboratuvar sınamaları atlanır.
+        sahibi = lab.lab_kilidi_kimde()
+        if sahibi:
+            neden = f"laboratuvar başka bir süreçte kullanılıyor: {sahibi.get('amac')} (pid {sahibi.get('pid')})"
+        else:
+            lab.lab_kilidi_al("pytest laboratuvar sınamaları")
+            config._filo_lab_kilidi = True
+    if neden:
+        atla = pytest.mark.skip(reason=neden)
         for i in items:
             if "lab" in i.keywords:
                 i.add_marker(atla)
+
+
+def pytest_unconfigure(config):
+    if getattr(config, "_filo_lab_kilidi", False):
+        from filo import lab
+        lab.lab_kilidi_birak()
 
 
 def _canli_ajanlar():
@@ -38,10 +58,13 @@ def _canli_ajanlar():
 
 
 @pytest.fixture(scope="session", autouse=True)
-def ajan_durumunu_koru():
+def ajan_durumunu_koru(request):
     """Laboratuvar testleri konteynerleri imajdan yeniden yaratır (lab.sifirla) ve kapıdaki ajan kayıtlarını düşürür.
     İkinci turda ana oturum testleri koşunca 8 ajan "kayıtsız" kaldı (C0). Oturum başında canlı olan ajanlar oturum
     sonunda eksikse aynı kapıya yeniden kurulur; böylece testler laboratuvarın ajan durumunu bozmaz."""
+    if not getattr(request.config, "_filo_lab_kilidi", False):
+        yield                     # laboratuvar sınamaları bu oturumda çalışmıyor: ajanlara dokunulmaz
+        return
     onceki = _canli_ajanlar()
     yield
     if not onceki:
@@ -57,9 +80,14 @@ def ajan_durumunu_koru():
     env = Envanter()
     with concurrent.futures.ThreadPoolExecutor(max_workers=4) as ex:
         sonuc = list(ex.map(lambda ad: (ad, kur(env[ad], {})), [a for a in eksik if a in env]))
+    # Başarısız kalan kurulum bir kez sırayla yeniden denenir (neden aşağıda yazılır; kök neden D0-c'de düzeltildi)
+    sonuc = [(a, r if r["durum"] == "basarili" else kur(env[a], {})) for a, r in sonuc]
     kalan = sorted(onceki - _canli_ajanlar())
     print(f"\n[filo] testlerin düşürdüğü ajanlar yeniden kuruldu: {[a for a, r in sonuc if r['durum'] == 'basarili']}"
           + (f"; hâlâ canlı değil: {kalan}" if kalan else ""))
+    for a, r in sonuc:
+        if r["durum"] != "basarili":
+            print(f"[filo] {a}: {r['durum']} {r.get('neden')} | {(r.get('stdout') or '')[-300:]!r}")
 
 
 class FakeTasiyici:

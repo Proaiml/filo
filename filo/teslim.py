@@ -26,7 +26,22 @@ POLITIKA = AYARLAR / "teslim_politikalari.json"
 
 
 def politikalar(yol=None):
-    return json.loads((yol or POLITIKA).read_text(encoding="utf-8"))
+    """Teslim politikaları. D2: bir profil `politika` (yazılım politikası adı) verirse değiştiren adımları o politikadan
+    üretilir (paket, kullanıcı, dosya, servis); profil yalnız teslime özgü olanı taşır (ön/son adımlar, hangi adım
+    türleri ön onaylı, rapor alıcısı, yarıda kalırsa ne olacağı). Böylece "web sunucusunun standardı" tek yerde durur."""
+    pol = json.loads((yol or POLITIKA).read_text(encoding="utf-8"))
+    for ad, p in pol.get("profiller", {}).items():
+        if p.get("politika") and not p.get("adimlar"):
+            from .yazilim_politikasi import politikalar as yp, teslim_adimlari
+            yazilim = yp().get(p["politika"])
+            if yazilim is None:
+                p["adimlar"] = list(p.get("on_adimlar", [])) + list(p.get("son_adimlar", []))
+                p["politika_hatasi"] = f"yazılım politikası yok: {p['politika']}"
+                continue
+            p["adimlar"] = (list(p.get("on_adimlar", [])) + teslim_adimlari(yazilim, p.get("on_onayli", []))
+                            + list(p.get("son_adimlar", [])))
+            p["politika_surum"] = yazilim.get("surum")
+    return pol
 
 
 def profil_bul(sunucu, pol=None):
@@ -50,6 +65,8 @@ def politika_denetle(pol, katalog):
         if k.get("profil") not in pol.get("profiller", {}):
             h.append(f"kural tanımsız profile işaret ediyor: {k}")
     for ad, p in pol.get("profiller", {}).items():
+        if p.get("politika_hatasi"):
+            h.append(f"{ad}: {p['politika_hatasi']}")
         for a in p.get("adimlar", []):
             if a["beceri"] not in katalog:
                 h.append(f"{ad}: katalogda olmayan beceri {a['beceri']}")

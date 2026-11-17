@@ -1,0 +1,13 @@
+{
+  "ad": "uygulama_saglik",
+  "surum": 1,
+  "aciklama": "Uygulama sağlık kontrolü: uygulama servisi çalışıyor mu ve uygulamanın beklediği kütüphane sürümü kurulu mu (yama sonrası son kontrol için)",
+  "risk": 0,
+  "cikti": {
+    "bicim": "anahtar_deger",
+    "alanlar": {
+      "sunucu": "metin",
+      "saglik": "metin"
+    }
+  }
+}

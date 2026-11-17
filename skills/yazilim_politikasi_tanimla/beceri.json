@@ -1,0 +1,81 @@
+{
+  "ad": "yazilim_politikasi_tanimla",
+  "surum": 1,
+  "baslik": "Yazılım politikası tanımla",
+  "aciklama": "Talepteki 'şu paketler kurulu olsun, şunlar olmasın, şu servis çalışsın' listelerinden sürümlü bir yazılım politikası kaydeder ve hedef sunuculara atar. Sunucuya dokunmaz.",
+  "etiketler": [
+    "politika",
+    "yazılım politikası",
+    "istenen durum",
+    "kurulu olsun",
+    "olmasın",
+    "sapma",
+    "remediation",
+    "uyumlu",
+    "standart",
+    "tanımla",
+    "oluştur",
+    "kaydet",
+    "ata"
+  ],
+  "risk": 1,
+  "tur": "yonetim",
+  "islem": "yazilim_politikasi_tanimla",
+  "toplu": true,
+  "zaman_asimi": 30,
+  "girdi": {
+    "politika": {
+      "tip": "secim",
+      "kaynak": "yazilim_politikalari",
+      "aciklama": "yazılım politikasının adı",
+      "zorunlu": false
+    },
+    "paketler_kurulu": {
+      "tip": "liste",
+      "desen": "paket",
+      "zorunlu": false,
+      "aciklama": "kurulu olması istenen paketler"
+    },
+    "paketler_yok": {
+      "tip": "liste",
+      "desen": "paket",
+      "zorunlu": false,
+      "aciklama": "kurulu OLMAMASI istenen paketler"
+    },
+    "servisler_calisiyor": {
+      "tip": "liste",
+      "desen": "servis",
+      "zorunlu": false,
+      "aciklama": "çalışması istenen servisler"
+    },
+    "servisler_durmus": {
+      "tip": "liste",
+      "desen": "servis",
+      "zorunlu": false,
+      "aciklama": "durdurulmuş olması istenen servisler"
+    },
+    "kullanicilar_var": {
+      "tip": "liste",
+      "desen": "kullanici",
+      "zorunlu": false,
+      "aciklama": "var olması istenen kullanıcılar"
+    },
+    "ad": {
+      "tip": "metin",
+      "zorunlu": false,
+      "desen": "^[a-z0-9][a-z0-9-]{1,40}$",
+      "aciklama": "talepten kurulan politikanın adı (boşsa kod verir)"
+    }
+  },
+  "cikti": {
+    "bicim": "anahtar_deger",
+    "alanlar": {
+      "politika": "metin",
+      "surum": "tamsayi",
+      "icerik": "metin"
+    },
+    "zorunlu": [
+      "politika"
+    ]
+  }
+}

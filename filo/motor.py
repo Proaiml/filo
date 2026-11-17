@@ -276,10 +276,18 @@ class BeceriMotoru:
     def _yonetim_yelpaze(self, t, plan, gozlemci, kuru=False):
         """Yönetim becerisi: koddaki işleyici her sunucuda (paralel, en çok yürütücünün eşzamanlılığı kadar) çalışır."""
         import concurrent.futures
-        from .ajan_yonetimi import ISLEYICILER
-        fn = ISLEYICILER[t["islem"]]
+        from .ajan_yonetimi import isleyici_bul
+        fn = isleyici_bul(t["islem"])
         adlar = plan["hedef"]["sunucular"]
         durdurma = self.yurutucu.durdurma
+        if t.get("toplu"):
+            # Toplu işleyici bütün hedefi birlikte görür (D1-D3: aşamalı dağıtım — önce test grubu, başarıysa kalanlar;
+            # toplayıcı tek yelpazede çalışır). Sonuç yine sunucu başına tek şemadadır.
+            if durdurma.basili():
+                from .yurutme import bos_sonuc
+                return [bos_sonuc(ad, "iptal", "durdurma düğmesi basılı") for ad in adlar]
+            return fn([self.envanter[a] for a in adlar], plan["parametreler"], kuru, durdurma, motor=self, plan=plan,
+                      gozlemci=gozlemci)
 
         def bir(ad):
             if durdurma.basili():

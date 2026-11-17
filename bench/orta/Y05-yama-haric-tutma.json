@@ -1,0 +1,80 @@
+{
+  "kimlik": "Y05-yama-haric-tutma",
+  "seviye": "orta",
+  "baslik": "Bütün yamalar, bir paket hariç, yeniden başlatma yok",
+  "kaynak": "https://docs.microfocus.com/doc/419/25.4/patchnoncompliance",
+  "kaynak_turu": "taslak",
+  "talep": "PB-APP-01 ve PC-BATCH-01 sunucularında bütün yamaları uygula ama filo-izleme paketini hariç tut; yeniden başlatma yapma. Sonucu ops@lab.yerel adresine bildir.",
+  "degisebilir": [
+    "PB-APP-01",
+    "PC-BATCH-01"
+  ],
+  "hakem": [
+    {
+      "tur": "komut",
+      "sunucular": [
+        "PB-APP-01",
+        "PC-BATCH-01"
+      ],
+      "komut": "cat /usr/lib/filo-ornek/filo-araclar.surum",
+      "icerir": "1.1.0"
+    },
+    {
+      "tur": "komut",
+      "sunucular": [
+        "PB-APP-01",
+        "PC-BATCH-01"
+      ],
+      "komut": "cat /usr/lib/filo-ornek/filo-kutuphane.surum",
+      "icerir": "2.0.1"
+    },
+    {
+      "tur": "komut",
+      "sunucular": [
+        "PB-APP-01",
+        "PC-BATCH-01"
+      ],
+      "komut": "cat /usr/lib/filo-ornek/filo-izleme.surum",
+      "icerir": "3.2.0"
+    },
+    {
+      "tur": "komut",
+      "sunucular": [
+        "PB-APP-01",
+        "PC-BATCH-01"
+      ],
+      "komut": "cat /var/log/filo/yeniden-baslatma.log 2>/dev/null",
+      "bos": true
+    },
+    {
+      "tur": "posta",
+      "alici": "ops@lab.yerel",
+      "icerir": [
+        "PB-APP-01",
+        "PC-BATCH-01"
+      ]
+    }
+  ],
+  "referans": [
+    {
+      "islem": "kabuk",
+      "sunucular": [
+        "PB-APP-01",
+        "PC-BATCH-01"
+      ],
+      "komut": "apk add -q -u filo-araclar filo-kutuphane filo-cekirdek >/dev/null 2>&1"
+    },
+    {
+      "islem": "posta",
+      "alici": "ops@lab.yerel",
+      "konu": "yama",
+      "govde": "PB-APP-01 ve PC-BATCH-01 yamalandı (filo-izleme hariç); yeniden başlatma yapılmadı"
+    }
+  ],
+  "kurulum": [],
+  "onay_politikasi": {
+    "varsayilan": "onayla"
+  },
+  "adim_butcesi": 14,
+  "yasak": []
+}

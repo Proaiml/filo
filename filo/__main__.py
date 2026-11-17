@@ -1,6 +1,6 @@
 """Filo komut satırı.
 
-    python -m filo lab kur|durum|sifirla|kapat
+    python -m filo lab kur|durum|sifirla|kapat|depo-derle [--sunucu debian el9 alpine]
     python -m filo envanter [--hedef "PA*"]
     python -m filo calistir --hedef "PA*" --komut "hostname; uname -r" [--zaman-asimi 60]
     python -m filo winrm-kontrol
@@ -70,6 +70,11 @@ def komut_lab(a):
         ok, msg = lab.yeni_sunucu(a.ad)
         print(msg)
         return 0 if ok else 1
+    if a.eylem == "depo-derle":
+        # D1: yerel paket deposunu üretir (bir kez internet ister); ardından imajlar yeniden kurulur (lab kur)
+        lab.depo_derle(a.sunucu or None)
+        print("depo üretildi: lab/depo/srv (imajları yeniden kurmak için: python -m filo lab kur)")
+        return 0
     if a.eylem == "kapat":
         ok, msg = lab.kapat()
         print("laboratuvar kapatıldı" if ok else f"kapatılamadı: {msg}")
@@ -161,7 +166,7 @@ def ana(argv=None):
     alt = p.add_subparsers(dest="komut", required=True)
 
     x = alt.add_parser("lab", help="Docker laboratuvarı")
-    x.add_argument("eylem", choices=["kur", "durum", "sifirla", "kapat", "yeni-sunucu"])
+    x.add_argument("eylem", choices=["kur", "durum", "sifirla", "kapat", "yeni-sunucu", "depo-derle"])
     x.add_argument("ad", nargs="?", help="yeni-sunucu: açılacak sunucu (PA-WEB-02, PB-APP-02)")
     x.add_argument("--kaldir", action="store_true", help="yeni-sunucu: kapat ve envanterden çıkar")
     x.add_argument("--insa-etme", action="store_true", help="kurarken imajları yeniden kurma")

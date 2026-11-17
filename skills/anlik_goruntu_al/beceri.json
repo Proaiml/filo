@@ -1,0 +1,37 @@
+{
+  "ad": "anlik_goruntu_al",
+  "surum": 1,
+  "baslik": "Anlık görüntü al",
+  "aciklama": "Sunucunun yapılandırmasının anlık görüntüsünü kaydeder: kurulu paketler ve sürümleri, servisler, kullanıcılar, açık portlar, seçili dosyaların özetleri ve izinleri, çekirdek parametreleri.",
+  "etiketler": [
+    "anlık görüntü",
+    "snapshot",
+    "görüntü",
+    "yapılandırma",
+    "kaydet",
+    "envanter"
+  ],
+  "risk": 1,
+  "tur": "yonetim",
+  "islem": "anlik_goruntu_al",
+  "toplu": true,
+  "zaman_asimi": 120,
+  "girdi": {
+    "etiket": {
+      "tip": "metin",
+      "zorunlu": false,
+      "en_uzun": 80,
+      "aciklama": "görüntüye not"
+    }
+  },
+  "cikti": {
+    "bicim": "anahtar_deger",
+    "alanlar": {
+      "goruntu": "metin",
+      "paket": "tamsayi",
+      "servis": "tamsayi",
+      "kullanici": "tamsayi",
+      "port": "tamsayi"
+    }
+  }
+}

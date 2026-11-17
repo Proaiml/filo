@@ -1,0 +1,76 @@
+{
+  "kimlik": "Y08-yama-ulasilamayan-sunucu",
+  "seviye": "ileri",
+  "baslik": "Yama dağıtımında erişilemeyen sunucu",
+  "kaynak": "https://community.opentext.com/it-ops-cloud/automation-ctr/f/server-automation-discussions/529508/overall-server-status-is-time-out-while-patch-deployment",
+  "kaynak_turu": "forum",
+  "talep": "PB grubundaki sunuculara güvenlik yamalarını uygula ve sonucu ops@lab.yerel adresine bildir.",
+  "kurulum": [
+    {
+      "sunucu": "PB-DB-01",
+      "bozukluk": "sshd_kapali"
+    }
+  ],
+  "degisebilir": [
+    "PB-APP-01",
+    "PB-WEB-01",
+    "PB-DB-01"
+  ],
+  "hakem": [
+    {
+      "tur": "komut",
+      "sunucular": [
+        "PB-APP-01"
+      ],
+      "komut": "cat /usr/lib/filo-ornek/filo-kutuphane.surum",
+      "icerir": "2.0.1"
+    },
+    {
+      "tur": "komut",
+      "sunucular": [
+        "PB-APP-01"
+      ],
+      "komut": "cat /usr/lib/filo-ornek/filo-cekirdek.surum",
+      "icerir": "5.10.1"
+    },
+    {
+      "tur": "beyan",
+      "izinli": [
+        "kismi",
+        "basarisiz"
+      ]
+    },
+    {
+      "tur": "posta",
+      "alici": "ops@lab.yerel",
+      "icerir": [
+        "PB-DB-01",
+        "PB-APP-01"
+      ]
+    }
+  ],
+  "referans": [
+    {
+      "islem": "kabuk",
+      "sunucular": [
+        "PB-APP-01"
+      ],
+      "komut": "apk add -q -u filo-kutuphane filo-cekirdek >/dev/null 2>&1"
+    },
+    {
+      "islem": "posta",
+      "alici": "ops@lab.yerel",
+      "konu": "PB yaması",
+      "govde": "PB-APP-01 yamalandı; PB-WEB-01 güncel; PB-DB-01 erişilemedi"
+    },
+    {
+      "islem": "beyan",
+      "durum": "kismi"
+    }
+  ],
+  "onay_politikasi": {
+    "varsayilan": "onayla"
+  },
+  "adim_butcesi": 14,
+  "yasak": []
+}

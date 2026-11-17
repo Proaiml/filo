@@ -1,0 +1,57 @@
+{
+  "ad": "uyum_duzelt",
+  "surum": 1,
+  "baslik": "Uyum ihlallerini düzelt",
+  "aciklama": "Uyum denetimindeki ihlalleri kuralın düzeltme eylemiyle düzeltir ve yeniden denetler. Varsayılan olarak yalnız geri alınabilir düzeltmeler yapılır; geri alınamayanlar (ör. hesap silme) raporlanır.",
+  "etiketler": [
+    "uyum",
+    "düzelt",
+    "ihlal",
+    "remediation",
+    "sertleştirme",
+    "geri alınabilir",
+    "compliance"
+  ],
+  "risk": 3,
+  "tur": "yonetim",
+  "islem": "uyum_duzelt",
+  "toplu": true,
+  "zaman_asimi": 600,
+  "risk_kurali": {
+    "yalniz_geri_alinabilir": {
+      "False": 4
+    }
+  },
+  "girdi": {
+    "kural_seti": {
+      "tip": "secim",
+      "kaynak": "kural_setleri",
+      "aciklama": "uyum kural setinin adı"
+    },
+    "yalniz_geri_alinabilir": {
+      "tip": "mantik",
+      "varsayilan": true,
+      "aciklama": "yalnız geri alınabilen düzeltmeler"
+    },
+    "kurallar": {
+      "tip": "liste",
+      "zorunlu": false,
+      "desen": "^[a-z0-9-]{2,40}$",
+      "aciklama": "yalnız bu kurallar"
+    }
+  },
+  "kuru": {
+    "aciklama": "hangi ihlalin hangi eylemle düzeltileceği ve neyin bırakılacağı önizlenir"
+  },
+  "geri_al": {
+    "beceri": "uyum_geri_al"
+  },
+  "cikti": {
+    "bicim": "anahtar_deger",
+    "alanlar": {
+      "duzeltilen": "tamsayi",
+      "kalan_ihlal": "tamsayi",
+      "birakilan": "metin"
+    }
+  }
+}

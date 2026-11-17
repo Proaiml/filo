@@ -4,7 +4,7 @@
 name: filo-lab
 
 x-debian: &debian
-  image: filo-lab/debian:1
+  image: filo-lab/debian:2
   pull_policy: never
   mem_limit: 128m
   cpus: 0.5
@@ -13,9 +13,10 @@ x-debian: &debian
     - ./anahtar/filo_lab.pub:/etc/filo/authorized_keys:ro
     - ./anahtar/ssh_host_ed25519_key:/etc/filo/hostkey:ro
   restart: "no"
+  depends_on: [depo]
 
 x-alma: &alma
-  image: filo-lab/alma:1
+  image: filo-lab/alma:2
   pull_policy: never
   mem_limit: 256m
   cpus: 0.5
@@ -24,9 +25,10 @@ x-alma: &alma
     - ./anahtar/filo_lab.pub:/etc/filo/authorized_keys:ro
     - ./anahtar/ssh_host_ed25519_key:/etc/filo/hostkey:ro
   restart: "no"
+  depends_on: [depo]
 
 x-alpine: &alpine
-  image: filo-lab/alpine:1
+  image: filo-lab/alpine:2
   pull_policy: never
   mem_limit: 96m
   cpus: 0.5
@@ -35,19 +37,20 @@ x-alpine: &alpine
     - ./anahtar/filo_lab.pub:/etc/filo/authorized_keys:ro
     - ./anahtar/ssh_host_ed25519_key:/etc/filo/hostkey:ro
   restart: "no"
+  depends_on: [depo]
 
 services:
   pa-app-01:
     <<: *debian
-    build: { context: ./goruntu, dockerfile: debian.Dockerfile }
+    build: { context: ., dockerfile: goruntu/debian.Dockerfile }
     pull_policy: missing
     container_name: filo-pa-app-01
     hostname: PA-APP-01
-    environment: { FILO_SERVISLER: "uygulama" }
+    environment: { FILO_SERVISLER: "uygulama", FILO_KULLANICILAR: "uygulama,eskiadmin" }
     ports: ["127.0.0.1:2201:22"]
   pa-app-02:
     <<: *alma
-    build: { context: ./goruntu, dockerfile: alma.Dockerfile }
+    build: { context: ., dockerfile: goruntu/alma.Dockerfile }
     pull_policy: missing
     container_name: filo-pa-app-02
     hostname: PA-APP-02
@@ -55,11 +58,11 @@ services:
     ports: ["127.0.0.1:2202:22"]
   pa-db-01:
     <<: *alpine
-    build: { context: ./goruntu, dockerfile: alpine.Dockerfile }
+    build: { context: ., dockerfile: goruntu/alpine.Dockerfile }
     pull_policy: missing
     container_name: filo-pa-db-01
     hostname: PA-DB-01
-    environment: { FILO_SERVISLER: "uygulama,dbd" }
+    environment: { FILO_SERVISLER: "uygulama,dbd", FILO_YAMALI: "hepsi" }
     ports: ["127.0.0.1:2203:22"]
   pa-web-01:
     <<: *debian
@@ -71,7 +74,7 @@ services:
     <<: *alpine
     container_name: filo-pb-app-01
     hostname: PB-APP-01
-    environment: { FILO_SERVISLER: "uygulama" }
+    environment: { FILO_SERVISLER: "uygulama", FILO_KULLANICILAR: "uygulama,eskiadmin" }
     ports: ["127.0.0.1:2205:22"]
   pb-db-01:
     <<: *alma
@@ -83,7 +86,7 @@ services:
     <<: *debian
     container_name: filo-pb-web-01
     hostname: PB-WEB-01
-    environment: { FILO_SERVISLER: "uygulama,webd" }
+    environment: { FILO_SERVISLER: "uygulama,webd", FILO_YAMALI: "guvenlik" }
     ports: ["127.0.0.1:2207:22"]
   pc-batch-01:
     <<: *alpine
@@ -108,6 +111,19 @@ services:
     hostname: PB-APP-02
     environment: { FILO_SERVISLER: "uygulama" }
     ports: ["127.0.0.1:2210:22"]
+  # D1: yerel paket deposu (kurum içi ayna gibi). lab/depo/srv dizinini laboratuvar ağında http://filo-depo/ olarak sunar;
+  # sunucuların tek paket kaynağıdır, internet gerekmez. İçerik: python -m filo lab depo-derle.
+  depo:
+    image: filo-lab/alma:2
+    pull_policy: never
+    container_name: filo-depo
+    hostname: filo-depo
+    mem_limit: 64m
+    cpus: 0.25
+    command: ["python3", "-m", "http.server", "80", "--directory", "/srv/depo"]
+    volumes:
+      - ./depo/srv:/srv/depo:ro
+    restart: "no"
   mailpit:
     image: axllent/mailpit:v1.21.8
     container_name: filo-mailpit

@@ -266,3 +266,6 @@ fieldset.secenekler label { flex: 1 1 100%; font-size: 13px; }
 .yapi-kollar > .yapi-blok { flex: 1 1 220px; background: var(--yuzey); border: 1px solid var(--cizgi); border-radius: 6px; padding: 8px; }
 .yapi-kollar.tek > .yapi-blok { flex-basis: 100%; }
 .ok-asagi { text-align: center; color: var(--metin-3); max-width: 420px; line-height: 1; }
+/* D4: ızgaradaki kartlar arasında boşluğu gap verir (ardışık kart kuralı ızgarada kayma yapıyordu); uyum matrisinin işaretleri */
+.izgara > .kart { margin-top: 0; }
+.isaret { font-weight: 700; font-size: 15px; } .isaret.gecti { color: var(--basari); } .isaret.ihlal { color: var(--hata); } .isaret.istisna { color: var(--uyari); } .isaret.uygulanamaz { color: var(--metin-3); }

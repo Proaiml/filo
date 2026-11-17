@@ -1,0 +1,40 @@
+{
+  "ad": "yama_geri_al",
+  "surum": 1,
+  "baslik": "Yamayı geri al",
+  "aciklama": "Son yama uygulamasını geri alır: güncellenen paketler önceki sürümlerine indirilir (kayıttaki sürümler). Eski sürüm depoda yoksa geri alınamadığını açıkça söyler.",
+  "etiketler": [
+    "yama",
+    "geri al",
+    "rollback",
+    "downgrade",
+    "eski sürüm",
+    "patch"
+  ],
+  "risk": 3,
+  "tur": "yonetim",
+  "islem": "yama_geri_al",
+  "toplu": true,
+  "zaman_asimi": 600,
+  "girdi": {
+    "is_kimligi": {
+      "tip": "metin",
+      "zorunlu": false,
+      "desen": "^[A-Za-z0-9-]{4,40}$",
+      "aciklama": "geri alınacak yama işinin kimliği (boşsa son uygulama)"
+    }
+  },
+  "kuru": {
+    "aciklama": "hangi paketin hangi sürüme ineceği gösterilir"
+  },
+  "geri_al": {
+    "geri_alinamaz": "geri almanın geri alınması yama_uygula ile yeniden yapılır"
+  },
+  "cikti": {
+    "bicim": "anahtar_deger",
+    "alanlar": {
+      "geri_alinan": "tamsayi",
+      "paketler": "metin"
+    }
+  }
+}

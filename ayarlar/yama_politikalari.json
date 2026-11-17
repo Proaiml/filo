@@ -1,0 +1,50 @@
+{
+ "aciklama": "Yama politikaları (D1). Politika: hedef seçici, kapsam (guvenlik | hepsi | paketler), hariç tutulan paketler (gerekçeyle, isteğe bağlı bitiş), sunucuya özel istisnalar (gerekçe + bitiş), yeniden başlatma politikası (asla | gerekirse | pencerede), aşamalı dağıtımın test grubu. Konsolda Yama sayfasından düzenlenir; her değişiklik yeni sürümdür.",
+ "politikalar": {
+  "guvenlik-standart": {
+   "aciklama": "Bütün Linux sunucularda güvenlik yamaları; yeniden başlatma bakım penceresinde",
+   "hedef": "os:linux",
+   "kapsam": "guvenlik",
+   "haric": [],
+   "istisnalar": [
+    {
+     "sunucu": "PB-DB-01",
+     "paket": "filo-cekirdek",
+     "gerekce": "veritabanı sürücüsü yeni çekirdekle sertifikalanmadı (DEĞ-2026-118)",
+     "bitis": "2026-12-31"
+    }
+   ],
+   "yeniden_baslatma": "pencerede",
+   "test_grubu": "PA-APP-01",
+   "surum": 1,
+   "degisiklik": {
+    "zaman": "2026-11-17T22:00:00",
+    "kim": "kurulum",
+    "neden": "dördüncü tur başlangıç tanımı"
+   },
+   "gecmis": []
+  },
+  "web-aylik": {
+   "aciklama": "Web sunucularında bütün güncellemeler; izleme ajanı izleme ekibince sabit",
+   "hedef": "grup:web",
+   "kapsam": "hepsi",
+   "haric": [
+    {
+     "paket": "filo-izleme",
+     "gerekce": "izleme ajanı sürümü izleme ekibince sabitlendi",
+     "bitis": null
+    }
+   ],
+   "istisnalar": [],
+   "yeniden_baslatma": "pencerede",
+   "test_grubu": "PA-WEB-01",
+   "surum": 1,
+   "degisiklik": {
+    "zaman": "2026-11-17T22:00:00",
+    "kim": "kurulum",
+    "neden": "dördüncü tur başlangıç tanımı"
+   },
+   "gecmis": []
+  }
+ }
+}

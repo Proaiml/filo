@@ -1,0 +1,2 @@
+{"apkurl": "{{urlprefix}}/{{reponame}}/{{arch}}/{{pkg.name}}-{{pkg.ver}}.apk", "archs": ["x86_64"], "reponame": "alpine", "urlprefix": "http://filo-depo", "distroversion": "v3.20", "packages": [
+{"pkg": {"name": "filo-kutuphane", "secfixes": {"2.0.1-r0": ["LAB-2026-0001"]}}},{"pkg": {"name": "filo-cekirdek", "secfixes": {"5.10.1-r0": ["LAB-2026-0002"]}}}]}

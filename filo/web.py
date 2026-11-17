@@ -34,9 +34,10 @@ from .yurutme import Yurutucu
 
 STATIC = ROOT / "filo" / "static"
 SAYFALAR = {"", "kalfa", "kaptan", "onaylar", "envanter", "ajanlar", "teslim", "beceriler", "bench", "karsilastirma",
-            "baglantilar", "denetim", "zamanlama", "pencereler"}
+            "baglantilar", "denetim", "zamanlama", "pencereler", "yama", "politikalar", "uyum"}
 STATIK = {"konsol.css": "text/css", "konsol.js": "text/javascript", "sayfalar.js": "text/javascript",
-          "kalfa.js": "text/javascript", "kaptan.js": "text/javascript", "zamanlama.js": "text/javascript"}
+          "kalfa.js": "text/javascript", "kaptan.js": "text/javascript", "zamanlama.js": "text/javascript",
+          "uyum.js": "text/javascript"}
 ESKI_AJAN_ADLARI = {"reis": "kaptan"}       # eski iş kayıtları (ad değişikliğinden önce) yeni adla görünür
 
 
@@ -734,6 +735,13 @@ def make_handler(ofis):
                 return self._gonder(200, {**kos.ozet(), "durum": ofis.bench_durumu})
             if yol == "/api/karsilastirma":
                 return self._gonder(200, ofis.karsilastirma())
+            if yol in ("/api/yama", "/api/politikalar", "/api/uyum"):
+                from . import ui_veri
+                return self._gonder(200, {"/api/yama": ui_veri.yama, "/api/politikalar": ui_veri.politikalar,
+                                          "/api/uyum": ui_veri.uyum}[yol](ofis._taze_motor().envanter))
+            if yol == "/api/uyum/karsilastir":
+                from . import ui_veri
+                return self._gonder(200, ui_veri.goruntu_fark(q["a"], q["b"]))
             return self._gonder(404, {"hata": "yok"})
 
         def do_POST(self):
@@ -762,6 +770,9 @@ def make_handler(ofis):
             if yol == "/api/kalfa/dogrudan":
                 return self._gonder(200, ofis.dogrudan(g["beceri"], g.get("parametreler") or {}, g.get("hedef"),
                                                        g.get("bicim"), g.get("alici")))
+            if yol in ("/api/yama/politika", "/api/yazilim-politikasi", "/api/uyum/istisna", "/api/uyum/kural-seti"):
+                from . import ui_veri
+                return self._gonder(200, ui_veri.kaydet(yol, g, ofis._taze_motor().envanter))
             if yol == "/api/kalfa/parametre":
                 return self._gonder(200, ofis.kalfa_parametre(g["kimlik"], g.get("parametreler") or {}, g.get("hedef")))
             if yol == "/api/is/yurut":

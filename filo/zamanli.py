@@ -14,9 +14,31 @@ from .ajan_ortak import normal
 from .zamanlayici import ZamanlamaHatasi, okunakli, zamanlama_sor
 
 
+_YENIDEN_PENCERE = re.compile(r"(yeniden baslat\w*|reboot\w*)[^.;,]{0,40}?bakim pencere\w*|"
+                              r"bakim pencere\w*[^.;,]{0,25}?(yeniden baslat\w*|reboot\w*)")
+
+
+def yeniden_baslatma_ifadesini_cikar(talep):
+    """Talepten 'yeniden başlatma bakım penceresinde' türü ifadeyi çıkarır (normal biçimde karşılaştırıp özgün metinden
+    aynı konumu siler; Türkçe harfler normal biçimde aynı uzunluktadır)."""
+    n = normal(talep)
+    m = _YENIDEN_PENCERE.search(n)
+    if not m or len(n) != len(talep):
+        return talep if not m else re.sub(r"(?i)bak\S* pencere\S*", "", talep)
+    return talep[:m.start()] + talep[m.end():]
+
+
 def zamanlama_plani(model, motor, talep, iz, hedefler):
     """Talepte zamanlama varsa {"zamanlama", "okunakli", "sonraki", "hedef_cozumu", "kacirilan", "yasak_politikasi"}."""
     pen = motor._pencereler()
+    # D1: "yeniden başlatma bakım penceresinde" işin zamanı değil, yama becerisinin yeniden başlatma politikasıdır
+    # (işin kendisi şimdi çalışır, yalnız yeniden başlatma pencereye zamanlanır). Bu ifade zamanlama çözümünden çıkarılır.
+    temiz = yeniden_baslatma_ifadesini_cikar(talep)
+    if temiz != talep:
+        iz.append({"soru": "zamanlama (kod)", "denemeler": [], "sonuc": None,
+                   "kod_notu": "talepteki 'yeniden başlatma ... bakım penceresinde' ifadesi yeniden başlatma politikasıdır; "
+                               "işin zamanlaması sayılmadı"})
+        talep = temiz
     zm = zamanlama_sor(model, talep, iz, pen.saat(), pen, motor.envanter, hedefler)
     if not zm:
         return None

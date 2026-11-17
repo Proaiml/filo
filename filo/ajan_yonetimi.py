@@ -295,3 +295,15 @@ def teslim_uygula(sunucu, parametreler, kuru=False, durdurma=None, motor=None):
 
 ISLEYICILER = {"ajan_kur": kur, "ajan_durumu": durum, "ajan_onar": onar, "ajan_kaldir": kaldir,
                "teslim_uygula": teslim_uygula}
+
+
+def isleyici_bul(ad):
+    """Yönetim becerisinin kod işleyicisi: ajan yönetimi burada; yama, yazılım politikası, uyum ve anlık görüntü
+    işleyicileri kendi modüllerinde (D1-D3)."""
+    if ad in ISLEYICILER:
+        return ISLEYICILER[ad]
+    from . import uyum, yama, yazilim_politikasi
+    for m in (yama, yazilim_politikasi, uyum):
+        if ad in m.ISLEYICILER:
+            return m.ISLEYICILER[ad]
+    raise KeyError(f"yönetim işleyicisi yok: {ad}")

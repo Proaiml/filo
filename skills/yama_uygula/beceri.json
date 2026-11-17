@@ -1,0 +1,101 @@
+{
+  "ad": "yama_uygula",
+  "surum": 1,
+  "baslik": "Yama uygula",
+  "aciklama": "Bekleyen yamaları kurar: önce kuru çalıştırma ve fark önizlemesi, isteğe bağlı aşamalı dağıtım (önce test grubu, başarılıysa kalanlar), ön/son kontrol betikleri (son kontrol düşerse eski sürüme iner), yeniden başlatma politikası (asla / gerekirse / pencerede: bakım penceresine zamanlanır). Kapsam: güvenlik yamaları, hepsi ya da belirli paketler; hariç tutulan paketler. Politika verilirse onun kapsamı, istisnaları ve test grubu kullanılır.",
+  "etiketler": [
+    "yama",
+    "güncelleme",
+    "uygula",
+    "kur",
+    "patch",
+    "upgrade",
+    "güvenlik yaması",
+    "aşamalı",
+    "test grubu",
+    "yeniden başlatma",
+    "bakım penceresi"
+  ],
+  "risk": 3,
+  "tur": "yonetim",
+  "islem": "yama_uygula",
+  "toplu": true,
+  "zaman_asimi": 900,
+  "risk_kurali": {
+    "yeniden_baslatma": {
+      "gerekirse": 4
+    }
+  },
+  "girdi": {
+    "kapsam": {
+      "tip": "secim",
+      "secenekler": [
+        "guvenlik",
+        "hepsi",
+        "paketler"
+      ],
+      "varsayilan": "guvenlik",
+      "aciklama": "guvenlik: yalnız güvenlik yamaları; hepsi; paketler: yalnız listedeki paketler"
+    },
+    "paketler": {
+      "tip": "liste",
+      "desen": "paket",
+      "zorunlu": false,
+      "aciklama": "kapsam=paketler ise paket adları"
+    },
+    "haric": {
+      "tip": "liste",
+      "desen": "paket",
+      "zorunlu": false,
+      "aciklama": "kurulmayacak (hariç tutulan) paketler"
+    },
+    "politika": {
+      "tip": "secim",
+      "kaynak": "yama_politikalari",
+      "aciklama": "yama politikasının adı",
+      "zorunlu": false
+    },
+    "yeniden_baslatma": {
+      "tip": "secim",
+      "secenekler": [
+        "asla",
+        "gerekirse",
+        "pencerede"
+      ],
+      "varsayilan": "asla",
+      "aciklama": "asla: yapma, raporla; gerekirse: hemen; pencerede: bakım penceresinde"
+    },
+    "test_grubu": {
+      "tip": "metin",
+      "zorunlu": false,
+      "en_uzun": 200,
+      "aciklama": "önce denenecek sunucular (seçici, ör. PA-WEB-01); başarılıysa kalanlara geçilir"
+    },
+    "on_kontrol": {
+      "tip": "secim",
+      "kaynak": "betikler",
+      "zorunlu": false,
+      "aciklama": "yamadan önce çalışacak kontrol betiği"
+    },
+    "son_kontrol": {
+      "tip": "secim",
+      "kaynak": "betikler",
+      "zorunlu": false,
+      "aciklama": "yamadan sonra çalışacak kontrol betiği"
+    }
+  },
+  "kuru": {
+    "aciklama": "kurulacak yamalar, dışlananlar ve yeniden başlatma ihtiyacı önizlenir; hiçbir şey kurulmaz"
+  },
+  "geri_al": {
+    "beceri": "yama_geri_al"
+  },
+  "cikti": {
+    "bicim": "anahtar_deger",
+    "alanlar": {
+      "yuklenen": "tamsayi",
+      "paketler": "metin",
+      "yeniden_baslatma": "metin"
+    }
+  }
+}

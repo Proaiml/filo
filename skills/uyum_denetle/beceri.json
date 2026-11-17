@@ -1,0 +1,40 @@
+{
+  "ad": "uyum_denetle",
+  "surum": 1,
+  "baslik": "Uyum denetimi",
+  "aciklama": "Bir kural setine (ör. temel sertleştirme: SSH, dosya izinleri, parola yaşlandırma, açık portlar, yasak hesaplar) göre sunucuları denetler: sunucu başına uyum puanı, ihlal listesi ve istisnalar. Salt-okur.",
+  "etiketler": [
+    "uyum",
+    "denetim",
+    "audit",
+    "compliance",
+    "sertleştirme",
+    "hardening",
+    "kural",
+    "ihlal",
+    "güvenlik",
+    "puan"
+  ],
+  "risk": 0,
+  "tur": "yonetim",
+  "islem": "uyum_denetle",
+  "toplu": true,
+  "zaman_asimi": 180,
+  "girdi": {
+    "kural_seti": {
+      "tip": "secim",
+      "kaynak": "kural_setleri",
+      "aciklama": "uyum kural setinin adı"
+    }
+  },
+  "cikti": {
+    "bicim": "anahtar_deger",
+    "alanlar": {
+      "puan": "tamsayi",
+      "gecen": "tamsayi",
+      "ihlal": "tamsayi",
+      "istisna": "tamsayi",
+      "ihlaller": "metin"
+    }
+  }
+}

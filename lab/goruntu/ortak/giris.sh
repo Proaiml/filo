@@ -34,5 +34,36 @@ for s in $(echo "${FILO_SERVISLER:-uygulama}" | tr ',' ' '); do
   fi
   /usr/local/sbin/filo-svc start "$s" || true
 done
+# Açılış kimliği (yeniden başlatma öykünmesi bunu yeniler; beceriler "yeniden başladı mı" sorusunu buna bakarak cevaplar)
+cat /proc/sys/kernel/random/uuid > /run/filo-acilis-kimligi
+date +%s > /run/filo-acilis-zamani
+rm -f /run/reboot-required /run/reboot-required.pkgs
+
+# Yerel paket deposu (D1): laboratuvar ağındaki filo-depo konteyneri tek paket kaynağıdır (kurum içi ayna gibi; internet
+# gerekmez). Depo üst verisi açılışta yenilenir; depo henüz hazır değilse birkaç kez denenir.
+aile=$(cat /etc/filo/aile 2>/dev/null)
+for i in 1 2 3 4 5 6 7 8 9 10 11 12; do
+  case "$aile" in
+    debian) apt-get update -qq >/dev/null 2>&1 && break ;;
+    rhel) dnf -q makecache >/dev/null 2>&1 && break ;;
+    alpine) apk update -q >/dev/null 2>&1 && break ;;
+    *) break ;;
+  esac
+  sleep 1
+done
+# FILO_YAMALI=hepsi | guvenlik: bu sunucu açılışta yamalanmış olsun (filo yama uyumu raporunda karışık bir filo görünsün)
+case "${FILO_YAMALI:-}" in
+  hepsi) pk="filo-araclar filo-kutuphane filo-cekirdek filo-izleme" ;;
+  guvenlik) pk="filo-kutuphane filo-cekirdek" ;;
+  *) pk="" ;;
+esac
+if [ -n "$pk" ]; then
+  case "$aile" in
+    debian) DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --only-upgrade $pk >/dev/null 2>&1 || true ;;
+    rhel) dnf -y -q upgrade $pk >/dev/null 2>&1 || true ;;
+    alpine) apk add -q -u $pk >/dev/null 2>&1 || true ;;
+  esac
+  rm -f /run/reboot-required /run/reboot-required.pkgs
+fi
 echo "$(hostname) hazir" > /var/log/filo/giris.log
 exec /usr/sbin/sshd -D -e -f /etc/ssh/sshd_config

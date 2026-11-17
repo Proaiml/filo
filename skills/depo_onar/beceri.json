@@ -1,28 +1,49 @@
 {
   "ad": "depo_onar",
-  "surum": 1,
+  "surum": 2,
   "baslik": "Paket deposunu standarda döndür",
-  "aciklama": "Bozuk ya da erişilemeyen paket deposu yapılandırmasını dağıtımın standart deposuna döndürür (eskisini /var/backups/filo-depo altına alır) ve depo üst verisini yeniler. Debian ve Alpine.",
-  "etiketler": ["depo", "paket deposu", "repository", "sources", "mirror", "apt update", "unable", "locate", "bulunamadı", "resolve", "invalid", "fetch"],
+  "aciklama": "Bozuk ya da erişilemeyen paket deposu yapılandırmasını kurumun standart deposuna döndürür (sunucuda /etc/filo/depo-standart altında saklı standart tanım; yoksa dağıtımın varsayılan deposu), eskisini /var/backups/filo-depo altına alır ve depo üst verisini yeniler. Debian, RHEL ve Alpine.",
+  "etiketler": [
+    "depo",
+    "paket deposu",
+    "repository",
+    "sources",
+    "mirror",
+    "apt update",
+    "unable",
+    "locate",
+    "bulunamadı",
+    "resolve",
+    "invalid",
+    "fetch"
+  ],
   "risk": 3,
   "tur": "uzak",
   "zaman_asimi": 240,
   "girdi": {},
   "cikti": {
     "bicim": "anahtar_deger",
-    "alanlar": {"depo": "metin", "guncelleme": "metin"},
-    "beklenen": {"guncelleme": "tamam"}
+    "alanlar": {
+      "depo": "metin",
+      "guncelleme": "metin"
+    },
+    "beklenen": {
+      "guncelleme": "tamam"
+    }
   },
   "komut": {
-    "debian": "k=$(. /etc/os-release; echo \"$VERSION_CODENAME\")\nsudo -n mkdir -p /var/backups/filo-depo\nfor f in /etc/apt/sources.list /etc/apt/sources.list.d/*.list /etc/apt/sources.list.d/*.sources; do [ -f \"$f\" ] && sudo -n mv \"$f\" /var/backups/filo-depo/; done\nprintf '%s\\n' 'Types: deb' 'URIs: http://deb.debian.org/debian' \"Suites: $k $k-updates\" 'Components: main' 'Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg' '' 'Types: deb' 'URIs: http://deb.debian.org/debian-security' \"Suites: $k-security\" 'Components: main' 'Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg' | sudo -n tee /etc/apt/sources.list.d/debian.sources >/dev/null\nsudo -n apt-get update -q >/tmp/filo-depo.log 2>&1 || { tail -5 /tmp/filo-depo.log >&2; echo depo=standart; echo guncelleme=hata; exit 1; }\necho depo=standart\necho guncelleme=tamam",
-    "alpine": "v=$(cut -d. -f1,2 /etc/alpine-release)\nsudo -n mkdir -p /var/backups/filo-depo\nsudo -n cp /etc/apk/repositories /var/backups/filo-depo/repositories\nprintf '%s\\n' \"https://dl-cdn.alpinelinux.org/alpine/v$v/main\" \"https://dl-cdn.alpinelinux.org/alpine/v$v/community\" | sudo -n tee /etc/apk/repositories >/dev/null\nsudo -n apk update -q >/tmp/filo-depo.log 2>&1 || { tail -5 /tmp/filo-depo.log >&2; echo depo=standart; echo guncelleme=hata; exit 1; }\necho depo=standart\necho guncelleme=tamam"
+    "debian": "S=/etc/filo/depo-standart\nsudo -n mkdir -p /var/backups/filo-depo\nk=$(. /etc/os-release; echo \"$VERSION_CODENAME\")\nfor f in /etc/apt/sources.list /etc/apt/sources.list.d/*.list /etc/apt/sources.list.d/*.sources; do [ -f \"$f\" ] && sudo -n mv \"$f\" /var/backups/filo-depo/; done\nif ls $S/*.list $S/*.sources >/dev/null 2>&1; then sudo -n cp $S/*.list $S/*.sources /etc/apt/sources.list.d/ 2>/dev/null; d=kurum_standardi; else\nprintf '%s\\n' 'Types: deb' 'URIs: http://deb.debian.org/debian' \"Suites: $k $k-updates\" 'Components: main' 'Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg' '' 'Types: deb' 'URIs: http://deb.debian.org/debian-security' \"Suites: $k-security\" 'Components: main' 'Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg' | sudo -n tee /etc/apt/sources.list.d/debian.sources >/dev/null; d=dagitim_varsayilani; fi\nsudo -n apt-get update -q >/tmp/filo-depo.log 2>&1 || { tail -5 /tmp/filo-depo.log >&2; echo depo=$d; echo guncelleme=hata; exit 1; }\necho depo=$d\necho guncelleme=tamam",
+    "alpine": "S=/etc/filo/depo-standart\nsudo -n mkdir -p /var/backups/filo-depo\nv=$(cut -d. -f1,2 /etc/alpine-release)\nsudo -n cp /etc/apk/repositories /var/backups/filo-depo/repositories\nif [ -f $S/repositories ]; then sudo -n cp $S/repositories /etc/apk/repositories; d=kurum_standardi; else\nprintf '%s\\n' \"https://dl-cdn.alpinelinux.org/alpine/v$v/main\" \"https://dl-cdn.alpinelinux.org/alpine/v$v/community\" | sudo -n tee /etc/apk/repositories >/dev/null; d=dagitim_varsayilani; fi\nsudo -n apk update -q >/tmp/filo-depo.log 2>&1 || { tail -5 /tmp/filo-depo.log >&2; echo depo=$d; echo guncelleme=hata; exit 1; }\necho depo=$d\necho guncelleme=tamam",
+    "rhel": "S=/etc/filo/depo-standart\nsudo -n mkdir -p /var/backups/filo-depo\nif ls $S/*.repo >/dev/null 2>&1; then for f in /etc/yum.repos.d/*.repo; do [ -f \"$f\" ] && sudo -n mv \"$f\" /var/backups/filo-depo/; done; sudo -n cp $S/*.repo /etc/yum.repos.d/; d=kurum_standardi; else echo 'kurum standardı depo tanımı yok (/etc/filo/depo-standart)' >&2; echo depo=yok; echo guncelleme=hata; exit 1; fi\nsudo -n dnf -q clean all >/dev/null 2>&1; sudo -n dnf -q makecache >/tmp/filo-depo.log 2>&1 || { tail -5 /tmp/filo-depo.log >&2; echo depo=$d; echo guncelleme=hata; exit 1; }\necho depo=$d\necho guncelleme=tamam"
   },
   "kuru": {
-    "debian": "echo '--- şu anki depo tanımları:'; cat /etc/apt/sources.list /etc/apt/sources.list.d/* 2>/dev/null | grep -v '^#' | head -20; echo '--- yapılacak: standart deb.debian.org tanımı yazılacak, eskisi /var/backups/filo-depo altına alınacak, apt-get update'",
-    "alpine": "echo '--- şu anki depo tanımları:'; cat /etc/apk/repositories; echo '--- yapılacak: standart dl-cdn.alpinelinux.org tanımı yazılacak, eskisi yedeklenecek, apk update'"
+    "debian": "echo '--- şu anki depo tanımları:'; cat /etc/apt/sources.list /etc/apt/sources.list.d/* 2>/dev/null | grep -v '^#' | head -20; echo '--- yapılacak: kurum standardı (/etc/filo/depo-standart; yoksa deb.debian.org) tanımı yazılacak, eskisi /var/backups/filo-depo altına alınacak, apt-get update'",
+    "alpine": "echo '--- şu anki depo tanımları:'; cat /etc/apk/repositories; echo '--- yapılacak: kurum standardı (/etc/filo/depo-standart; yoksa dl-cdn) tanımı yazılacak, eskisi yedeklenecek, apk update'",
+    "rhel": "echo '--- şu anki depo tanımları:'; cat /etc/yum.repos.d/*.repo 2>/dev/null | grep -E '^\\[|baseurl|mirrorlist' | head -20; echo '--- yapılacak: kurum standardı (/etc/filo/depo-standart) yazılacak, eskisi yedeklenecek, dnf makecache'"
   },
   "geri_al": {
-    "debian": "sudo -n rm -f /etc/apt/sources.list.d/debian.sources\nfor f in /var/backups/filo-depo/*; do [ -f \"$f\" ] || continue; case \"$f\" in */sources.list) sudo -n mv \"$f\" /etc/apt/sources.list;; *) sudo -n mv \"$f\" /etc/apt/sources.list.d/;; esac; done\necho geri_alindi=evet",
-    "alpine": "[ -f /var/backups/filo-depo/repositories ] && sudo -n cp /var/backups/filo-depo/repositories /etc/apk/repositories\necho geri_alindi=evet"
+    "debian": "sudo -n rm -f /etc/apt/sources.list.d/debian.sources /etc/apt/sources.list.d/filo-depo.list\nfor f in /var/backups/filo-depo/*; do [ -f \"$f\" ] || continue; case \"$f\" in */sources.list) sudo -n mv \"$f\" /etc/apt/sources.list;; *) sudo -n mv \"$f\" /etc/apt/sources.list.d/;; esac; done\necho geri_alindi=evet",
+    "alpine": "[ -f /var/backups/filo-depo/repositories ] && sudo -n cp /var/backups/filo-depo/repositories /etc/apk/repositories\necho geri_alindi=evet",
+    "rhel": "ls /var/backups/filo-depo/*.repo >/dev/null 2>&1 && sudo -n rm -f /etc/yum.repos.d/*.repo\nfor f in /var/backups/filo-depo/*.repo; do [ -f \"$f\" ] && sudo -n mv \"$f\" /etc/yum.repos.d/; done\necho geri_alindi=evet"
   }
 }

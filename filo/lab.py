@@ -321,6 +321,7 @@ BOZUKLUKLAR = {
     "yanlis_anahtar": "authorized_keys başka bir anahtarla değiştirilir: kimlik reddedilir",
     "yarim_kurulum": "Paket yöneticisi yarım kalmış bir işlem bırakır (dpkg kesildi / kilit)",
     "dosya_yaz": "Bir dosya yazılır (parametre: yol, icerik)",
+    "komut": "Kök kullanıcıyla bir kurulum komutu çalışır (parametre: komut) (D5)",
     "betik_cikti_degisti": "uygulama sürüm dosyasının biçimi değişir (anahtar=değer yerine serbest metin)",
     "paket_kaldir": "Bir paket kaldırılır (parametre: paket)",
     "yeni_sunucu": "Tanımlı bir yeni sunucu (PA-WEB-02, PB-APP-02) imajından sıfır açılır ve envantere eklenir",
@@ -387,7 +388,7 @@ def bozukluk(sunucu_adi, tur, envanter=None, **p):
         return rc == 0, err
     if tur == "bozuk_depo":
         betik = {"debian": "echo 'deb http://depo.yok.invalid/debian bookworm main' > /etc/apt/sources.list.d/bozuk.list;"
-                           " rm -f /etc/apt/sources.list.d/debian.sources; rm -rf /var/lib/apt/lists/*",
+                           " rm -f /etc/apt/sources.list.d/debian.sources /etc/apt/sources.list.d/filo-depo.list; rm -rf /var/lib/apt/lists/*",
                  "rhel": "sed -i 's|^mirrorlist=.*|baseurl=http://depo.yok.invalid/el9/|; s|^baseurl=.*|baseurl=http://depo.yok.invalid/el9/|'"
                          " /etc/yum.repos.d/*.repo; dnf clean all >/dev/null 2>&1",
                  "alpine": "echo 'http://depo.yok.invalid/alpine/v3.20/main' > /etc/apk/repositories; rm -rf /var/cache/apk/*"}
@@ -405,6 +406,10 @@ def bozukluk(sunucu_adi, tur, envanter=None, **p):
         rc, out, err = dexec(k, "mkdir -p /var/lib/dpkg/updates && dpkg-query -s procps | "
                                 "sed 's/^Status: .*/Status: install ok half-configured/' > /var/lib/dpkg/updates/0001")
         return rc == 0, err
+    if tur == "komut":
+        # D5: senaryo kurulumu için kök kullanıcıyla tek komut (ör. bir paketi önceden güncellemek, hesap açmak)
+        rc, out, err = dexec(k, p["komut"])
+        return rc == 0, (err or out)[-300:]
     if tur == "dosya_yaz":
         yol, icerik = p["yol"], p.get("icerik", "")
         rc, out, err = dexec(k, f"mkdir -p \"$(dirname '{yol}')\" && cat > '{yol}' <<'FILOEOF'\n{icerik}\nFILOEOF\n")
@@ -425,6 +430,87 @@ def onar_ssh(sunucu_adi, envanter=None):
     """Kurulum sonrası (ör. hakem) için: durdurulmuş konteyneri yeniden başlatır."""
     env = envanter or Envanter()
     return konteyner_baslat(env[sunucu_adi].konteyner)
+
+
+# ---------------------------------------------------------------- yerel paket deposu (D1)
+DEPO = LAB / "depo"
+DEPO_DERLEYICILER = (("debian", "debian:bookworm-slim"), ("el9", "almalinux:9"), ("alpine", "alpine:3.20"))
+
+
+def depo_derle(dagitimlar=None, ilerle=print):
+    """Laboratuvarın yerel paket deposunu (lab/depo/srv) üretir: örnek paketler (eski ve yeni sürüm, güvenlik sınıfı,
+    yeniden başlatma isteyen) ve aynalanan jq/tree. Derleyici konteynerler araçlarını bir kez internetten kurar; çıktı
+    depoda kalır, laboratuvar çalışırken internete gerek yoktur (`filo-depo` konteyneri bu dizini sunar)."""
+    sonuc = {}
+    for ad, imaj in DEPO_DERLEYICILER:
+        if dagitimlar and ad not in dagitimlar:
+            continue
+        ilerle(f"depo derleniyor: {ad} ({imaj})")
+        betik = (f"tr -d '\\r' < /depo/paketler.txt > /tmp/paketler.txt && tr -d '\\r' < /depo/derle/{ad}.sh > /tmp/d.sh"
+                 " && sh /tmp/d.sh")
+        rc, out, err = _kos(["docker", "run", "--rm", "-v", f"{DEPO}:/depo", imaj, "sh", "-c", betik], 1800)
+        sonuc[ad] = (rc, (out + err)[-1500:])
+        if rc:
+            raise RuntimeError(f"{ad} deposu derlenemedi:\n{(out + err)[-2000:]}")
+    return sonuc
+
+
+# ---------------------------------------------------------------- laboratuvar kilidi (D0-b)
+# Üçüncü koşuda O10/kalfa'da hakem PC-BATCH-01'in parmak izini değişmiş buldu. Neden: bench koşarken aynı laboratuvarda
+# ayrı bir süreçte `pytest` çalışıyordu (17:29:03'te denetim izinde test_c2 satırları); test_lab'deki erişilemeyen sunucu
+# sınaması filo-pc-batch-01 konteynerini durdurup yeniden başlatır, servis pid'leri değişir. Laboratuvarı değiştiren iki
+# kullanıcı (bench koşusu, laboratuvar sınamaları) artık ortak bir kilit alır; kilit canlı bir süreçteyse ikincisi başlamaz.
+LAB_KILIDI = ROOT / "results" / "LAB_KILIT"
+
+
+def _surec_canli(pid):
+    if pid <= 0:
+        return False
+    if os.name == "nt":
+        import ctypes
+        k32 = ctypes.windll.kernel32
+        h = k32.OpenProcess(0x1000, False, pid)          # PROCESS_QUERY_LIMITED_INFORMATION
+        if not h:
+            return False
+        try:
+            kod = ctypes.c_ulong()
+            return bool(k32.GetExitCodeProcess(h, ctypes.byref(kod))) and kod.value == 259   # STILL_ACTIVE
+        finally:
+            k32.CloseHandle(h)
+    try:
+        os.kill(pid, 0)
+        return True
+    except OSError:
+        return False
+
+
+def lab_kilidi_kimde():
+    """Kilit canlı bir süreçteyse {"pid", "amac", "zaman"}, yoksa None (ölü sürecin kilidi bayat sayılır)."""
+    try:
+        v = json.loads(LAB_KILIDI.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+    if v.get("pid") == os.getpid() or not _surec_canli(int(v.get("pid") or 0)):
+        return None
+    return v
+
+
+def lab_kilidi_al(amac):
+    v = lab_kilidi_kimde()
+    if v:
+        raise RuntimeError(f"laboratuvar başka bir süreçte kullanılıyor: {v.get('amac')} (pid {v.get('pid')}, "
+                           f"{v.get('zaman')}); tek laboratuvar, tek koşu")
+    LAB_KILIDI.parent.mkdir(parents=True, exist_ok=True)
+    LAB_KILIDI.write_text(json.dumps({"pid": os.getpid(), "amac": amac,
+                                      "zaman": time.strftime("%Y-%m-%dT%H:%M:%S")}), encoding="utf-8")
+
+
+def lab_kilidi_birak():
+    try:
+        if json.loads(LAB_KILIDI.read_text(encoding="utf-8")).get("pid") == os.getpid():
+            LAB_KILIDI.unlink(missing_ok=True)
+    except (OSError, ValueError):
+        pass
 
 
 def lab_var():

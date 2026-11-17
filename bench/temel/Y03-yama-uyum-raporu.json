@@ -1,0 +1,53 @@
+{
+  "kimlik": "Y03-yama-uyum-raporu",
+  "seviye": "temel",
+  "baslik": "Politikaya göre yama uyum raporu (CSV)",
+  "kaynak": "https://docs.microfocus.com/doc/419/25.4/patchcompliance",
+  "kaynak_turu": "taslak",
+  "talep": "guvenlik-standart yama politikasına göre bütün Linux sunucuların yama uyum raporunu CSV yap ve ops@lab.yerel adresine gönder.",
+  "yardimsiz": false,
+  "yardimsiz_neden": "Yama politikası (kapsam, istisnalar) Filo'nun kaydındadır; ham kabuk aracıyla görülemez",
+  "degisebilir": [],
+  "hakem": [
+    {
+      "tur": "posta",
+      "alici": "ops@lab.yerel",
+      "ek": "csv",
+      "icerir": [
+        "PB-DB-01",
+        "PA-DB-01",
+        "uyumlu",
+        "uyumsuz",
+        "istisna"
+      ]
+    }
+  ],
+  "referans": [
+    {
+      "islem": "topla",
+      "ad": "u",
+      "sunucu": null,
+      "sunucular": [
+        "PA-DB-01",
+        "PB-WEB-01",
+        "PB-DB-01",
+        "PA-APP-01"
+      ],
+      "komut": "echo durum"
+    },
+    {
+      "islem": "posta",
+      "alici": "ops@lab.yerel",
+      "kaynak": "u",
+      "ek": "csv",
+      "konu": "yama uyum",
+      "govde": "PA-DB-01 uyumlu; PB-WEB-01 uyumlu; PB-DB-01 uyumsuz (filo-cekirdek istisna); PA-APP-01 uyumsuz"
+    }
+  ],
+  "kurulum": [],
+  "onay_politikasi": {
+    "varsayilan": "onayla"
+  },
+  "adim_butcesi": 14,
+  "yasak": []
+}

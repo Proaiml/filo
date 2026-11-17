@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Filo konsolu</title>
 <link rel="stylesheet" href="/static/konsol.css">
-<script>try { const t = localStorage.getItem("filo-tema"); if (t) document.documentElement.dataset.tema = t;
+<script>try { const t = new URLSearchParams(location.search).get("tema") || localStorage.getItem("filo-tema"); if (t) document.documentElement.dataset.tema = t;
   else if (matchMedia("(prefers-color-scheme: dark)").matches) document.documentElement.dataset.tema = "koyu"; } catch (e) {}</script>
 </head>
 <body>
@@ -33,6 +33,10 @@
     <a href="/envanter" data-sayfa="envanter"><span class="ikon"></span>Envanter</a>
     <a href="/ajanlar" data-sayfa="ajanlar"><span class="ikon"></span>Ajanlar</a>
     <a href="/teslim" data-sayfa="teslim"><span class="ikon"></span>Teslim politikaları</a>
+    <div class="yan-grup">Yapılandırma</div>
+    <a href="/yama" data-sayfa="yama"><span class="ikon"></span>Yama</a>
+    <a href="/politikalar" data-sayfa="politikalar"><span class="ikon"></span>Politikalar</a>
+    <a href="/uyum" data-sayfa="uyum"><span class="ikon"></span>Uyum ve görüntüler</a>
     <div class="yan-grup">Katalog</div>
     <a href="/beceriler" data-sayfa="beceriler"><span class="ikon"></span>Beceriler</a>
     <div class="yan-grup">Ölçüm</div>
@@ -52,6 +56,7 @@
 <script src="/static/kalfa.js"></script>
 <script src="/static/kaptan.js"></script>
 <script src="/static/zamanlama.js"></script>
+<script src="/static/uyum.js"></script>
 <script>Filo.baslat();</script>
 </body>
 </html>

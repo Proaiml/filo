@@ -1,0 +1,220 @@
+{
+ "aciklama": "Yazılım politikaları (D2): istenen durum (paketler, servisler, kullanıcılar, dosyalar) ve kime atandığı. Teslim politikalarının profilleri bu politikalara bağlanır (tek kavram). Konsolda Politikalar sayfasından düzenlenir; her değişiklik yeni sürümdür.",
+ "politikalar": {
+  "web-standardi": {
+   "aciklama": "Web sunucusu standardı",
+   "atamalar": [
+    "grup:web"
+   ],
+   "paketler": [
+    {
+     "ad": "jq",
+     "durum": "kurulu"
+    },
+    {
+     "ad": "tree",
+     "durum": "kurulu"
+    }
+   ],
+   "kullanicilar": [
+    {
+     "ad": "webops",
+     "durum": "var",
+     "aciklama": "Web operasyon hesabi"
+    }
+   ],
+   "dosyalar": [
+    {
+     "yol": "/etc/motd",
+     "kaynak": "motd.txt",
+     "mod": "0644"
+    }
+   ],
+   "servisler": [
+    {
+     "ad": "webd",
+     "durum": "calisiyor"
+    }
+   ],
+   "surum": 1,
+   "degisiklik": {
+    "zaman": "2026-11-17T22:00:00",
+    "kim": "kurulum",
+    "neden": "dördüncü tur başlangıç tanımı"
+   },
+   "gecmis": []
+  },
+  "uygulama-standardi": {
+   "aciklama": "Uygulama sunucusu standardı",
+   "atamalar": [
+    "grup:app"
+   ],
+   "paketler": [
+    {
+     "ad": "jq",
+     "durum": "kurulu"
+    },
+    {
+     "ad": "tree",
+     "durum": "kurulu"
+    }
+   ],
+   "dosyalar": [
+    {
+     "yol": "/etc/motd",
+     "kaynak": "motd.txt",
+     "mod": "0644"
+    }
+   ],
+   "servisler": [
+    {
+     "ad": "uygulama",
+     "durum": "calisiyor"
+    }
+   ],
+   "surum": 1,
+   "degisiklik": {
+    "zaman": "2026-11-17T22:00:00",
+    "kim": "kurulum",
+    "neden": "dördüncü tur başlangıç tanımı"
+   },
+   "gecmis": []
+  },
+  "temel-yazilim": {
+   "aciklama": "Bütün Linux sunucularda olmaması gereken paketler",
+   "atamalar": [
+    "os:linux"
+   ],
+   "paketler": [
+    {
+     "ad": "telnet",
+     "durum": "yok"
+    },
+    {
+     "ad": "filo-araclar",
+     "durum": "kurulu"
+    }
+   ],
+   "surum": 1,
+   "degisiklik": {
+    "zaman": "2026-11-17T22:00:00",
+    "kim": "kurulum",
+    "neden": "dördüncü tur başlangıç tanımı"
+   },
+   "gecmis": []
+  },
+  "deneme-talep": {
+   "aciklama": "talepten kuruldu",
+   "atamalar": [
+    "PA-APP-02,PB-APP-01"
+   ],
+   "paketler": [
+    {
+     "ad": "jq",
+     "durum": "kurulu"
+    },
+    {
+     "ad": "filo-izleme",
+     "durum": "yok"
+    }
+   ],
+   "surum": 4,
+   "degisiklik": {
+    "zaman": "2026-11-17T21:48:39",
+    "kim": "talep",
+    "neden": ""
+   },
+   "gecmis": [
+    {
+     "aciklama": "talepten kuruldu",
+     "atamalar": [
+      "PA-APP-02"
+     ],
+     "paketler": [
+      {
+       "ad": "jq",
+       "durum": "kurulu"
+      },
+      {
+       "ad": "filo-izleme",
+       "durum": "yok"
+      }
+     ],
+     "surum": 1,
+     "degisiklik": {
+      "zaman": "2026-11-17T21:47:57",
+      "kim": "talep",
+      "neden": ""
+     }
+    },
+    {
+     "aciklama": "talepten kuruldu",
+     "atamalar": [
+      "PA-APP-02,PB-APP-01"
+     ],
+     "paketler": [
+      {
+       "ad": "jq",
+       "durum": "kurulu"
+      },
+      {
+       "ad": "filo-izleme",
+       "durum": "yok"
+      }
+     ],
+     "surum": 2,
+     "degisiklik": {
+      "zaman": "2026-11-17T21:47:58",
+      "kim": "talep",
+      "neden": ""
+     }
+    },
+    {
+     "aciklama": "talepten kuruldu",
+     "atamalar": [
+      "PA-APP-02"
+     ],
+     "paketler": [
+      {
+       "ad": "jq",
+       "durum": "kurulu"
+      },
+      {
+       "ad": "filo-izleme",
+       "durum": "yok"
+      }
+     ],
+     "surum": 3,
+     "degisiklik": {
+      "zaman": "2026-11-17T21:48:38",
+      "kim": "talep",
+      "neden": ""
+     }
+    }
+   ]
+  },
+  "sinama-politikasi": {
+   "aciklama": "talepten kuruldu",
+   "atamalar": [
+    "PA-WEB-01,PB-APP-01,PA-APP-02"
+   ],
+   "paketler": [
+    {
+     "ad": "jq",
+     "durum": "kurulu"
+    },
+    {
+     "ad": "filo-izleme",
+     "durum": "yok"
+    }
+   ],
+   "surum": 1,
+   "degisiklik": {
+    "zaman": "2026-11-17T21:53:23",
+    "kim": "talep",
+    "neden": ""
+   },
+   "gecmis": []
+  }
+ }
+}

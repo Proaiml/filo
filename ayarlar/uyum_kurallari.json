@@ -1,0 +1,173 @@
+{
+ "aciklama": "Uyum kural setleri ve istisnalar (D3). Kural türleri: dosya, paket, servis, kullanici, grup, sysctl, port, komut (salt-okur izin listesi). Düzeltme eylemi isteğe bağlıdır; geri alınabilir olup olmadığını kod söyler. İstisna: kural + sunucu seçici + gerekçe + bitiş.",
+ "kural_setleri": {
+  "temel-sertlestirme": {
+   "aciklama": "Linux temel sertleştirme (SSH, dosya izinleri, parola yaşlandırma, eski hesaplar, açık portlar)",
+   "kurallar": [
+    {
+     "kimlik": "ssh-kok-girisi",
+     "baslik": "SSH ile root girişi kapalı",
+     "onem": "yuksek",
+     "tur": "dosya",
+     "yol": "/etc/ssh/sshd_config",
+     "icerir": "^PermitRootLogin[[:space:]]+no",
+     "duzeltme": {
+      "tur": "satir_ayarla",
+      "yol": "/etc/ssh/sshd_config",
+      "anahtar": "PermitRootLogin",
+      "deger": "no"
+     }
+    },
+    {
+     "kimlik": "ssh-parola-kapali",
+     "baslik": "SSH parola ile giriş kapalı",
+     "onem": "yuksek",
+     "tur": "dosya",
+     "yol": "/etc/ssh/sshd_config",
+     "icerir": "^PasswordAuthentication[[:space:]]+no",
+     "duzeltme": {
+      "tur": "satir_ayarla",
+      "yol": "/etc/ssh/sshd_config",
+      "anahtar": "PasswordAuthentication",
+      "deger": "no"
+     }
+    },
+    {
+     "kimlik": "shadow-izni",
+     "baslik": "/etc/shadow en çok 640",
+     "onem": "yuksek",
+     "tur": "dosya",
+     "yol": "/etc/shadow",
+     "mod_en_cok": "640",
+     "duzeltme": {
+      "tur": "izin",
+      "yol": "/etc/shadow",
+      "mod": "0640"
+     }
+    },
+    {
+     "kimlik": "sudoers-izni",
+     "baslik": "sudoers.d dosyası en çok 440",
+     "onem": "orta",
+     "tur": "dosya",
+     "yol": "/etc/sudoers.d/filo",
+     "mod_en_cok": "440",
+     "duzeltme": {
+      "tur": "izin",
+      "yol": "/etc/sudoers.d/filo",
+      "mod": "0440"
+     }
+    },
+    {
+     "kimlik": "parola-yaslanma",
+     "baslik": "Parola en çok 90 gün geçerli (PASS_MAX_DAYS)",
+     "onem": "orta",
+     "tur": "dosya",
+     "yol": "/etc/login.defs",
+     "icerir": "^PASS_MAX_DAYS[[:space:]]+([0-9]|[1-8][0-9]|90)$",
+     "yoksa": "uygulanamaz",
+     "duzeltme": {
+      "tur": "satir_ayarla",
+      "yol": "/etc/login.defs",
+      "anahtar": "PASS_MAX_DAYS",
+      "deger": "90"
+     }
+    },
+    {
+     "kimlik": "uyari-banner",
+     "baslik": "Giriş uyarı metni (/etc/issue.net)",
+     "onem": "dusuk",
+     "tur": "dosya",
+     "yol": "/etc/issue.net",
+     "icerir": "Yetkisiz",
+     "duzeltme": {
+      "tur": "dosya_yaz",
+      "yol": "/etc/issue.net",
+      "kaynak": "uyari-banner.txt",
+      "mod": "0644"
+     }
+    },
+    {
+     "kimlik": "uygulama-conf-izni",
+     "baslik": "Uygulama yapılandırması en çok 640",
+     "onem": "orta",
+     "tur": "dosya",
+     "yol": "/etc/uygulama/uygulama.conf",
+     "mod_en_cok": "640",
+     "duzeltme": {
+      "tur": "izin",
+      "yol": "/etc/uygulama/uygulama.conf",
+      "mod": "0640"
+     }
+    },
+    {
+     "kimlik": "telnet-kapali",
+     "baslik": "Telnet portu (23) kapalı",
+     "onem": "yuksek",
+     "tur": "port",
+     "port": "tcp:23",
+     "acik": false
+    },
+    {
+     "kimlik": "telnet-paketi-yok",
+     "baslik": "telnet paketi kurulu değil",
+     "onem": "orta",
+     "tur": "paket",
+     "ad": "telnet",
+     "kurulu": false,
+     "duzeltme": {
+      "tur": "paket_kaldir",
+      "ad": "telnet"
+     }
+    },
+    {
+     "kimlik": "eski-hesap-yok",
+     "baslik": "Kullanımdan kalkmış eskiadmin hesabı yok",
+     "onem": "yuksek",
+     "tur": "kullanici",
+     "ad": "eskiadmin",
+     "var": false,
+     "duzeltme": {
+      "tur": "kullanici_sil",
+      "ad": "eskiadmin"
+     }
+    },
+    {
+     "kimlik": "aslr-acik",
+     "baslik": "Adres alanı rastgeleleştirme açık (kernel.randomize_va_space=2)",
+     "onem": "orta",
+     "tur": "sysctl",
+     "anahtar": "kernel.randomize_va_space",
+     "deger": "2",
+     "oneri": "sysctl -w kernel.randomize_va_space=2 ve /etc/sysctl.d altına kalıcı ayar (konteynerde değiştirilemez)"
+    },
+    {
+     "kimlik": "tek-kok-hesap",
+     "baslik": "UID 0 yalnız root",
+     "onem": "yuksek",
+     "tur": "komut",
+     "komut": "grep -c ':x:0:' /etc/passwd",
+     "beklenen": "^1$"
+    }
+   ],
+   "surum": 1,
+   "degisiklik": {
+    "zaman": "2026-11-17T22:00:00",
+    "kim": "kurulum",
+    "neden": "dördüncü tur başlangıç tanımı"
+   },
+   "gecmis": []
+  }
+ },
+ "istisnalar": [
+  {
+   "kural_seti": "temel-sertlestirme",
+   "kural": "parola-yaslanma",
+   "sunucu": "PB-DB-01",
+   "gerekce": "veritabanı servis hesapları parola politikasından muaf (BT-GÜV-2026-07)",
+   "bitis": "2027-03-31",
+   "ekleyen": "kurulum",
+   "zaman": "2026-11-17T22:00:00"
+  }
+ ]
+}

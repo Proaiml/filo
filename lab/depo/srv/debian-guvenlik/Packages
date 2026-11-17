@@ -1,0 +1,26 @@
+Package: filo-cekirdek
+Version: 5.10.1-1
+Architecture: all
+Maintainer: Filo Lab <lab@filo.yerel>
+Filename: ./filo-cekirdek_5.10.1-1_all.deb
+Size: 788
+MD5sum: 32a5b5b53c9b863c321116f1a0fae66e
+SHA1: b6483cfe51801962821c311cc0c798c13e68cfb2
+SHA256: db8300bcf6b3a96367ad1b1502f371b45448ab59b5ccf31eddb9c4386d19e1e2
+Section: misc
+Priority: optional
+Description: Filo lab ornek cekirdegi (LAB-2026-0002)
+
+Package: filo-kutuphane
+Version: 2.0.1-1
+Architecture: all
+Maintainer: Filo Lab <lab@filo.yerel>
+Filename: ./filo-kutuphane_2.0.1-1_all.deb
+Size: 708
+MD5sum: 556cebbfaa0d33ca10d420fb50f59595
+SHA1: 91c9813f726b99c3b299740521f69bd0fc0c820d
+SHA256: 59011a1d1d01415edcc70cdfb799311d339b24fc6a40cb3278fd21028fdf1891
+Section: misc
+Priority: optional
+Description: Filo lab ornek kutuphanesi (LAB-2026-0001)
+

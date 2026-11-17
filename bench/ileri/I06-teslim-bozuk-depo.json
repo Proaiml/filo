@@ -77,7 +77,7 @@
       "sunucular": [
         "PA-WEB-02"
       ],
-      "komut": "rm -f /etc/apt/sources.list.d/bozuk.list; printf '%s\\n' 'Types: deb' 'URIs: http://deb.debian.org/debian' 'Suites: bookworm bookworm-updates' 'Components: main' 'Signed-By: /usr/share/keyrings/debian-archive-keyring.gpg' > /etc/apt/sources.list.d/debian.sources; apt-get update -q >/dev/null 2>&1"
+      "komut": "rm -f /etc/apt/sources.list.d/bozuk.list; cp /etc/filo/depo-standart/* /etc/apt/sources.list.d/; apt-get update -q >/dev/null 2>&1"
     },
     {
       "islem": "kabuk",

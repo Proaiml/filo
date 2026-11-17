@@ -1,0 +1,180 @@
+Package: filo-araclar
+Version: 1.0.0-1
+Architecture: all
+Maintainer: Filo Lab <lab@filo.yerel>
+Filename: ./filo-araclar_1.0.0-1_all.deb
+Size: 690
+MD5sum: 1b1fcd8d773551bc2360a373f46b0a9d
+SHA1: 70fcfa74ab52a069fa3f7b1fe9d02cb4fc14066f
+SHA256: 4929f1e6d6515f573a8af4bb3547225766ebfe36c4d8ea78416039552339a956
+Section: misc
+Priority: optional
+Description: Filo lab ornek araclari
+
+Package: filo-araclar
+Version: 1.1.0-1
+Architecture: all
+Maintainer: Filo Lab <lab@filo.yerel>
+Filename: ./filo-araclar_1.1.0-1_all.deb
+Size: 690
+MD5sum: be51570bce5de0de58968a6a739920d5
+SHA1: e816c60266c6685d04a18d6ca089bc80abe70e32
+SHA256: 4b201932eee3d9f8363c3499800f98e656bdc55e85cdcc79f44041d0c76acc06
+Section: misc
+Priority: optional
+Description: Filo lab ornek araclari
+
+Package: filo-cekirdek
+Version: 5.10.0-1
+Architecture: all
+Maintainer: Filo Lab <lab@filo.yerel>
+Filename: ./filo-cekirdek_5.10.0-1_all.deb
+Size: 788
+MD5sum: 27c291ea56cfdcc05676fb32b6c721cb
+SHA1: 325402cd3bfa1886fede7e45487b6e358c0a208a
+SHA256: e2fbc557c7f0ab4c64d0e2601df4e4174c9037f78cddf026f0b4212bb9a364a2
+Section: misc
+Priority: optional
+Description: Filo lab ornek cekirdegi (LAB-2026-0002)
+
+Package: filo-izleme
+Version: 3.2.0-1
+Architecture: all
+Maintainer: Filo Lab <lab@filo.yerel>
+Filename: ./filo-izleme_3.2.0-1_all.deb
+Size: 694
+MD5sum: 8bf0203196174051c4ff52688c7577a8
+SHA1: e36af860942a3cc78b2a57993fbb5dbd797955a5
+SHA256: 968231cdf0b804cfc31d1cec95a804f29a66523262cfbdf127258caa616f5449
+Section: misc
+Priority: optional
+Description: Filo lab ornek izleme ajani
+
+Package: filo-izleme
+Version: 3.3.0-1
+Architecture: all
+Maintainer: Filo Lab <lab@filo.yerel>
+Filename: ./filo-izleme_3.3.0-1_all.deb
+Size: 694
+MD5sum: d1be60e9dc51c28f4130b8dc82ea2754
+SHA1: 5eeb0194d6a581a824784b049fafbcb1f840a0e5
+SHA256: b551946759c5c4bf2e9df7a5b2d569817dba4f938f4c145fdf08f4d6ff585455
+Section: misc
+Priority: optional
+Description: Filo lab ornek izleme ajani
+
+Package: filo-kutuphane
+Version: 2.0.0-1
+Architecture: all
+Maintainer: Filo Lab <lab@filo.yerel>
+Filename: ./filo-kutuphane_2.0.0-1_all.deb
+Size: 708
+MD5sum: 09ccdf3dfedc0928250ff18053ac4ea0
+SHA1: 80566f0653c854896d00d265899741ef0d6326d4
+SHA256: ba2b511eb4461dc3cdd2cd054c611b9cd9c90ab28043c47e459f729f39ad7a7e
+Section: misc
+Priority: optional
+Description: Filo lab ornek kutuphanesi (LAB-2026-0001)
+
+Package: jq
+Version: 1.6-2.1+deb12u3
+Architecture: amd64
+Maintainer: ChangZhuo Chen (陳昌倬) <czchen@debian.org>
+Installed-Size: 111
+Depends: libjq1 (= 1.6-2.1+deb12u3), libc6 (>= 2.34)
+Filename: ./jq_1.6-2.1+deb12u3_amd64.deb
+Size: 64432
+MD5sum: 17f3dc5acec4cdce0dc37bfed2135d24
+SHA1: d0e91f6f967992a3754f905777bbfc2b6695fdef
+SHA256: c25f3fda201207ed98b1d63686f2d81b9dfeb99f1ab2d1d35fb3f7b6a1c107dc
+Section: utils
+Priority: optional
+Multi-Arch: foreign
+Homepage: https://github.com/stedolan/jq
+Description: lightweight and flexible command-line JSON processor
+ jq is like sed for JSON data – you can use it to slice
+ and filter and map and transform structured data with
+ the same ease that sed, awk, grep and friends let you
+ play with text.
+ .
+ It is written in portable C, and it has minimal runtime
+ dependencies.
+ .
+ jq can mangle the data format that you have into the
+ one that you want with very little effort, and the
+ program to do so is often shorter and simpler than
+ you’d expect.
+
+Package: libjq1
+Source: jq
+Version: 1.6-2.1+deb12u3
+Architecture: amd64
+Maintainer: ChangZhuo Chen (陳昌倬) <czchen@debian.org>
+Installed-Size: 366
+Depends: libc6 (>= 2.36), libonig5 (>= 6.8.1)
+Filename: ./libjq1_1.6-2.1+deb12u3_amd64.deb
+Size: 136460
+MD5sum: ca16856638aa6f78d0b311e12ca73437
+SHA1: 51996293168e288eab6bda49dce2fce58bc68de7
+SHA256: 5e9a7081ba10ce826f6d3d103aa9b912170c5adc836e2561000733571995dd5b
+Section: utils
+Priority: optional
+Multi-Arch: same
+Homepage: https://github.com/stedolan/jq
+Description: lightweight and flexible command-line JSON processor - shared library
+ jq is like sed for JSON data – you can use it to slice
+ and filter and map and transform structured data with
+ the same ease that sed, awk, grep and friends let you
+ play with text.
+ .
+ It is written in portable C, and it has minimal runtime
+ dependencies.
+ .
+ jq can mangle the data format that you have into the
+ one that you want with very little effort, and the
+ program to do so is often shorter and simpler than
+ you’d expect.
+ .
+ This package contains the shared library.
+
+Package: libonig5
+Source: libonig
+Version: 6.9.8-1
+Architecture: amd64
+Maintainer: Jörg Frings-Fürst <debian@jff.email>
+Installed-Size: 666
+Depends: libc6 (>= 2.14)
+Filename: ./libonig5_6.9.8-1_amd64.deb
+Size: 187828
+MD5sum: 7e359432d638eee2be29dfd20ddcd493
+SHA1: bf3d28afb705a09d553f20a2d6ef929e0c9855c4
+SHA256: 59ecfce6d88c7c4b09496ce182b3b8303e8e8477664e009b16ae83a09cd12be7
+Section: libs
+Priority: optional
+Multi-Arch: same
+Homepage: https://github.com/kkos/oniguruma
+Description: regular expressions library
+ Oniguruma is a library for working with regular expressions.
+ .
+ Different character encoding for every regular expression object can
+ be specified.
+
+Package: tree
+Version: 2.1.0-1
+Architecture: amd64
+Maintainer: Florian Ernst <florian@debian.org>
+Installed-Size: 113
+Depends: libc6 (>= 2.34)
+Filename: ./tree_2.1.0-1_amd64.deb
+Size: 52464
+MD5sum: a12f30705b94d891f14bd5199fe6f4f2
+SHA1: 64948a31b63688f0b65d4732e2ad16f8a32f95e3
+SHA256: 4c0dc6088e801285717bae2a98a7672f1e4d2eed4e918355987bc6617a8f490b
+Section: utils
+Priority: optional
+Homepage: http://mama.indstate.edu/users/ice/tree/
+Description: displays an indented directory tree, in color
+ Tree is a recursive directory listing command that produces a depth indented
+ listing of files, which is colorized ala dircolors if the LS_COLORS environment
+ variable is set and output is to tty.
+

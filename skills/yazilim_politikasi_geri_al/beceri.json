@@ -1,0 +1,31 @@
+{
+  "ad": "yazilim_politikasi_geri_al",
+  "surum": 1,
+  "baslik": "Politika uygulamasını geri al",
+  "aciklama": "Son yazılım politikası uygulamasının yaptığı değişiklikleri tersine çevirir (kurulan paket kaldırılır, kaldırılan eski sürümüyle geri kurulur, servis eski durumuna, dosya yedeğine döner).",
+  "etiketler": [
+    "politika",
+    "geri al",
+    "rollback",
+    "eski hâline"
+  ],
+  "risk": 3,
+  "tur": "yonetim",
+  "islem": "yazilim_politikasi_geri_al",
+  "toplu": true,
+  "zaman_asimi": 600,
+  "girdi": {},
+  "kuru": {
+    "aciklama": "geri alma eylemleri listelenir"
+  },
+  "geri_al": {
+    "geri_alinamaz": "geri almanın tersi politikayı yeniden uygulamaktır"
+  },
+  "cikti": {
+    "bicim": "anahtar_deger",
+    "alanlar": {
+      "geri_alinan": "tamsayi",
+      "eylemler": "metin"
+    }
+  }
+}

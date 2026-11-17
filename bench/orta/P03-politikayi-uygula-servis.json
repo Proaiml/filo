@@ -1,0 +1,100 @@
+{
+  "kimlik": "P03-politikayi-uygula-servis",
+  "seviye": "orta",
+  "baslik": "Politikayı uygula: eksik paket, dosya ve duran servis",
+  "kaynak": "https://docs.microfocus.com/doc/419/25.4/installingsoftwareusingsoftwarepolicy",
+  "kaynak_turu": "taslak",
+  "talep": "uygulama-standardi politikasını app grubundaki sunuculara uygula ve sonucu ops@lab.yerel adresine bildir.",
+  "kurulum": [
+    {
+      "sunucu": "PA-APP-02",
+      "bozukluk": "servis_durmus",
+      "servis": "uygulama"
+    },
+    {
+      "sunucu": "PB-APP-01",
+      "bozukluk": "komut",
+      "komut": "apk add -q jq tree"
+    }
+  ],
+  "yardimsiz": false,
+  "yardimsiz_neden": "Politikanın içeriği Filo'nun kaydındadır",
+  "degisebilir": [
+    "PA-APP-01",
+    "PA-APP-02",
+    "PB-APP-01"
+  ],
+  "hakem": [
+    {
+      "tur": "paket",
+      "sunucular": [
+        "PA-APP-01",
+        "PA-APP-02",
+        "PB-APP-01"
+      ],
+      "paket": "jq",
+      "kurulu": true
+    },
+    {
+      "tur": "paket",
+      "sunucular": [
+        "PA-APP-01",
+        "PA-APP-02",
+        "PB-APP-01"
+      ],
+      "paket": "tree",
+      "kurulu": true
+    },
+    {
+      "tur": "dosya",
+      "sunucular": [
+        "PA-APP-01",
+        "PA-APP-02",
+        "PB-APP-01"
+      ],
+      "yol": "/etc/motd",
+      "icerir": "Filo"
+    },
+    {
+      "tur": "servis",
+      "sunucular": [
+        "PA-APP-02"
+      ],
+      "servis": "uygulama",
+      "durum": "active"
+    },
+    {
+      "tur": "posta",
+      "alici": "ops@lab.yerel",
+      "icerir": [
+        "PA-APP-02"
+      ]
+    }
+  ],
+  "referans": [
+    {
+      "islem": "kabuk",
+      "sunucular": [
+        "PA-APP-01",
+        "PA-APP-02",
+        "PB-APP-01"
+      ],
+      "komut": {
+        "debian": "DEBIAN_FRONTEND=noninteractive apt-get install -y -q jq tree >/dev/null 2>&1; printf '%s\\n' 'Bu sunucu Filo ile teslim edilmistir. Yetkisiz erisim yasaktir.' > /etc/motd; /usr/local/sbin/filo-svc start uygulama",
+        "rhel": "dnf -y -q install jq tree >/dev/null 2>&1; printf '%s\\n' 'Bu sunucu Filo ile teslim edilmistir. Yetkisiz erisim yasaktir.' > /etc/motd; /usr/local/sbin/filo-svc start uygulama",
+        "alpine": "apk add -q jq tree >/dev/null 2>&1; printf '%s\\n' 'Bu sunucu Filo ile teslim edilmistir. Yetkisiz erisim yasaktir.' > /etc/motd; /usr/local/sbin/filo-svc start uygulama"
+      }
+    },
+    {
+      "islem": "posta",
+      "alici": "ops@lab.yerel",
+      "konu": "uygulama-standardi",
+      "govde": "PA-APP-01, PA-APP-02, PB-APP-01 politikaya getirildi"
+    }
+  ],
+  "onay_politikasi": {
+    "varsayilan": "onayla"
+  },
+  "adim_butcesi": 14,
+  "yasak": []
+}

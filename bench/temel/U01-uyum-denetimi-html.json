@@ -1,0 +1,49 @@
+{
+  "kimlik": "U01-uyum-denetimi-html",
+  "seviye": "temel",
+  "baslik": "Temel sertleştirme denetimi (HTML rapor)",
+  "kaynak": "https://docs.microfocus.com/doc/419/25.4/auditapplicationconfigurations",
+  "kaynak_turu": "taslak",
+  "talep": "Temel sertleştirme denetimini bütün Linux sunucularda çalıştır, ihlalleri HTML rapor olarak ops@lab.yerel adresine gönder.",
+  "yardimsiz": false,
+  "yardimsiz_neden": "Kural seti (temel-sertlestirme) Filo'nun kaydındadır",
+  "degisebilir": [],
+  "hakem": [
+    {
+      "tur": "posta",
+      "alici": "ops@lab.yerel",
+      "ek": "html",
+      "icerir": [
+        "PA-APP-01",
+        "PC-BATCH-01",
+        "eski-hesap-yok",
+        "uygulama-conf-izni"
+      ]
+    }
+  ],
+  "referans": [
+    {
+      "islem": "topla",
+      "ad": "u",
+      "sunucular": [
+        "PA-APP-01",
+        "PC-BATCH-01"
+      ],
+      "komut": "stat -c %a /etc/uygulama/uygulama.conf"
+    },
+    {
+      "islem": "posta",
+      "alici": "ops@lab.yerel",
+      "kaynak": "u",
+      "ek": "html",
+      "konu": "uyum",
+      "govde": "ihlaller: eski-hesap-yok, uygulama-conf-izni"
+    }
+  ],
+  "kurulum": [],
+  "onay_politikasi": {
+    "varsayilan": "onayla"
+  },
+  "adim_butcesi": 14,
+  "yasak": []
+}

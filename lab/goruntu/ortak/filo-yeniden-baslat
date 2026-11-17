@@ -1,0 +1,21 @@
+#!/bin/sh
+# Laboratuvar YENİDEN BAŞLATMA ÖYKÜNMESİ (D1). Konteynerde gerçek yeniden başlatma yoktur (PID 1 sshd'dir). Bu betik
+# gerçek bir yeniden başlatmanın gözlenebilir sonuçlarını üretir: açılış kimliği yenilenir, servisler durdurulup yeniden
+# başlatılır (yeni pid), "yeniden başlatma gerekiyor" işareti silinir, günlüğe yazılır. Gerçek sunucuda beceriler
+# `systemctl reboot` / `reboot` çağırır; laboratuvarda bu komutlar bu betiğe yönlenir.
+#   filo-yeniden-baslat           3 sn sonra arka planda (komut hemen döner, gerçek reboot gibi bağlantı kopar)
+#   filo-yeniden-baslat --simdi   hemen, ön planda
+if [ "$1" != "--simdi" ]; then
+  setsid nohup sh -c 'sleep 3; /usr/local/sbin/filo-yeniden-baslat --simdi' >/dev/null 2>&1 &
+  echo "yeniden başlatma 3 sn sonra (laboratuvar öykünmesi)"
+  exit 0
+fi
+mkdir -p /var/log/filo
+echo "$(date +%s) yeniden_baslatma $(cat /run/filo-acilis-kimligi 2>/dev/null)" >> /var/log/filo/yeniden-baslatma.log
+cat /proc/sys/kernel/random/uuid > /run/filo-acilis-kimligi
+date +%s > /run/filo-acilis-zamani
+for f in /etc/filo-svc/*.cmd; do
+  [ -f "$f" ] || continue
+  /usr/local/sbin/filo-svc restart "$(basename "$f" .cmd)" >/dev/null 2>&1
+done
+rm -f /run/reboot-required /run/reboot-required.pkgs /var/run/reboot-required /var/run/reboot-required.pkgs

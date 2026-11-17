@@ -1,0 +1,30 @@
+{
+  "ad": "uyum_geri_al",
+  "surum": 1,
+  "baslik": "Uyum düzeltmesini geri al",
+  "aciklama": "Son uyum düzeltmesinin değişikliklerini tersine çevirir (dosya yedeğine, izin eski değerine döner).",
+  "etiketler": [
+    "uyum",
+    "geri al",
+    "rollback"
+  ],
+  "risk": 3,
+  "tur": "yonetim",
+  "islem": "uyum_geri_al",
+  "toplu": true,
+  "zaman_asimi": 300,
+  "girdi": {},
+  "kuru": {
+    "aciklama": "geri alma eylemleri listelenir"
+  },
+  "geri_al": {
+    "geri_alinamaz": "geri almanın tersi düzeltmeyi yeniden yapmaktır"
+  },
+  "cikti": {
+    "bicim": "anahtar_deger",
+    "alanlar": {
+      "geri_alinan": "tamsayi",
+      "eylemler": "metin"
+    }
+  }
+}

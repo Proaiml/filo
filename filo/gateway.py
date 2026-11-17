@@ -25,10 +25,10 @@ import urllib.request
 
 from . import AYARLAR, SONUC
 
-TURLER = ("ollama", "openai-uyumlu", "anthropic", "openai", "gemini", "agy")
+TURLER = ("ollama", "openai-uyumlu", "anthropic", "openai", "gemini", "agy", "claude-cli")
 VARSAYILAN_ADRES = {"ollama": "http://127.0.0.1:11434", "openai-uyumlu": "http://127.0.0.1:1234/v1",
                     "anthropic": "https://api.anthropic.com", "openai": "https://api.openai.com/v1",
-                    "gemini": "https://generativelanguage.googleapis.com/v1beta/openai", "agy": ""}
+                    "gemini": "https://generativelanguage.googleapis.com/v1beta/openai", "agy": "", "claude-cli": ""}
 VARSAYILAN_ORTAM = {"anthropic": "ANTHROPIC_API_KEY", "openai": "OPENAI_API_KEY", "gemini": "GEMINI_API_KEY"}
 YARDIM = {
     "ollama": "Ollama bu makinede çalışır (ollama serve). Adres genelde http://127.0.0.1:11434. Model adı `ollama list` "
@@ -46,6 +46,10 @@ YARDIM = {
               "GEMINI_API_KEY ortam değişkeni ya da bu form (ayarlar/gizli.json, git dışında).",
     "agy": "Antigravity komut satırı aracı (`agy`), bu makinede API anahtarı olmayan modeller için. Model kimliği "
            "`agy models` çıktısındandır. Adres ve anahtar gerekmez.",
+    "claude-cli": "Claude Code komut satırı (`claude -p`), API anahtarı olmadan Claude modelleri için. Bu makinedeki "
+                  "`claude` oturumunun hesabını kullanır (bir terminalde `claude auth login` ile Claude aboneliğinizle "
+                  "girin). Model kimliği ör. claude-opus-5-5; efor alanı low/medium/high/xhigh/max. Araçsız ve boş bir "
+                  "klasörde çalıştırılır; yalnız metin cevabı alınır. Adres ve anahtar gerekmez.",
 }
 
 
@@ -171,6 +175,7 @@ class Model:
         self.adres = (profil.get("adres") or VARSAYILAN_ADRES[self.tur]).rstrip("/")
         self.zaman_asimi = int(profil.get("zaman_asimi", 180))
         self.cagri, self.sure, self.son_baglam = 0, 0.0, 0
+        self.son_yedek = None
         self.spec = f"{self.tur}:{self.ad}"
 
     # --- sohbet
@@ -185,6 +190,8 @@ class Model:
                 return self._anthropic(mesajlar)
             if self.tur == "agy":
                 return self._agy(mesajlar)
+            if self.tur == "claude-cli":
+                return self._claude_cli(mesajlar)
             return self._openai(mesajlar, json_kip)
         finally:
             self.cagri += 1
@@ -221,11 +228,29 @@ class Model:
             raise BaglantiHatasi("Anthropic anahtarı yok (ANTHROPIC_API_KEY ya da gizli.json)")
         sistem = "\n\n".join(m["content"] for m in mesajlar if m["role"] == "system")
         diger = [{"role": m["role"], "content": m["content"]} for m in mesajlar if m["role"] != "system"]
-        govde = {"model": self.ad, "max_tokens": 1024, "temperature": 0, "messages": diger}
+        # Yeni Claude modelleri (Opus 5.5, Sonnet 5.5, Fable 5.x) temperature/top_p kabul etmez ve düşünmeyi
+        # kapatmaya izin vermez; derinlik `output_config.effort` ile ayarlanır. Düşünme max_tokens'tan pay aldığı için
+        # tavan geniş tutulur. Eski modeller için profil "eski_api": true ile eski gövdeyi kullanır.
+        if self.p.get("eski_api"):
+            govde = {"model": self.ad, "max_tokens": int(self.p.get("max_tokens", 1024)), "temperature": 0,
+                     "messages": diger}
+        else:
+            govde = {"model": self.ad, "max_tokens": int(self.p.get("max_tokens", 16000)), "messages": diger,
+                     "output_config": {"effort": self.p.get("efor", "high")}}
         if sistem:
             govde["system"] = sistem
         bas = {"x-api-key": self.anahtar, "anthropic-version": "2023-06-01"}
+        if self.p.get("yedek_model", True) and not self.p.get("eski_api"):
+            # güvenlik sınıflandırıcısı reddederse istek sunucu tarafında uygun bir modele aktarılır
+            bas["anthropic-beta"] = "server-side-fallback-2026-07-01"
+            govde["fallbacks"] = "default"
         out = _istek(self.adres + "/v1/messages", govde, bas, self.zaman_asimi)
+        if out.get("stop_reason") == "refusal":
+            kat = (out.get("stop_details") or {}).get("category")
+            raise BaglantiHatasi(f"model isteği reddetti (refusal, kategori: {kat})")
+        if out.get("model") and out["model"] != self.ad:
+            self.son_yedek = out["model"]       # yedek model cevapladı; ölçümde ayrı raporlanmalı
+        self.son_baglam = (out.get("usage") or {}).get("input_tokens", 0)
         return "".join(b.get("text", "") for b in out.get("content", []) if b.get("type") == "text")
 
     def _agy(self, mesajlar):
@@ -243,8 +268,43 @@ class Model:
             raise BaglantiHatasi(f"agy: {out.get('status')} {str(out.get('error'))[:200]}")
         return out.get("response", "")
 
+    def _claude_cli(self, mesajlar):
+        """Claude Code başsız kipi: araçsız, oturum kaydetmeden, boş bir klasörde; istem stdin'den gider (Windows komut
+        satırı sınırı yok). Sistem iletileri --system-prompt ile, konuşma düz metin olarak verilir."""
+        sistem = "\n\n".join(m["content"] for m in mesajlar if m["role"] == "system")
+        metin = "\n\n".join(f"[{m['role'].upper()}]\n{m['content']}" for m in mesajlar if m["role"] != "system")
+        cwd = pathlib.Path(tempfile.gettempdir()) / "filo-claude-bos"
+        cwd.mkdir(exist_ok=True)
+        import shutil
+        komut = [shutil.which("claude") or "claude", "-p", "--model", self.ad, "--output-format", "json", "--tools", "",
+                 "--no-session-persistence", "--strict-mcp-config", "--setting-sources", ""]
+        if self.p.get("efor"):
+            komut += ["--effort", self.p["efor"]]
+        if sistem:                                   # dosyayla: cmd.exe satır sonlarını ve tırnakları bozmasın
+            sp = cwd / f"sistem-{os.getpid()}-{time.time_ns()}.txt"
+            sp.write_text(sistem, encoding="utf-8")
+            komut += ["--system-prompt-file", str(sp)]
+        try:
+            r = subprocess.run(komut, input=metin, cwd=cwd, capture_output=True, text=True, encoding="utf-8",
+                               errors="replace", timeout=self.zaman_asimi + 60)
+        finally:
+            if sistem:
+                sp.unlink(missing_ok=True)
+        try:
+            out = json.loads(r.stdout.strip().splitlines()[-1])
+        except (ValueError, IndexError):
+            raise BaglantiHatasi(f"claude cevabı okunamadı: {(r.stderr or r.stdout)[:200]}") from None
+        if out.get("is_error"):
+            raise BaglantiHatasi(f"claude: {out.get('api_error_status')} {str(out.get('result'))[:200]}")
+        kullanilan = list((out.get("modelUsage") or {}).keys())
+        if kullanilan and not any(k.startswith(self.ad) for k in kullanilan):
+            self.son_yedek = ",".join(kullanilan)
+        return out.get("result", "")
+
     # --- modeller ve sınama
     def modeller(self):
+        if self.tur == "claude-cli":
+            return ["claude-opus-5-5", "claude-sonnet-5-5", "claude-haiku-5-5", "claude-fable-5-2"]
         if self.tur == "ollama":
             return [m["name"] for m in _istek(self.adres + "/api/tags", zaman_asimi=10).get("models", [])]
         if self.tur == "anthropic":

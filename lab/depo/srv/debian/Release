@@ -1,0 +1,22 @@
+Architectures: amd64 all
+Codename: filo-lab
+Date: Tue, 17 Nov 2026 18:25:36 +0000
+Label: Filo-Lab
+Origin: Filo
+Suite: filo-lab
+MD5Sum:
+ cbff298af16c4c6449e3db30a4feb98b             5755 Packages
+ 052243157d89cb520eaf131658a15294             2264 Packages.gz
+ 14d644499d251aff8f7dd8c914d40cb6              127 Release
+SHA1:
+ da656d1111094026389969c77b7b78eb57fbd01e             5755 Packages
+ ae1411c1aa063711b39c10aaf7a54a235508350a             2264 Packages.gz
+ 09372f8781bce90dd9218d105f73211e808ebec4              127 Release
+SHA256:
+ 431e9761873171db1fcedf673d47e0d5b74ff8007f9200d27084a12675d10a0e             5755 Packages
+ e053cfa72f0edc82956f28414243f33fe8ecda1a2eab4463a5d8751031790798             2264 Packages.gz
+ 7c78663b98664d67370cee61b683aa0cb8f6d2f5813917a59b769dfd9d30aebe              127 Release
+SHA512:
+ 86c175a73d815aed1c7bf7074f6a8f71de82677e4ae07d750256eb595f3bba36260e21fe7aade61e508bd6daf162079420af2f2999be37907cdf8272ee60354e             5755 Packages
+ 10911c0bb4346ce101038832630c1da0309db5ed1f3648dc37a08fbe787cb2548c2c812c3e221101295f7b05be201bbc7547f77366bc51950b0006f3a2aede20             2264 Packages.gz
+ db64d654da700956bb6270f502f561539a5898bdc26f3b6aa4e458b518ae5a290189000e0fc0dced2597a946014d8a453a3251e09182f045aa30bf0c0afe4b55              127 Release
