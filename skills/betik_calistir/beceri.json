@@ -1,0 +1,35 @@
+{
+  "ad": "betik_calistir",
+  "surum": 1,
+  "baslik": "Betik çalıştır (betik kütüphanesinden)",
+  "aciklama": "Betik kütüphanesindeki onaylı bir betiği çalıştırır; çıktı şemasını betiğin kaydı belirler.",
+  "etiketler": [
+    "betik",
+    "script",
+    "çalıştır",
+    "run server script",
+    "kütüphane"
+  ],
+  "risk": 0,
+  "tur": "uzak",
+  "zaman_asimi": 120,
+  "girdi": {
+    "betik": {
+      "tip": "secim",
+      "kaynak": "betikler",
+      "aciklama": "betik kütüphanesindeki betiğin adı (talepte adı ya da işi geçen betik)"
+    },
+    "argumanlar": {
+      "tip": "liste",
+      "desen": "^[A-Za-z0-9_./=-]{1,64}$",
+      "zorunlu": false,
+      "aciklama": "betiğe verilecek argümanlar; talep açıkça argüman vermiyorsa boş bırak"
+    }
+  },
+  "cikti": {
+    "bicim": "betik"
+  },
+  "komut": {
+    "linux": "@betik"
+  }
+}

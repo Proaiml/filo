@@ -1,0 +1,68 @@
+{
+  "kimlik": "A04-alt-akis",
+  "baslik": "Kayıtlı sabit akışı alt akış olarak çağır",
+  "kaynak": "türetildi: docs/arastirma/09-akis-ozellik-envanteri.md 3#8 (alt akış)",
+  "kaynak_turu": "taslak",
+  "talep": "PA-APP-01 ve PA-APP-02 için uygulama-saglik akışını çalıştır ve sonucu ops@lab.yerel adresine bildir.",
+  "akislar": {
+    "uygulama-saglik": {
+      "bicim": "filo-akis",
+      "surum": 2,
+      "talep": "uygulama sağlık denetimi",
+      "girdi": {},
+      "adimlar": [
+        {
+          "kimlik": "s1",
+          "tur": "beceri",
+          "beceri": "servis_durumu",
+          "parametreler": {
+            "servis": "uygulama"
+          }
+        },
+        {
+          "kimlik": "s2",
+          "tur": "beceri",
+          "beceri": "disk_durumu",
+          "parametreler": {}
+        }
+      ]
+    }
+  },
+  "hakem": [
+    {
+      "tur": "posta",
+      "alici": "ops@lab.yerel",
+      "icerir": [
+        "PA-APP-01",
+        "PA-APP-02",
+        "active",
+        "yuzde"
+      ]
+    }
+  ],
+  "referans": [
+    {
+      "islem": "topla",
+      "ad": "s",
+      "sunucular": [
+        "PA-APP-01",
+        "PA-APP-02"
+      ],
+      "komut": "echo uygulama $(/usr/local/sbin/filo-svc is-active uygulama); df -P / | tail -1"
+    },
+    {
+      "islem": "posta",
+      "alici": "ops@lab.yerel",
+      "kaynak": "s",
+      "konu": "uygulama-saglik",
+      "govde": "servis ve disk yuzde"
+    }
+  ],
+  "kurulum": [],
+  "onay_politikasi": {
+    "varsayilan": "onayla"
+  },
+  "degisebilir": [],
+  "adim_butcesi": 14,
+  "seviye": "orta"
+}

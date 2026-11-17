@@ -1,0 +1,13 @@
+{
+  "ad": "uygulama_surumu",
+  "surum": 1,
+  "aciklama": "Uygulamanın kurulu sürümü (sunucu, surum)",
+  "risk": 0,
+  "cikti": {
+    "bicim": "anahtar_deger",
+    "alanlar": {
+      "sunucu": "metin",
+      "surum": "metin"
+    }
+  }
+}

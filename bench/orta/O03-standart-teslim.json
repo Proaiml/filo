@@ -1,0 +1,69 @@
+{
+  "kimlik": "O03-standart-teslim",
+  "seviye": "orta",
+  "baslik": "Yeni sunuculara standart ürünler",
+  "kaynak": "türetildi (kaynak yok): docs/arastirma/03-vaka-taslaklari.md O-009 ve devir notundaki örnek talep",
+  "kaynak_turu": "turetilmis",
+  "talep": "Yeni kurulan PB-WEB-01 ve PB-DB-01 sunucularına standart ürünleri kur ve doğrula.",
+  "kurulum": [],
+  "onay_politikasi": {
+    "varsayilan": "onayla"
+  },
+  "degisebilir": [
+    "PB-WEB-01",
+    "PB-DB-01"
+  ],
+  "hakem": [
+    {
+      "tur": "paket",
+      "sunucular": [
+        "PB-WEB-01",
+        "PB-DB-01"
+      ],
+      "paket": "jq",
+      "kurulu": true
+    },
+    {
+      "tur": "paket",
+      "sunucular": [
+        "PB-WEB-01",
+        "PB-DB-01"
+      ],
+      "paket": "tree",
+      "kurulu": true
+    },
+    {
+      "tur": "dosya",
+      "sunucular": [
+        "PB-WEB-01",
+        "PB-DB-01"
+      ],
+      "yol": "/etc/motd",
+      "icerir": "Filo ile teslim"
+    }
+  ],
+  "referans": [
+    {
+      "islem": "kabuk",
+      "sunucular": [
+        "PB-WEB-01",
+        "PB-DB-01"
+      ],
+      "komut": {
+        "debian": "DEBIAN_FRONTEND=noninteractive apt-get install -y -q jq tree >/dev/null 2>&1",
+        "rhel": "dnf install -y -q jq tree >/dev/null 2>&1",
+        "alpine": "apk add -q jq tree >/dev/null 2>&1"
+      }
+    },
+    {
+      "islem": "kabuk",
+      "sunucular": [
+        "PB-WEB-01",
+        "PB-DB-01"
+      ],
+      "komut": "printf '%s\\n' 'Bu sunucu Filo ile teslim edilmistir. Yetkisiz erisim yasaktir.' > /etc/motd"
+    }
+  ],
+  "adim_butcesi": 14,
+  "yasak": []
+}

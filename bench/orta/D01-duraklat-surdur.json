@@ -1,0 +1,71 @@
+{
+  "kimlik": "D01-duraklat-surdur",
+  "baslik": "Çalışan iş adım sınırında duraklatılır ve sürdürülür",
+  "kaynak": "türetildi: docs/arastirma/09b-akis-api-ve-yonetim.md bölüm 2.2 (pause / resume); 09c 'Paused - No Workers in Group'",
+  "kaynak_turu": "taslak",
+  "talep": "PA grubundaki sunucularda uygulama servisini yeniden başlat ve sonucu ops@lab.yerel adresine bildir.",
+  "operator": {
+    "duraklat_adimda": 0,
+    "surdur_sn": 2
+  },
+  "yardimsiz": false,
+  "yardimsiz_neden": "Filo'nun zamanlayıcısı ya da koşu denetimi gerekir; ham kabuk aracıyla zamanlama/duraklatma yapılamaz (laboratuvarda cron yok)",
+  "degisebilir": [
+    "PA-APP-01",
+    "PA-APP-02",
+    "PA-DB-01",
+    "PA-WEB-01"
+  ],
+  "hakem": [
+    {
+      "tur": "pid_degisti",
+      "sunucular": [
+        "PA-APP-01",
+        "PA-APP-02",
+        "PA-DB-01",
+        "PA-WEB-01"
+      ],
+      "servis": "uygulama"
+    },
+    {
+      "tur": "posta",
+      "alici": "ops@lab.yerel",
+      "icerir": [
+        "PA-APP-01",
+        "PA-WEB-01"
+      ]
+    },
+    {
+      "tur": "is_kaydi",
+      "kontrol": [
+        "duraklat",
+        "surdur"
+      ],
+      "duraklatma": true
+    }
+  ],
+  "referans": [
+    {
+      "islem": "kabuk",
+      "sunucular": [
+        "PA-APP-01",
+        "PA-APP-02",
+        "PA-DB-01",
+        "PA-WEB-01"
+      ],
+      "komut": "/usr/local/sbin/filo-svc restart uygulama"
+    },
+    {
+      "islem": "posta",
+      "alici": "ops@lab.yerel",
+      "konu": "yeniden başlatıldı",
+      "govde": "PA-APP-01 PA-APP-02 PA-DB-01 PA-WEB-01 uygulama yeniden başlatıldı"
+    }
+  ],
+  "kurulum": [],
+  "onay_politikasi": {
+    "varsayilan": "onayla"
+  },
+  "adim_butcesi": 14,
+  "seviye": "orta"
+}

@@ -1,0 +1,42 @@
+{
+  "ad": "disk_durumu",
+  "surum": 1,
+  "baslik": "Disk doluluk durumu",
+  "aciklama": "Bağlı dosya sistemlerinin boyutunu ve doluluk yüzdesini okur; eşiği aşanları 'esik_ustu' diye işaretler.",
+  "etiketler": [
+    "disk",
+    "doluluk",
+    "df",
+    "alan",
+    "dosya sistemi",
+    "kapasite"
+  ],
+  "risk": 0,
+  "tur": "uzak",
+  "girdi": {
+    "esik": {
+      "tip": "tamsayi",
+      "varsayilan": 90,
+      "en_az": 1,
+      "en_cok": 100,
+      "aciklama": "uyarı eşiği (yüzde)"
+    }
+  },
+  "cikti": {
+    "bicim": "satirlar",
+    "ayirici": "|",
+    "en_az_satir": 1,
+    "alanlar": {
+      "baglama": "metin",
+      "boyut_kb": "tamsayi",
+      "kullanilan_kb": "tamsayi",
+      "yuzde": "tamsayi",
+      "durum": "metin"
+    }
+  },
+  "komut": {
+    "linux": "df -P | awk -v e={esik} 'NR>1 && $1!=\"none\" && $6!~\"^/(proc|sys|dev)\" {u=$5; sub(\"%\",\"\",u); d=(u+0>=e)?\"esik_ustu\":\"normal\"; print $6\"|\"$2\"|\"$3\"|\"u\"|\"d}'",
+    "windows": "#filo:disk\nGet-PSDrive -PSProvider FileSystem | Where-Object Used | ForEach-Object { $t=$_.Used+$_.Free; $y=[int](100*$_.Used/$t); $d= if ($y -ge {esik}) {'esik_ustu'} else {'normal'}; \"$($_.Name):|$([int]($t/1KB))|$([int]($_.Used/1KB))|$y|$d\" }"
+  },
+  "zaman_asimi": 60
+}

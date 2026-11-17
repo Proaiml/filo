@@ -1,0 +1,91 @@
+{
+  "kimlik": "D03-adimdan-devam",
+  "baslik": "Başarısız adımdan yalnız başarısız sunucularla devam",
+  "kaynak": "türetildi: docs/arastirma/09c-akis-icerik-ve-sorunlar.md (Step Inspector: Rerun point); 11-ozellik-haritasi.md B18",
+  "kaynak_turu": "taslak",
+  "talep": "PA-APP-01 ve PA-APP-02 sunucularına tree paketini kur ve sonucu ops@lab.yerel adresine bildir.",
+  "kurulum": [
+    {
+      "sunucu": "PA-APP-02",
+      "bozukluk": "bozuk_depo"
+    }
+  ],
+  "onay_politikasi": {
+    "varsayilan": "onayla",
+    "beceriler": {
+      "depo_onar": "reddet",
+      "paket_onar": "reddet"
+    }
+  },
+  "kaptan_inisiyatif": 2,
+  "yardimsiz": false,
+  "yardimsiz_neden": "Filo'nun zamanlayıcısı ya da koşu denetimi gerekir; ham kabuk aracıyla zamanlama/duraklatma yapılamaz (laboratuvarda cron yok)",
+  "degisebilir": [
+    "PA-APP-01",
+    "PA-APP-02"
+  ],
+  "devam": {
+    "lab": [
+      {
+        "sifirla": [
+          "PA-APP-02"
+        ]
+      }
+    ],
+    "adim": 0,
+    "kapsam": "basarisiz"
+  },
+  "hakem": [
+    {
+      "tur": "paket",
+      "sunucular": [
+        "PA-APP-01",
+        "PA-APP-02"
+      ],
+      "paket": "tree",
+      "kurulu": true
+    },
+    {
+      "tur": "is_kaydi",
+      "devam_sunuculari": [
+        "PA-APP-02"
+      ]
+    },
+    {
+      "tur": "posta",
+      "alici": "ops@lab.yerel",
+      "icerir": [
+        "PA-APP-02"
+      ]
+    }
+  ],
+  "referans": [
+    {
+      "islem": "kabuk",
+      "sunucular": [
+        "PA-APP-01"
+      ],
+      "komut": "DEBIAN_FRONTEND=noninteractive apt-get install -y tree >/dev/null 2>&1"
+    },
+    {
+      "islem": "lab",
+      "sunucu": "PA-APP-02",
+      "bozukluk": "yeniden_yarat"
+    },
+    {
+      "islem": "kabuk",
+      "sunucular": [
+        "PA-APP-02"
+      ],
+      "komut": "dnf install -y tree >/dev/null 2>&1"
+    },
+    {
+      "islem": "posta",
+      "alici": "ops@lab.yerel",
+      "konu": "tree",
+      "govde": "PA-APP-01, PA-APP-02: tree kuruldu"
+    }
+  ],
+  "adim_butcesi": 14,
+  "seviye": "ileri"
+}

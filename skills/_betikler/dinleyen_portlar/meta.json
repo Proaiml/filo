@@ -1,0 +1,9 @@
+{
+  "ad": "dinleyen_portlar",
+  "surum": 1,
+  "aciklama": "Dinlemedeki TCP portları (port=...)",
+  "risk": 0,
+  "cikti": {
+    "bicim": "ham"
+  }
+}

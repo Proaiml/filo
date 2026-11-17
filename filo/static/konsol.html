@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Filo konsolu</title>
+<link rel="stylesheet" href="/static/konsol.css">
+<script>try { const t = localStorage.getItem("filo-tema"); if (t) document.documentElement.dataset.tema = t;
+  else if (matchMedia("(prefers-color-scheme: dark)").matches) document.documentElement.dataset.tema = "koyu"; } catch (e) {}</script>
+</head>
+<body>
+<a class="atla" href="#icerik">İçeriğe geç</a>
+<div class="kabuk">
+  <header class="ust" role="banner">
+    <div class="marka"><span class="marka-logo" aria-hidden="true"></span>Filo <small>sunucu ve runbook otomasyonu</small></div>
+    <span class="ust-ayrac" aria-hidden="true"></span>
+    <span class="ortam" title="Hedef ortam">Ortam: Laboratuvar</span>
+    <span class="ust-bosluk"></span>
+    <span class="baglanti-durumu" id="ajan-ozeti" title="Filo ajanları"><span class="nokta" id="ajan-nokta"></span><span id="ajan-metni">ajanlar: –</span></span>
+    <span class="baglanti-durumu" id="baglanti" title="Konsol sunucusuyla bağlantı"><span class="nokta" id="baglanti-nokta"></span><span id="baglanti-metni">bağlanıyor…</span></span>
+    <button class="ust-dugme" id="tema" type="button" aria-label="Temayı değiştir">Tema</button>
+    <button class="ust-dugme durdur" id="durdur" type="button" title="Bütün ajan eylemlerini tek adımda keser">Durdur</button>
+  </header>
+  <nav class="yan" aria-label="Ana gezinme" id="yan">
+    <div class="yan-grup">Operasyon</div>
+    <a href="/" data-sayfa="genel"><span class="ikon"></span>Genel bakış</a>
+    <a href="/kalfa" data-sayfa="kalfa"><span class="urun"></span>Kalfa · iş konsolu</a>
+    <a href="/kaptan" data-sayfa="kaptan"><span class="urun"></span>Kaptan · akış tuvali</a>
+    <a href="/onaylar" data-sayfa="onaylar"><span class="ikon"></span>Onaylar<span class="sayac gizli" id="onay-sayac"></span></a>
+    <a href="/zamanlama" data-sayfa="zamanlama"><span class="ikon"></span>Zamanlanmış işler</a>
+    <a href="/pencereler" data-sayfa="pencereler"><span class="ikon"></span>Bakım pencereleri</a>
+    <div class="yan-grup">Filo</div>
+    <a href="/envanter" data-sayfa="envanter"><span class="ikon"></span>Envanter</a>
+    <a href="/ajanlar" data-sayfa="ajanlar"><span class="ikon"></span>Ajanlar</a>
+    <a href="/teslim" data-sayfa="teslim"><span class="ikon"></span>Teslim politikaları</a>
+    <div class="yan-grup">Katalog</div>
+    <a href="/beceriler" data-sayfa="beceriler"><span class="ikon"></span>Beceriler</a>
+    <div class="yan-grup">Ölçüm</div>
+    <a href="/bench" data-sayfa="bench"><span class="ikon"></span>Bench</a>
+    <a href="/karsilastirma" data-sayfa="karsilastirma"><span class="ikon"></span>sunucu/akış karşılaştırması</a>
+    <div class="yan-grup">Yönetim</div>
+    <a href="/baglantilar" data-sayfa="baglantilar"><span class="ikon"></span>Model bağlantıları</a>
+    <a href="/denetim" data-sayfa="denetim"><span class="ikon"></span>Denetim izi</a>
+  </nav>
+  <main class="ana" id="icerik" tabindex="-1">
+    <div class="bant gizli" id="durdurma-bandi" role="alert">Durdurma düğmesi basılı: hiçbir ajan eylemi başlamaz. <button class="btn kucuk" id="durdur-kaldir" type="button">Kaldır</button></div>
+    <div id="sayfa"></div>
+  </main>
+</div>
+<script src="/static/konsol.js"></script>
+<script src="/static/sayfalar.js"></script>
+<script src="/static/kalfa.js"></script>
+<script src="/static/kaptan.js"></script>
+<script src="/static/zamanlama.js"></script>
+<script>Filo.baslat();</script>
+</body>
+</html>

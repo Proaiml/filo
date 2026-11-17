@@ -1,0 +1,26 @@
+{
+  "aciklama": "Model bağlantıları. Anahtarlar burada durmaz: anahtar_ortam bir ortam değişkeninin ADIDIR; arayüzden girilen anahtar git dışındaki ayarlar/gizli.json dosyasına yazılır.",
+  "varsayilan": "yerel-qwen3-8b",
+  "baglantilar": [
+    {
+      "ad": "yerel-qwen3-8b",
+      "tur": "ollama",
+      "adres": "http://127.0.0.1:11434",
+      "model": "qwen3:8b",
+      "num_ctx": 16384
+    },
+    {
+      "ad": "lm-studio",
+      "tur": "openai-uyumlu",
+      "adres": "http://127.0.0.1:1234/v1",
+      "model": ""
+    },
+    {
+      "ad": "anthropic",
+      "tur": "anthropic",
+      "adres": "https://api.anthropic.com",
+      "model": "",
+      "anahtar_ortam": "ANTHROPIC_API_KEY"
+    }
+  ]
+}

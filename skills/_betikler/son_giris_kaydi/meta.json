@@ -1,0 +1,9 @@
+{
+  "ad": "son_giris_kaydi",
+  "surum": 1,
+  "aciklama": "Laboratuvar giriş kaydının son satırları",
+  "risk": 0,
+  "cikti": {
+    "bicim": "ham"
+  }
+}

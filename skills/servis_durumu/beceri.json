@@ -1,0 +1,37 @@
+{
+  "ad": "servis_durumu",
+  "surum": 1,
+  "baslik": "Servis durumu",
+  "aciklama": "Bir servisin çalışıp çalışmadığını okur (systemctl / rc-service / Get-Service).",
+  "etiketler": [
+    "servis",
+    "durum",
+    "çalışıyor mu",
+    "service",
+    "daemon",
+    "status"
+  ],
+  "risk": 0,
+  "tur": "uzak",
+  "zaman_asimi": 30,
+  "girdi": {
+    "servis": {
+      "tip": "metin",
+      "desen": "servis",
+      "aciklama": "servis adı (ör. uygulama, webd, dbd)"
+    }
+  },
+  "cikti": {
+    "bicim": "anahtar_deger",
+    "alanlar": {
+      "servis": "metin",
+      "durum": "metin"
+    }
+  },
+  "komut": {
+    "debian": "s={servis}\nd=$(systemctl is-active \"$s\" 2>/dev/null)\n[ -n \"$d\" ] || d=bilinmiyor\necho \"servis=$s\"\necho \"durum=$d\"",
+    "rhel": "s={servis}\nd=$(systemctl is-active \"$s\" 2>/dev/null)\n[ -n \"$d\" ] || d=bilinmiyor\necho \"servis=$s\"\necho \"durum=$d\"",
+    "alpine": "s={servis}\nif rc-service \"$s\" status >/dev/null 2>&1; then d=active; else d=inactive; fi\necho \"servis=$s\"\necho \"durum=$d\"",
+    "windows": "#filo:servis\n$s = Get-Service -Name {servis}\n\"servis=\" + $s.Name\n\"durum=\" + $(if ($s.Status -eq \"Running\") {\"active\"} else {\"inactive\"})"
+  }
+}

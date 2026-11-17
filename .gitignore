@@ -1,0 +1,10 @@
+results/
+ayarlar/gizli.json
+lab/anahtar/
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+ajan/cikti/
+ayarlar/ajan_gizli.json
+ayarlar/envanter.ek.json

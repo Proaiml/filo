@@ -1,0 +1,15 @@
+{
+  "ad": "envanter_ozeti",
+  "surum": 1,
+  "aciklama": "Sunucu adı, işletim sistemi, çekirdek ve dağıtım ailesi",
+  "risk": 0,
+  "cikti": {
+    "bicim": "anahtar_deger",
+    "alanlar": {
+      "sunucu": "metin",
+      "isletim": "metin",
+      "cekirdek": "metin",
+      "aile": "metin"
+    }
+  }
+}

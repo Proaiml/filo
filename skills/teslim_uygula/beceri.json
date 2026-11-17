@@ -1,0 +1,21 @@
+{
+  "ad": "teslim_uygula",
+  "surum": 1,
+  "baslik": "Yeni sunucuyu teslim profiline göre teslim et",
+  "aciklama": "Sunucunun uyduğu teslim profilini (ayarlar/teslim_politikalari.json: standart paketler, kullanıcı, motd, servis, doğrulama, teslim raporu e-postası) yürütür. Profilin ön onaylı olmayan risk 3 adımları ayrıca onay ister. Yarıda kalırsa durduğu adımı ve nedenini bildirir.",
+  "etiketler": ["teslim", "yeni sunucu", "standart", "web standardı", "provisioning", "teslim et", "hazırla"],
+  "risk": 3,
+  "tur": "yonetim",
+  "islem": "teslim_uygula",
+  "zaman_asimi": 900,
+  "girdi": {
+    "profil": {"tip": "secim", "secenekler": ["web", "uygulama"], "zorunlu": false, "aciklama": "teslim profili (boşsa sunucunun uyduğu kural seçer)"}
+  },
+  "cikti": {
+    "bicim": "anahtar_deger",
+    "alanlar": {"profil": "metin", "durum": "metin", "is": "metin"},
+    "beklenen": {"durum": "bitti"}
+  },
+  "kuru": true,
+  "geri_al": {"geri_alinamaz": "teslim birden çok becerinin zinciridir; her adımın kendi geri alması vardır, toplu geri alma tanımlı değil"}
+}

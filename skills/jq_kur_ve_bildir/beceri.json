@@ -1,0 +1,70 @@
+{
+  "surum": 1,
+  "aciklama": "Kaptan'ın başarıyla bitirdiği akıştan üretildi: paket_kur → paket_dogrula → eposta_gonder. Kaynak talep: PA-APP-01 ve PA-WEB-01 sunucularına jq paketini kur, sonucu ops@lab.yerel adresine gönder Kaynak işte Kaptan duruma özgü onarım yaptı (paket_onar); onarım kalıcı adım olarak alınmadı: aynı arıza yeniden çıkarsa Kalfa adımı başarısız raporlar, Kaptan onarır.",
+  "etiketler": [
+    "paketini",
+    "jq"
+  ],
+  "risk": 3,
+  "tur": "zincir",
+  "zaman_asimi": 360,
+  "girdi": {
+    "paketler": {
+      "tip": "liste",
+      "desen": "paket",
+      "en_cok": 10,
+      "aciklama": "paket adları (ör. jq, tree)",
+      "varsayilan": [
+        "jq"
+      ]
+    },
+    "alici": {
+      "tip": "eposta",
+      "aciklama": "alıcı adresi (talepte geçen)",
+      "varsayilan": "ops@lab.yerel"
+    },
+    "konu": {
+      "tip": "metin",
+      "desen": "konu",
+      "aciklama": "konu satırı",
+      "varsayilan": "Filo is raporu"
+    }
+  },
+  "adimlar": [
+    {
+      "beceri": "paket_kur",
+      "parametre": {
+        "paketler": "{paketler}"
+      }
+    },
+    {
+      "beceri": "paket_dogrula",
+      "parametre": {
+        "paketler": "{paketler}"
+      }
+    },
+    {
+      "beceri": "eposta_gonder",
+      "parametre": {
+        "alici": "{alici}",
+        "konu": "{konu}"
+      }
+    }
+  ],
+  "cikti": {
+    "bicim": "ham"
+  },
+  "ad": "jq_kur_ve_bildir",
+  "baslik": "jq kur ve bildir",
+  "kaynak": {
+    "tur": "is",
+    "is": "1117-123132-be00",
+    "ajan": "kaptan",
+    "talep": "PA-APP-01 ve PA-WEB-01 sunucularına jq paketini kur, sonucu ops@lab.yerel adresine gönder",
+    "zaman": "2026-11-17T12:34:02"
+  },
+  "olusturma": {
+    "zaman": "2026-11-17T12:34:02",
+    "olusturan": "web:operatör"
+  }
+}

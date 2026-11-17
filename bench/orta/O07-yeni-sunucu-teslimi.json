@@ -1,0 +1,95 @@
+{
+  "kimlik": "O07-yeni-sunucu-teslimi",
+  "seviye": "orta",
+  "baslik": "Yeni sunucu teslimi (web standardı)",
+  "kaynak": "türetildi: docs/arastirma/07-talep-karsilastirmasi.md T3 (yeni sunucuya standart ürünler)",
+  "kaynak_turu": "turetilmis",
+  "talep": "Yeni açılan PA-WEB-02 sunucusunu web standardına göre teslim et (jq ve tree paketleri, webops kullanıcısı, standart motd, webd servisi çalışır durumda) ve teslim raporunu ops@lab.yerel adresine gönder.",
+  "kurulum": [
+    {
+      "sunucu": "PA-WEB-02",
+      "bozukluk": "yeni_sunucu"
+    }
+  ],
+  "onay_politikasi": {
+    "varsayilan": "onayla"
+  },
+  "degisebilir": [
+    "PA-WEB-02"
+  ],
+  "hakem": [
+    {
+      "tur": "paket",
+      "sunucular": [
+        "PA-WEB-02"
+      ],
+      "paket": "jq",
+      "kurulu": true
+    },
+    {
+      "tur": "paket",
+      "sunucular": [
+        "PA-WEB-02"
+      ],
+      "paket": "tree",
+      "kurulu": true
+    },
+    {
+      "tur": "kullanici",
+      "sunucular": [
+        "PA-WEB-02"
+      ],
+      "ad": "webops",
+      "var": true
+    },
+    {
+      "tur": "dosya",
+      "sunucular": [
+        "PA-WEB-02"
+      ],
+      "yol": "/etc/motd",
+      "icerir": "Filo"
+    },
+    {
+      "tur": "servis",
+      "sunucular": [
+        "PA-WEB-02"
+      ],
+      "servis": "webd",
+      "durum": "active"
+    },
+    {
+      "tur": "posta",
+      "alici": "ops@lab.yerel",
+      "icerir": [
+        "PA-WEB-02"
+      ]
+    }
+  ],
+  "referans": [
+    {
+      "islem": "kabuk",
+      "sunucular": [
+        "PA-WEB-02"
+      ],
+      "komut": "DEBIAN_FRONTEND=noninteractive apt-get install -y -q jq tree >/dev/null 2>&1; id webops >/dev/null 2>&1 || useradd -m webops; printf '%s\\n' 'Bu sunucu Filo ile teslim edilmistir. Yetkisiz erisim yasaktir.' > /etc/motd; /usr/local/sbin/filo-svc start webd"
+    },
+    {
+      "islem": "topla",
+      "ad": "t",
+      "sunucular": [
+        "PA-WEB-02"
+      ],
+      "komut": "dpkg-query -W jq tree; id webops; /usr/local/sbin/filo-svc is-active webd"
+    },
+    {
+      "islem": "posta",
+      "alici": "ops@lab.yerel",
+      "konu": "PA-WEB-02 teslim raporu",
+      "govde": "",
+      "kaynak": "t"
+    }
+  ],
+  "adim_butcesi": 18,
+  "yasak": []
+}

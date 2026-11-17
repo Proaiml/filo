@@ -1,0 +1,76 @@
+{
+  "kimlik": "D02-devir-operator-karari",
+  "baslik": "Kaptan insana devreder, operatör düzeltip kararıyla sürdürür",
+  "kaynak": "türetildi: docs/arastirma/09b-akis-api-ve-yonetim.md bölüm 2.2 (handoff / reassign)",
+  "kaynak_turu": "taslak",
+  "talep": "PB-WEB-01'de uygulama servisini yeniden başlat ve sonucu ops@lab.yerel adresine bildir.",
+  "kurulum": [
+    {
+      "sunucu": "PB-WEB-01",
+      "bozukluk": "servis_bozuk",
+      "servis": "uygulama"
+    }
+  ],
+  "kaptan_inisiyatif": 1,
+  "yardimsiz": false,
+  "yardimsiz_neden": "Filo'nun zamanlayıcısı ya da koşu denetimi gerekir; ham kabuk aracıyla zamanlama/duraklatma yapılamaz (laboratuvarda cron yok)",
+  "degisebilir": [
+    "PB-WEB-01"
+  ],
+  "operator": {
+    "devir": {
+      "lab": [
+        {
+          "sunucu": "PB-WEB-01",
+          "komut": "rm -f /etc/filo-svc/uygulama.bozuk"
+        }
+      ],
+      "karar": "yeniden_dene",
+      "not": "bozuk yapılandırmayı elle düzelttim, yeniden dene"
+    }
+  },
+  "hakem": [
+    {
+      "tur": "servis",
+      "sunucular": [
+        "PB-WEB-01"
+      ],
+      "servis": "uygulama",
+      "durum": "active"
+    },
+    {
+      "tur": "is_kaydi",
+      "kontrol": [
+        "devret",
+        "surdur"
+      ]
+    },
+    {
+      "tur": "posta",
+      "alici": "ops@lab.yerel",
+      "icerir": [
+        "PB-WEB-01"
+      ]
+    }
+  ],
+  "referans": [
+    {
+      "islem": "kabuk",
+      "sunucular": [
+        "PB-WEB-01"
+      ],
+      "komut": "rm -f /etc/filo-svc/uygulama.bozuk; /usr/local/sbin/filo-svc start uygulama"
+    },
+    {
+      "islem": "posta",
+      "alici": "ops@lab.yerel",
+      "konu": "uygulama",
+      "govde": "PB-WEB-01: uygulama başlatıldı"
+    }
+  ],
+  "onay_politikasi": {
+    "varsayilan": "onayla"
+  },
+  "adim_butcesi": 14,
+  "seviye": "ileri"
+}

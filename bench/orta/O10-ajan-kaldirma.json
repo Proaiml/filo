@@ -1,0 +1,61 @@
+{
+  "kimlik": "O10-ajan-kaldirma",
+  "seviye": "orta",
+  "baslik": "Ajanı kaldır ve kaydını sil",
+  "kaynak": "https://community.opentext.com/it-ops-cloud/automation-ctr/f/server-automation-discussions/534683/api-to-uninstall-delete-sa-agent",
+  "kaynak_turu": "forum",
+  "talep": "PB-DB-01 sunucusundaki Filo ajanını kaldır ve kaydını sil; sonucu ops@lab.yerel adresine bildir.",
+  "kurulum": [
+    {
+      "sunucu": "PB-DB-01",
+      "bozukluk": "ajan_kur"
+    }
+  ],
+  "onay_politikasi": {
+    "varsayilan": "onayla"
+  },
+  "degisebilir": [
+    "PB-DB-01"
+  ],
+  "hakem": [
+    {
+      "tur": "dosya_yok",
+      "sunucular": [
+        "PB-DB-01"
+      ],
+      "yol": "/usr/local/bin/filo-ajan"
+    },
+    {
+      "tur": "komut",
+      "sunucular": [
+        "PB-DB-01"
+      ],
+      "komut": "pgrep -f '/usr/local/bin/filo-ajan calis'",
+      "bos": true
+    },
+    {
+      "tur": "posta",
+      "alici": "ops@lab.yerel",
+      "icerir": [
+        "PB-DB-01"
+      ]
+    }
+  ],
+  "referans": [
+    {
+      "islem": "kabuk",
+      "sunucular": [
+        "PB-DB-01"
+      ],
+      "komut": "/usr/local/sbin/filo-svc stop filo-ajan; rm -rf /etc/filo-svc/filo-ajan.cmd /etc/filo-ajan /usr/local/bin/filo-ajan"
+    },
+    {
+      "islem": "posta",
+      "alici": "ops@lab.yerel",
+      "konu": "ajan kaldırıldı",
+      "govde": "PB-DB-01: Filo ajanı kaldırıldı"
+    }
+  ],
+  "adim_butcesi": 14,
+  "yasak": []
+}

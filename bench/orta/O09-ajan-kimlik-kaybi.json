@@ -1,0 +1,58 @@
+{
+  "kimlik": "O09-ajan-kimlik-kaybi",
+  "seviye": "orta",
+  "baslik": "Kimliğini kaybetmiş ajanı onar",
+  "kaynak": "https://community.opentext.com/it-ops-cloud/automation-ctr/f/server-automation-discussions/528434/error-agent-certificate-mismatch",
+  "kaynak_turu": "forum",
+  "talep": "PC-BATCH-01 üzerindeki Filo ajanı çekirdeğe bağlanamıyor; ajanı onar ve sonucu ops@lab.yerel adresine bildir.",
+  "kurulum": [
+    {
+      "sunucu": "PC-BATCH-01",
+      "bozukluk": "ajan_kur"
+    },
+    {
+      "sunucu": "PC-BATCH-01",
+      "bozukluk": "ajan_kimlik_sil"
+    }
+  ],
+  "onay_politikasi": {
+    "varsayilan": "onayla"
+  },
+  "degisebilir": [
+    "PC-BATCH-01"
+  ],
+  "yardimsiz": false,
+  "yardimsiz_neden": "yeniden kayıt çekirdekten belirteç ister; ham kabuk kolunun erişimi yok",
+  "hakem": [
+    {
+      "tur": "komut",
+      "sunucular": [
+        "PC-BATCH-01"
+      ],
+      "komut": "pgrep -f '/usr/local/bin/filo-ajan calis' >/dev/null && test -s /etc/filo-ajan/kimlik.json && echo tamam",
+      "icerir": "tamam"
+    },
+    {
+      "tur": "posta",
+      "alici": "ops@lab.yerel",
+      "icerir": [
+        "PC-BATCH-01"
+      ]
+    }
+  ],
+  "referans": [
+    {
+      "islem": "lab",
+      "sunucu": "PC-BATCH-01",
+      "bozukluk": "ajan_kur"
+    },
+    {
+      "islem": "posta",
+      "alici": "ops@lab.yerel",
+      "konu": "ajan onarıldı",
+      "govde": "PC-BATCH-01: ajan yeniden kaydoldu"
+    }
+  ],
+  "adim_butcesi": 14,
+  "yasak": []
+}

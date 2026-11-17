@@ -1,0 +1,47 @@
+{
+  "kimlik": "T08-disk-esigi",
+  "seviye": "temel",
+  "baslik": "Disk doluluğu eşiği aşan bölümleri bildir",
+  "kaynak": "docs/arastirma/03-vaka-taslaklari.md (disk doluluk) ve 07 T8",
+  "kaynak_turu": "taslak",
+  "talep": "PA ile başlayan sunucularda disk doluluğunu kontrol et; yüzde 80'in üstündeki bölümleri ops@lab.yerel adresine bildir.",
+  "kurulum": [
+    {
+      "sunucu": "PA-DB-01",
+      "bozukluk": "disk_dolu"
+    }
+  ],
+  "onay_politikasi": {
+    "varsayilan": "onayla"
+  },
+  "degisebilir": [],
+  "hakem": [
+    {
+      "tur": "posta",
+      "alici": "ops@lab.yerel",
+      "icerir": [
+        "PA-DB-01",
+        "/veri"
+      ]
+    }
+  ],
+  "referans": [
+    {
+      "islem": "topla",
+      "ad": "d",
+      "sunucular": [
+        "PA-DB-01"
+      ],
+      "komut": "df -P /veri | tail -1"
+    },
+    {
+      "islem": "posta",
+      "alici": "ops@lab.yerel",
+      "konu": "disk eşiği",
+      "govde": "Eşiği aşan: PA-DB-01 /veri",
+      "kaynak": "d"
+    }
+  ],
+  "adim_butcesi": 14,
+  "yasak": []
+}

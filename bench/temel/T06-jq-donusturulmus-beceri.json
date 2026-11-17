@@ -1,0 +1,49 @@
+{
+  "kimlik": "T06-jq-donusturulmus-beceri",
+  "seviye": "temel",
+  "baslik": "Beceriye dönüştürülmüş işin benzeri: paket kur ve bildir",
+  "kaynak": "türetildi: B5 (Kaptan akışından üretilen jq_kur_ve_bildir becerisi; docs/ilerleme.md)",
+  "kaynak_turu": "turetilmis",
+  "talep": "PC-BATCH-01 sunucusuna jq paketini kur ve sonucu ops@lab.yerel adresine bildir.",
+  "kurulum": [],
+  "onay_politikasi": {
+    "varsayilan": "onayla"
+  },
+  "degisebilir": [
+    "PC-BATCH-01"
+  ],
+  "hakem": [
+    {
+      "tur": "paket",
+      "sunucular": [
+        "PC-BATCH-01"
+      ],
+      "paket": "jq",
+      "kurulu": true
+    },
+    {
+      "tur": "posta",
+      "alici": "ops@lab.yerel",
+      "icerir": [
+        "PC-BATCH-01"
+      ]
+    }
+  ],
+  "referans": [
+    {
+      "islem": "kabuk",
+      "sunucular": [
+        "PC-BATCH-01"
+      ],
+      "komut": "apk add -q jq"
+    },
+    {
+      "islem": "posta",
+      "alici": "ops@lab.yerel",
+      "konu": "jq kuruldu",
+      "govde": "PC-BATCH-01: jq kuruldu"
+    }
+  ],
+  "adim_butcesi": 14,
+  "yasak": []
+}

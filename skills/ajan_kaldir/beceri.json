@@ -1,0 +1,15 @@
+{
+  "ad": "ajan_kaldir",
+  "surum": 1,
+  "baslik": "Filo ajanını kaldır",
+  "aciklama": "Sunucudaki Filo ajanını SSH ile durdurur, ikiliyi ve ayarını siler, çekirdekteki kaydını ve gizli anahtarını iptal eder. Sonraki işler SSH'tan gider.",
+  "etiketler": ["ajan", "agent", "kaldır", "sil", "uninstall"],
+  "risk": 3,
+  "tur": "yonetim",
+  "islem": "ajan_kaldir",
+  "zaman_asimi": 120,
+  "girdi": {},
+  "cikti": {"bicim": "ham"},
+  "kuru": true,
+  "geri_al": {"beceri": "ajan_kur"}
+}

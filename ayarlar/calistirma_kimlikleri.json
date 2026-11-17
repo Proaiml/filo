@@ -1,0 +1,11 @@
+{
+ "aciklama": "Çalıştırma kimlikleri (sunucu otomasyonu'daki Runtime User karşılığı): bir iş hangi kimlikle çalışabilir. 'baglanti' = envanterdeki bağlantı kullanıcısı (laboratuvarda filo), 'root' = sudo ile kök, başka bir ad = o kullanıcı (sudo -u). Bir sunucuda izinli kimlikler: varsayilan + sunucunun gruplarındaki + sunucuya özel girişlerin birleşimi. İzinli olmayan kimlik planda reddedilir; sudo parola istemez (sudo -n), sunucu izin vermezse sonuç 'yetki yok' olur. Windows sunucularda yalnız 'baglanti'.",
+ "varsayilan": ["baglanti", "root"],
+ "gruplar": {
+  "app": ["uygulama"],
+  "web": ["uygulama"],
+  "db": ["uygulama"],
+  "batch": ["uygulama"]
+ },
+ "sunucular": {}
+}

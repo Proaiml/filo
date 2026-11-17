@@ -1,0 +1,8 @@
+{
+  "aciklama": "SMTP ayarı. Laboratuvarda Mailpit (127.0.0.1:11025). Kimlik doğrulama gerekiyorsa parola gizli.json'a yazılır, burada durmaz.",
+  "sunucu": "127.0.0.1",
+  "port": 11025,
+  "kimden": "filo@lab.yerel",
+  "starttls": false,
+  "izinli_alanlar": ["lab.yerel", "ornek.com.tr", "example.com"]
+}

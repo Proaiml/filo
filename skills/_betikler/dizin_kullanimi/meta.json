@@ -1,0 +1,14 @@
+{
+  "ad": "dizin_kullanimi",
+  "surum": 1,
+  "aciklama": "Uygulama dizinlerinin kapladığı alan (dizin|kb)",
+  "risk": 0,
+  "cikti": {
+    "bicim": "satirlar",
+    "ayirici": "|",
+    "alanlar": {
+      "dizin": "metin",
+      "kb": "tamsayi"
+    }
+  }
+}

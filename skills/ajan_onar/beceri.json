@@ -1,0 +1,36 @@
+{
+  "ad": "ajan_onar",
+  "surum": 1,
+  "baslik": "Filo ajanını onar",
+  "aciklama": "Durmuş ya da kaydı düşmüş Filo ajanını SSH üzerinden yeniden başlatır; kimliği kaybolduysa yeni bir tek kullanımlık belirteçle yeniden kaydeder; ikili yoksa yeniden kurar. Ajan zaten canlıysa hiçbir şey yapmaz.",
+  "etiketler": [
+    "ajan",
+    "agent",
+    "onar",
+    "repair",
+    "ajan yok",
+    "ajan durmuş",
+    "ajan bağlanamıyor"
+  ],
+  "risk": 3,
+  "tur": "yonetim",
+  "islem": "ajan_onar",
+  "zaman_asimi": 240,
+  "girdi": {},
+  "cikti": {
+    "bicim": "anahtar_deger",
+    "alanlar": {
+      "durum": "metin"
+    },
+    "zorunlu": [
+      "durum"
+    ],
+    "beklenen": {
+      "durum": "canli"
+    }
+  },
+  "kuru": true,
+  "geri_al": {
+    "geri_alinamaz": "ajanı yeniden başlatmak geri alınacak bir değişiklik bırakmaz"
+  }
+}

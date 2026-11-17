@@ -1,0 +1,67 @@
+#!/bin/sh
+# Filo laboratuvarı servis yöneticisi. Konteynerlerde systemd/openrc yok; bu betik onların yerini tutar.
+# Servis tanımı: /etc/filo-svc/<ad>.cmd   pid: /run/filo-svc/<ad>.pid
+# Bozukluk dosyaları: <ad>.bozuk (başlatma hata verir), <ad>.yavas (içindeki saniye kadar bekler)
+D=/etc/filo-svc
+R=/run/filo-svc
+mkdir -p "$R" 2>/dev/null
+eylem="$1"; ad="${2%.service}"
+[ -n "$ad" ] || { echo "kullanim: filo-svc start|stop|restart|status|is-active|list <ad>" >&2; [ "$eylem" = list ] || exit 2; }
+
+calisiyor() {
+  # kill -0 root olmayan kullanıcıda EPERM verir; /proc ile bakılır
+  [ -f "$R/$1.pid" ] && [ -d "/proc/$(cat "$R/$1.pid")" ]
+}
+
+yavas() {
+  [ -f "$D/$1.yavas" ] && sleep "$(cat "$D/$1.yavas")"
+  return 0
+}
+
+baslat() {
+  [ -f "$D/$1.cmd" ] || { echo "Unit $1.service could not be found." >&2; return 5; }
+  yavas "$1"
+  if [ -f "$D/$1.bozuk" ]; then
+    echo "$1: yapilandirma hatasi: $(cat "$D/$1.bozuk")" >&2
+    return 1
+  fi
+  calisiyor "$1" && return 0
+  nohup sh "$D/$1.cmd" >/dev/null 2>&1 &
+  echo $! > "$R/$1.pid"
+  return 0
+}
+
+durdur() {
+  [ -f "$D/$1.cmd" ] || { echo "Unit $1.service not loaded." >&2; return 5; }
+  yavas "$1"
+  if calisiyor "$1"; then kill "$(cat "$R/$1.pid")" 2>/dev/null; fi
+  rm -f "$R/$1.pid"
+  return 0
+}
+
+case "$eylem" in
+  start) baslat "$ad" ;;
+  stop) durdur "$ad" ;;
+  restart) durdur "$ad" && baslat "$ad" ;;
+  is-active)
+    [ -f "$D/$ad.cmd" ] || { echo inactive; exit 3; }
+    if calisiyor "$ad"; then echo active; else echo inactive; exit 3; fi ;;
+  status)
+    [ -f "$D/$ad.cmd" ] || { echo "Unit $ad.service could not be found." >&2; exit 4; }
+    yavas "$ad"
+    if calisiyor "$ad"; then
+      echo "* $ad.service - Filo lab servisi $ad"
+      echo "     Active: active (running)  Main PID: $(cat "$R/$ad.pid")"
+    else
+      echo "* $ad.service - Filo lab servisi $ad"
+      echo "     Active: inactive (dead)"
+      exit 3
+    fi ;;
+  list)
+    for f in "$D"/*.cmd; do
+      [ -f "$f" ] || continue
+      n=$(basename "$f" .cmd)
+      if calisiyor "$n"; then echo "$n active"; else echo "$n inactive"; fi
+    done ;;
+  *) echo "bilinmeyen eylem: $eylem" >&2; exit 2 ;;
+esac

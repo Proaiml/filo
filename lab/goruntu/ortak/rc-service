@@ -1,0 +1,17 @@
+#!/bin/sh
+# rc-service yerine geçen ince katman (Alpine konteynerleri): işi filo-svc yapar, çıktı OpenRC biçimindedir.
+ad="$1"; eylem="$2"
+case "$eylem" in
+  status)
+    /usr/local/sbin/filo-svc is-active "$ad" >/dev/null 2>&1
+    rc=$?
+    if [ ! -f "/etc/filo-svc/$ad.cmd" ]; then echo " * rc-service: service \`$ad' does not exist" >&2; exit 1; fi
+    [ -f "/etc/filo-svc/$ad.yavas" ] && sleep "$(cat "/etc/filo-svc/$ad.yavas")"
+    if [ $rc -eq 0 ]; then echo " * status: started"; else echo " * status: stopped"; exit 3; fi ;;
+  start|stop|restart)
+    /usr/local/sbin/filo-svc "$eylem" "$ad"
+    rc=$?
+    [ $rc -eq 0 ] && echo " * $ad: ${eylem}ed" | sed 's/stoped/stopped/;s/restarted/restarted/'
+    exit $rc ;;
+  *) echo "kullanim: rc-service <ad> start|stop|restart|status" >&2; exit 1 ;;
+esac

@@ -1,0 +1,17 @@
+{
+  "ad": "ajan_durumu",
+  "surum": 1,
+  "baslik": "Filo ajanı durumu",
+  "aciklama": "Sunucudaki Filo ajanının durumunu ajan kapısından okur: canlı / ajan yok / kayıtsız, sürüm, son kalp atışı, dağıtım ve hizmet yöneticisi. Sunucuya bağlanmaz.",
+  "etiketler": ["ajan", "agent", "durum", "kalp", "canlı", "sürüm", "status"],
+  "risk": 0,
+  "tur": "yonetim",
+  "islem": "ajan_durumu",
+  "zaman_asimi": 30,
+  "girdi": {},
+  "cikti": {
+    "bicim": "anahtar_deger",
+    "alanlar": {"durum": "metin"},
+    "zorunlu": ["durum"]
+  }
+}

@@ -1,0 +1,60 @@
+{
+  "kimlik": "O05-yavas-servis-zaman-asimi",
+  "seviye": "orta",
+  "baslik": "Servis durumu; bir sunucu cevap vermiyor (zaman aşımı)",
+  "kaynak": "https://community.opentext.com/it-ops-cloud/oo/f/discussions/533099/flow-execute-metalayerquery-command-error---the-query-has-timed-out",
+  "kaynak_turu": "forum",
+  "talep": "PA-DB-01 ve PB-DB-01 sunucularında dbd servisinin durumunu kontrol et ve sonucu ops@lab.yerel adresine bildir.",
+  "kurulum": [
+    {
+      "sunucu": "PB-DB-01",
+      "bozukluk": "servis_yavas",
+      "servis": "dbd",
+      "saniye": 300
+    }
+  ],
+  "onay_politikasi": {
+    "varsayilan": "onayla"
+  },
+  "degisebilir": [],
+  "hakem": [
+    {
+      "tur": "posta",
+      "alici": "ops@lab.yerel",
+      "icerir": [
+        "PA-DB-01",
+        "PB-DB-01"
+      ]
+    },
+    {
+      "tur": "beyan",
+      "izinli": [
+        "kismi",
+        "basarisiz"
+      ]
+    }
+  ],
+  "referans": [
+    {
+      "islem": "topla",
+      "ad": "d",
+      "sunucular": [
+        "PA-DB-01"
+      ],
+      "komut": "/usr/local/sbin/filo-svc is-active dbd; true"
+    },
+    {
+      "islem": "posta",
+      "alici": "ops@lab.yerel",
+      "konu": "dbd durumu",
+      "kaynak": "d",
+      "govde": "PB-DB-01: durum komutu zaman aşımına uğradı, durum okunamadı."
+    },
+    {
+      "islem": "beyan",
+      "durum": "kismi"
+    }
+  ],
+  "adim_butcesi": 14,
+  "yasak": []
+}

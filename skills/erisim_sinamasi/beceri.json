@@ -1,0 +1,31 @@
+{
+  "ad": "erisim_sinamasi",
+  "surum": 1,
+  "baslik": "Erişim sınaması",
+  "aciklama": "Sunucuya bağlanılabildiğini, oturum kullanıcısını, çalışma süresini ve sudo yetkisini okur.",
+  "etiketler": [
+    "erişim",
+    "bağlantı",
+    "ping",
+    "ulaşılabilir",
+    "sınama",
+    "communication test"
+  ],
+  "risk": 0,
+  "tur": "uzak",
+  "zaman_asimi": 20,
+  "cikti": {
+    "bicim": "anahtar_deger",
+    "alanlar": {
+      "sunucu": "metin",
+      "kullanici": "metin",
+      "calisma_suresi": "tamsayi",
+      "sudo": "metin"
+    }
+  },
+  "komut": {
+    "linux": "echo \"sunucu=$(hostname)\"\necho \"kullanici=$(id -un)\"\necho \"calisma_suresi=$(cut -d. -f1 /proc/uptime)\"\nif sudo -n true 2>/dev/null; then echo sudo=var; else echo sudo=yok; fi",
+    "windows": "#filo:erisim\n\"sunucu=$env:COMPUTERNAME\"\n\"kullanici=$env:USERNAME\"\n\"calisma_suresi=\" + [int]((Get-Date) - (Get-CimInstance Win32_OperatingSystem).LastBootUpTime).TotalSeconds\n\"sudo=yok\""
+  },
+  "girdi": {}
+}

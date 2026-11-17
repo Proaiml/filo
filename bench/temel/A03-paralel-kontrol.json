@@ -1,0 +1,43 @@
+{
+  "kimlik": "A03-paralel-kontrol",
+  "baslik": "Paralel kollar: disk ve servis durumu aynı anda",
+  "kaynak": "türetildi: docs/arastirma/09-akis-ozellik-envanteri.md 3#4 (paralel bölünme)",
+  "kaynak_turu": "taslak",
+  "talep": "PA-DB-01 sunucusunda disk doluluğunu ve dbd servisinin durumunu aynı anda kontrol et, sonucu ops@lab.yerel adresine bildir.",
+  "hakem": [
+    {
+      "tur": "posta",
+      "alici": "ops@lab.yerel",
+      "icerir": [
+        "PA-DB-01",
+        "dbd",
+        "active",
+        "yuzde"
+      ]
+    }
+  ],
+  "referans": [
+    {
+      "islem": "topla",
+      "ad": "s",
+      "sunucular": [
+        "PA-DB-01"
+      ],
+      "komut": "df -P /veri | tail -1; echo dbd $(/usr/local/sbin/filo-svc is-active dbd)"
+    },
+    {
+      "islem": "posta",
+      "alici": "ops@lab.yerel",
+      "kaynak": "s",
+      "konu": "PA-DB-01",
+      "govde": "disk yuzde ve dbd durumu"
+    }
+  ],
+  "kurulum": [],
+  "onay_politikasi": {
+    "varsayilan": "onayla"
+  },
+  "degisebilir": [],
+  "adim_butcesi": 14,
+  "seviye": "temel"
+}

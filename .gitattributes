@@ -1,0 +1,4 @@
+*.sh text eol=lf
+lab/goruntu/ortak/* text eol=lf
+*.Dockerfile text eol=lf
+skills/betikler/* text eol=lf

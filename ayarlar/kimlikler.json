@@ -1,0 +1,7 @@
+{
+  "aciklama": "Kimlik profilleri. Burada yalnız ADLAR ve dosya YOLLARI durur; anahtarlar ve parolalar git dışındadır. Profil adı envanterde anılır, çalıştırma anında çözülür; modele, komut satırı kaydına ve denetim izine girmez.",
+  "profiller": {
+    "lab-anahtar": {"tur": "ssh-anahtar", "anahtar_dosyasi": "lab/anahtar/filo_lab", "bilinen_sunucular": "lab/anahtar/known_hosts"},
+    "win-oturum": {"tur": "winrm-oturum", "aciklama": "Geçerli Windows oturumunun kimliği (Negotiate/Kerberos). Parola tutulmaz."}
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "ad": "sistem_envanteri",
+  "surum": 1,
+  "baslik": "Sistem envanteri topla",
+  "aciklama": "İşletim sistemi, çekirdek, işlemci, bellek, kök disk doluluğu ve çalışma süresini toplar.",
+  "etiketler": [
+    "envanter",
+    "sistem bilgisi",
+    "işletim sistemi",
+    "çekirdek",
+    "bellek",
+    "donanım",
+    "os"
+  ],
+  "risk": 0,
+  "tur": "uzak",
+  "cikti": {
+    "bicim": "anahtar_deger",
+    "alanlar": {
+      "sunucu": "metin",
+      "isletim": "metin",
+      "cekirdek": "metin",
+      "islemci": "tamsayi",
+      "bellek_mb": "tamsayi",
+      "kok_doluluk": "tamsayi",
+      "calisma_suresi": "tamsayi"
+    }
+  },
+  "komut": {
+    "linux": ". /etc/os-release 2>/dev/null\necho \"sunucu=$(hostname)\"\necho \"isletim=$PRETTY_NAME\"\necho \"cekirdek=$(uname -r)\"\necho \"islemci=$(nproc 2>/dev/null || grep -c ^processor /proc/cpuinfo)\"\necho \"bellek_mb=$(awk '/MemTotal/{print int($2/1024)}' /proc/meminfo)\"\necho \"kok_doluluk=$(df -P / | awk 'NR==2{print $5}' | tr -d %)\"\necho \"calisma_suresi=$(cut -d. -f1 /proc/uptime)\"",
+    "windows": "#filo:envanter\n$o = Get-CimInstance Win32_OperatingSystem\n\"sunucu=$env:COMPUTERNAME\"\n\"isletim=\" + $o.Caption\n\"cekirdek=\" + $o.Version\n\"islemci=\" + $env:NUMBER_OF_PROCESSORS\n\"bellek_mb=\" + [int]($o.TotalVisibleMemorySize/1024)\n$c = Get-PSDrive C\n\"kok_doluluk=\" + [int](100*$c.Used/($c.Used+$c.Free))\n\"calisma_suresi=\" + [int]((Get-Date) - $o.LastBootUpTime).TotalSeconds"
+  },
+  "zaman_asimi": 60,
+  "girdi": {}
+}

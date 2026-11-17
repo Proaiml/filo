@@ -1,0 +1,88 @@
+{
+  "kimlik": "Z03-bakim-penceresinde-kur",
+  "baslik": "Kurulumu sunucunun bakım penceresine zamanla",
+  "kaynak": "türetildi: docs/arastirma/08-sunucu-ozellik-envanteri.md (Windows yama kurulumu zamanlama: bakım penceresi planı; aşama zamanlama)",
+  "kaynak_turu": "taslak",
+  "talep": "PA-WEB-01 sunucusuna tree paketini cumartesi bakım penceresinde kur ve sonucu ops@lab.yerel adresine bildir.",
+  "saat": "2026-11-17T15:00",
+  "zaman_ilerlet": [
+    "2026-11-21T02:00"
+  ],
+  "yardimsiz": false,
+  "yardimsiz_neden": "Filo'nun zamanlayıcısı ya da koşu denetimi gerekir; ham kabuk aracıyla zamanlama/duraklatma yapılamaz (laboratuvarda cron yok)",
+  "degisebilir": [
+    "PA-WEB-01"
+  ],
+  "pencereler": [
+    {
+      "ad": "web-cumartesi",
+      "tur": "bakim",
+      "kapsam": "grup:web",
+      "tekrar": {
+        "tur": "haftalik",
+        "gunler": [
+          "cumartesi"
+        ],
+        "baslangic": "02:00",
+        "sure_dk": 240
+      }
+    }
+  ],
+  "hakem": [
+    {
+      "tur": "paket",
+      "sunucular": [
+        "PA-WEB-01"
+      ],
+      "paket": "tree",
+      "kurulu": false,
+      "asama": "kol_sonrasi"
+    },
+    {
+      "tur": "zamanlama",
+      "zaman": {
+        "tur": "pencere",
+        "pencere": "web-cumartesi"
+      }
+    },
+    {
+      "tur": "paket",
+      "sunucular": [
+        "PA-WEB-01"
+      ],
+      "paket": "tree",
+      "kurulu": true
+    },
+    {
+      "tur": "posta",
+      "alici": "ops@lab.yerel",
+      "icerir": [
+        "PA-WEB-01"
+      ]
+    }
+  ],
+  "referans": [
+    {
+      "islem": "zaman"
+    },
+    {
+      "islem": "kabuk",
+      "sunucular": [
+        "PA-WEB-01"
+      ],
+      "komut": "DEBIAN_FRONTEND=noninteractive apt-get install -y tree >/dev/null 2>&1"
+    },
+    {
+      "islem": "posta",
+      "alici": "ops@lab.yerel",
+      "konu": "tree kuruldu",
+      "govde": "PA-WEB-01: tree bakım penceresinde kuruldu"
+    }
+  ],
+  "kurulum": [],
+  "onay_politikasi": {
+    "varsayilan": "onayla"
+  },
+  "adim_butcesi": 14,
+  "seviye": "orta"
+}

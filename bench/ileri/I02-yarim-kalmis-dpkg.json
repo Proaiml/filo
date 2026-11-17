@@ -1,0 +1,62 @@
+{
+  "kimlik": "I02-yarim-kalmis-dpkg",
+  "seviye": "ileri",
+  "baslik": "Yarım kalmış dpkg işlemi; onar ve kurulumu tamamla",
+  "kaynak": "türetildi (kaynak yok): docs/arastirma/03-vaka-taslaklari.md I-004",
+  "kaynak_turu": "turetilmis",
+  "talep": "PA-APP-01 ve PB-WEB-01 sunucularına jq paketini kur ve doğrula.",
+  "kurulum": [
+    {
+      "sunucu": "PA-APP-01",
+      "bozukluk": "yarim_kurulum"
+    }
+  ],
+  "onay_politikasi": {
+    "varsayilan": "onayla"
+  },
+  "degisebilir": [
+    "PA-APP-01",
+    "PB-WEB-01"
+  ],
+  "hakem": [
+    {
+      "tur": "paket",
+      "sunucular": [
+        "PA-APP-01",
+        "PB-WEB-01"
+      ],
+      "paket": "jq",
+      "kurulu": true
+    },
+    {
+      "tur": "komut",
+      "sunucular": [
+        "PA-APP-01"
+      ],
+      "komut": "ls /var/lib/dpkg/updates/",
+      "bos": true
+    }
+  ],
+  "referans": [
+    {
+      "islem": "kabuk",
+      "sunucular": [
+        "PA-APP-01"
+      ],
+      "komut": "dpkg --configure -a >/dev/null 2>&1; DEBIAN_FRONTEND=noninteractive apt-get install -y -q jq >/dev/null 2>&1"
+    },
+    {
+      "islem": "kabuk",
+      "sunucular": [
+        "PB-WEB-01"
+      ],
+      "komut": {
+        "debian": "DEBIAN_FRONTEND=noninteractive apt-get install -y -q jq >/dev/null 2>&1",
+        "rhel": "dnf install -y -q jq >/dev/null 2>&1",
+        "alpine": "apk add -q jq >/dev/null 2>&1"
+      }
+    }
+  ],
+  "adim_butcesi": 14,
+  "yasak": []
+}

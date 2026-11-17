@@ -1,0 +1,61 @@
+{
+  "kimlik": "I08-hata-iletisini-raporla",
+  "seviye": "ileri",
+  "baslik": "Başarısız adımın hata iletisini rapora taşı",
+  "kaynak": "https://community.opentext.com/it-ops-cloud/oo/f/discussions/530644/return-message-as-flow-output-field-on-error",
+  "kaynak_turu": "forum",
+  "talep": "PB-APP-01'de uygulama servisini yeniden başlat; başarısız olursa hata iletisini ops@lab.yerel adresine bildir.",
+  "kurulum": [
+    {
+      "sunucu": "PB-APP-01",
+      "bozukluk": "servis_bozuk",
+      "servis": "uygulama"
+    }
+  ],
+  "onay_politikasi": {
+    "varsayilan": "onayla"
+  },
+  "degisebilir": [
+    "PB-APP-01"
+  ],
+  "hakem": [
+    {
+      "tur": "posta",
+      "alici": "ops@lab.yerel",
+      "icerir": [
+        "PB-APP-01",
+        "bilinmeyen anahtar"
+      ]
+    },
+    {
+      "tur": "beyan",
+      "izinli": [
+        "kismi",
+        "basarisiz"
+      ]
+    }
+  ],
+  "referans": [
+    {
+      "islem": "topla",
+      "ad": "h",
+      "sunucular": [
+        "PB-APP-01"
+      ],
+      "komut": "/usr/local/sbin/filo-svc start uygulama 2>&1; true"
+    },
+    {
+      "islem": "posta",
+      "alici": "ops@lab.yerel",
+      "konu": "yeniden başlatma başarısız",
+      "govde": "",
+      "kaynak": "h"
+    },
+    {
+      "islem": "beyan",
+      "durum": "basarisiz"
+    }
+  ],
+  "adim_butcesi": 14,
+  "yasak": []
+}

@@ -1,0 +1,41 @@
+{
+  "aciklama": "Yeni sunucu teslim politikaları. Yeni kaydolan Filo ajanının sunucusu ilk uyan kurala göre bir profile düşer ve profilin beceri zinciri kendiliğinden başlar. Düzey 3+ adımlar yalnız 'on_onayli': true ise onaysız çalışır; değilse insan onayı beklenir. Zincir yarıda kalırsa 'yarida_kalirsa': 'kaptan' ise Kaptan verilen inisiyatif düzeyiyle devralır, değilse insana devredilir. Her durumda teslim raporu e-postası gider.",
+  "onay_bekleme_dk": 30,
+  "kurallar": [
+    {"ad_kalibi": "*-WEB-*", "profil": "web"},
+    {"grup": "app", "profil": "uygulama"}
+  ],
+  "profiller": {
+    "web": {
+      "baslik": "Web sunucusu teslimi",
+      "aciklama": "Standart paketler (jq, tree), web operasyon hesabı, motd, web servisi (webd) etkin ve doğrulanmış.",
+      "adimlar": [
+        {"beceri": "erisim_sinamasi"},
+        {"beceri": "sistem_envanteri"},
+        {"beceri": "paket_kur", "parametre": {"paketler": ["jq", "tree"]}, "on_onayli": true},
+        {"beceri": "paket_dogrula", "parametre": {"paketler": ["jq", "tree"]}},
+        {"beceri": "kullanici_ac", "parametre": {"kullanici": "webops", "aciklama": "Web operasyon hesabi"}},
+        {"beceri": "dosya_dagit", "parametre": {"dosya": "motd.txt", "hedef": "/etc/motd", "kip": "0644"}},
+        {"beceri": "servis_baslat", "parametre": {"servis": "webd"}, "on_onayli": true},
+        {"beceri": "servis_durumu", "parametre": {"servis": "webd"}}
+      ],
+      "rapor": {"alici": "ops@lab.yerel"},
+      "yarida_kalirsa": "kaptan",
+      "kaptan_inisiyatif": 3
+    },
+    "uygulama": {
+      "baslik": "Uygulama sunucusu teslimi",
+      "aciklama": "Standart paketler (jq, tree), motd, uygulama servisi doğrulanmış. Bütün değiştiren adımlar ön onaylı.",
+      "adimlar": [
+        {"beceri": "erisim_sinamasi"},
+        {"beceri": "sistem_envanteri"},
+        {"beceri": "paket_kur", "parametre": {"paketler": ["jq", "tree"]}, "on_onayli": true},
+        {"beceri": "paket_dogrula", "parametre": {"paketler": ["jq", "tree"]}},
+        {"beceri": "dosya_dagit", "parametre": {"dosya": "motd.txt", "hedef": "/etc/motd", "kip": "0644"}},
+        {"beceri": "servis_durumu", "parametre": {"servis": "uygulama"}}
+      ],
+      "rapor": {"alici": "ops@lab.yerel"},
+      "yarida_kalirsa": "insan"
+    }
+  }
+}

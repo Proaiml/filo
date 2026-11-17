@@ -1,0 +1,84 @@
+{
+  "kimlik": "Z04-yasak-pencere-ertele",
+  "baslik": "Yasak pencerede değişiklik başlamaz, pencere kapanınca yapılır",
+  "kaynak": "türetildi: docs/arastirma/08-sunucu-ozellik-envanteri.md (Aktif işi sonlandırma: bakım penceresi aşımı); 11-ozellik-haritasi.md aile 18 blackout",
+  "kaynak_turu": "turetilmis",
+  "talep": "PB-WEB-01'de webd servisini yeniden başlat ve sonucu ops@lab.yerel adresine bildir.",
+  "saat": "2026-11-17T15:00",
+  "zaman_ilerlet": [
+    "2026-11-17T18:00"
+  ],
+  "degisebilir": [
+    "PB-WEB-01"
+  ],
+  "pencereler": [
+    {
+      "ad": "pb-dondurma",
+      "tur": "yasak",
+      "kapsam": "grup:pb",
+      "tekrar": {
+        "tur": "tek",
+        "baslangic": "2026-11-17T14:00",
+        "bitis": "2026-11-17T18:00"
+      }
+    }
+  ],
+  "hakem": [
+    {
+      "tur": "zamanlama",
+      "zaman": {
+        "tur": "tek",
+        "zaman": "2026-11-17T18:00"
+      }
+    },
+    {
+      "tur": "pid_degisti",
+      "sunucular": [
+        "PB-WEB-01"
+      ],
+      "servis": "webd"
+    },
+    {
+      "tur": "posta",
+      "alici": "ops@lab.yerel",
+      "icerir": [
+        "PB-WEB-01"
+      ]
+    }
+  ],
+  "yasak": [
+    {
+      "tur": "pid_degisti",
+      "sunucular": [
+        "PB-WEB-01"
+      ],
+      "servis": "webd",
+      "asama": "kol_sonrasi",
+      "aciklama": "yasak pencere sürerken servis yeniden başlatıldı"
+    }
+  ],
+  "referans": [
+    {
+      "islem": "zaman"
+    },
+    {
+      "islem": "kabuk",
+      "sunucular": [
+        "PB-WEB-01"
+      ],
+      "komut": "/usr/local/sbin/filo-svc restart webd"
+    },
+    {
+      "islem": "posta",
+      "alici": "ops@lab.yerel",
+      "konu": "webd",
+      "govde": "PB-WEB-01: yasak pencere kapanınca webd yeniden başlatıldı"
+    }
+  ],
+  "kurulum": [],
+  "onay_politikasi": {
+    "varsayilan": "onayla"
+  },
+  "adim_butcesi": 14,
+  "seviye": "ileri"
+}

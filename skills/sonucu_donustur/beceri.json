@@ -1,0 +1,35 @@
+{
+  "ad": "sonucu_donustur",
+  "surum": 1,
+  "baslik": "Sonucu dönüştür (CSV/XML/JSON/HTML)",
+  "aciklama": "Bir önceki adımın sunucu sonuçlarını seçilen biçimde belgeye dönüştürür.",
+  "etiketler": [
+    "dönüştür",
+    "rapor",
+    "xml",
+    "csv",
+    "json",
+    "html",
+    "biçim",
+    "tablo",
+    "dışa aktar"
+  ],
+  "risk": 1,
+  "tur": "yerel",
+  "girdi": {
+    "bicim": {
+      "tip": "secim",
+      "secenekler": [
+        "csv",
+        "xml",
+        "json",
+        "html"
+      ],
+      "aciklama": "belge biçimi"
+    }
+  },
+  "cikti": {
+    "bicim": "belge"
+  },
+  "zaman_asimi": 60
+}

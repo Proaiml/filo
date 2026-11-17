@@ -1,0 +1,37 @@
+{
+  "ad": "eposta_gonder",
+  "surum": 1,
+  "baslik": "E-posta gönder",
+  "aciklama": "Önceki adımın belgesini (varsa) ek olarak ve iş özetini gövdede e-postayla gönderir.",
+  "etiketler": [
+    "e-posta",
+    "eposta",
+    "mail",
+    "posta",
+    "gönder",
+    "bildir",
+    "ilet"
+  ],
+  "risk": 1,
+  "tur": "yerel",
+  "girdi": {
+    "alici": {
+      "tip": "eposta",
+      "aciklama": "alıcı adresi (talepte geçen)"
+    },
+    "konu": {
+      "tip": "metin",
+      "desen": "konu",
+      "varsayilan": "Filo is raporu",
+      "aciklama": "konu satırı"
+    }
+  },
+  "cikti": {
+    "bicim": "anahtar_deger",
+    "alanlar": {
+      "alici": "metin",
+      "ileti": "metin"
+    }
+  },
+  "zaman_asimi": 60
+}

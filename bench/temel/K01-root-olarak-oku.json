@@ -1,0 +1,49 @@
+{
+  "kimlik": "K01-root-olarak-oku",
+  "baslik": "Yalnız root'un okuyabildiği dosyayı root kimliğiyle oku",
+  "kaynak": "https://community.opentext.com/it-ops-cloud/automation-ctr/f/server-automation-discussions/528968/resync-orphaned-ogfs-home-directories-in-new-sa-mesh",
+  "kaynak_turu": "forum",
+  "kaynak_notu": "05-forum-vakalari.md F-SV-017 (kök olmayan kullanıcıyla yetki hatası); 08 Run Script Runtime User",
+  "talep": "PA-APP-01'de root olarak /etc/uygulama/anahtar.conf dosyasının içeriğini oku ve sonucu ops@lab.yerel adresine bildir.",
+  "kurulum": [
+    {
+      "sunucu": "PA-APP-01",
+      "bozukluk": "gizli_dosya",
+      "yol": "/etc/uygulama/anahtar.conf",
+      "icerik": "anahtar_surumu=7"
+    }
+  ],
+  "hakem": [
+    {
+      "tur": "posta",
+      "alici": "ops@lab.yerel",
+      "icerir": [
+        "PA-APP-01",
+        "anahtar_surumu=7"
+      ]
+    }
+  ],
+  "referans": [
+    {
+      "islem": "topla",
+      "ad": "s",
+      "sunucular": [
+        "PA-APP-01"
+      ],
+      "komut": "cat /etc/uygulama/anahtar.conf"
+    },
+    {
+      "islem": "posta",
+      "alici": "ops@lab.yerel",
+      "kaynak": "s",
+      "konu": "anahtar",
+      "govde": "root olarak okundu"
+    }
+  ],
+  "onay_politikasi": {
+    "varsayilan": "onayla"
+  },
+  "degisebilir": [],
+  "adim_butcesi": 14,
+  "seviye": "temel"
+}

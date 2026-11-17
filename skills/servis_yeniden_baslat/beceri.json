@@ -1,0 +1,49 @@
+{
+  "ad": "servis_yeniden_baslat",
+  "surum": 1,
+  "baslik": "Servis yeniden başlat",
+  "aciklama": "Servisi yeniden başlatır ve çalıştığını doğrular. Kuru çalıştırma mevcut durumu gösterir.",
+  "etiketler": [
+    "servis",
+    "restart",
+    "başlat",
+    "yeniden başlat",
+    "service"
+  ],
+  "risk": 3,
+  "tur": "uzak",
+  "zaman_asimi": 60,
+  "girdi": {
+    "servis": {
+      "tip": "metin",
+      "desen": "servis",
+      "aciklama": "servis adı (ör. uygulama, webd, dbd)"
+    }
+  },
+  "cikti": {
+    "bicim": "anahtar_deger",
+    "alanlar": {
+      "servis": "metin",
+      "durum": "metin"
+    },
+    "beklenen": {
+      "durum": "active"
+    }
+  },
+  "komut": {
+    "debian": "sudo -n systemctl restart {servis} || exit $?\necho \"servis=\"{servis}\necho \"durum=$(systemctl is-active {servis})\"",
+    "rhel": "sudo -n systemctl restart {servis} || exit $?\necho \"servis=\"{servis}\necho \"durum=$(systemctl is-active {servis})\"",
+    "alpine": "sudo -n rc-service {servis} restart >/dev/null || exit $?\necho \"servis=\"{servis}\nif rc-service {servis} status >/dev/null 2>&1; then echo durum=active; else echo durum=inactive; fi",
+    "windows": "Restart-Service -Name {servis}\n#filo:servis\n\"servis=\" + {servis}\n\"durum=active\""
+  },
+  "kuru": {
+    "debian": "echo \"servis=\"{servis}\necho \"su_anki_durum=$(systemctl is-active {servis})\"\necho \"yapilacak=restart\"",
+    "rhel": "echo \"servis=\"{servis}\necho \"su_anki_durum=$(systemctl is-active {servis})\"\necho \"yapilacak=restart\"",
+    "alpine": "echo \"servis=\"{servis}\nrc-service {servis} status 2>&1 | sed 's/^/su_anki_durum=/'\necho \"yapilacak=restart\""
+  },
+  "geri_al": {
+    "debian": "sudo -n systemctl start {servis}",
+    "rhel": "sudo -n systemctl start {servis}",
+    "alpine": "sudo -n rc-service {servis} start"
+  }
+}

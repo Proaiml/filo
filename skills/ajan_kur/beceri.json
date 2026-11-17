@@ -1,0 +1,19 @@
+{
+  "ad": "ajan_kur",
+  "surum": 1,
+  "baslik": "Filo ajanı kur",
+  "aciklama": "Sunucuya SSH ile filo-ajan ikilisini gönderir, tek kullanımlık kayıt belirteciyle ayarını yazar, hizmet olarak başlatır ve çekirdeğe kalp atışının gelmesini bekler. Kurulumdan sonra işler ajan üzerinden gider.",
+  "etiketler": ["ajan", "agent", "kur", "kurulum", "yükle", "install", "dağıt"],
+  "risk": 3,
+  "tur": "yonetim",
+  "islem": "ajan_kur",
+  "zaman_asimi": 240,
+  "girdi": {},
+  "cikti": {
+    "bicim": "anahtar_deger",
+    "alanlar": {"mimari": "metin", "hizmet": "metin", "ajan": "metin", "durum": "metin"},
+    "beklenen": {"durum": "canli"}
+  },
+  "kuru": true,
+  "geri_al": {"beceri": "ajan_kaldir"}
+}

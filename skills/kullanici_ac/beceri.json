@@ -1,0 +1,51 @@
+{
+  "ad": "kullanici_ac",
+  "surum": 1,
+  "baslik": "Kullanıcı aç",
+  "aciklama": "Yerel bir kullanıcı hesabı açar; hesap zaten varsa dokunmaz ve 'zaten_var' der.",
+  "etiketler": [
+    "kullanıcı",
+    "hesap",
+    "aç",
+    "oluştur",
+    "user",
+    "useradd"
+  ],
+  "risk": 3,
+  "tur": "uzak",
+  "girdi": {
+    "kullanici": {
+      "tip": "metin",
+      "desen": "kullanici",
+      "aciklama": "kullanıcı adı (küçük harf)"
+    },
+    "aciklama": {
+      "tip": "metin",
+      "desen": "^[\\w .,-]{1,60}$",
+      "varsayilan": "Filo ile acildi",
+      "aciklama": "hesap açıklaması"
+    }
+  },
+  "cikti": {
+    "bicim": "anahtar_deger",
+    "alanlar": {
+      "kullanici": "metin",
+      "durum": "metin",
+      "uid": "tamsayi"
+    }
+  },
+  "komut": {
+    "debian": "u={kullanici}\nif id \"$u\" >/dev/null 2>&1; then d=zaten_var; else sudo -n useradd -m -c {aciklama} -s /bin/bash \"$u\" || exit 1; d=acildi; fi\necho \"kullanici=$u\"\necho \"durum=$d\"\necho \"uid=$(id -u \"$u\")\"",
+    "rhel": "u={kullanici}\nif id \"$u\" >/dev/null 2>&1; then d=zaten_var; else sudo -n useradd -m -c {aciklama} -s /bin/bash \"$u\" || exit 1; d=acildi; fi\necho \"kullanici=$u\"\necho \"durum=$d\"\necho \"uid=$(id -u \"$u\")\"",
+    "alpine": "u={kullanici}\nif id \"$u\" >/dev/null 2>&1; then d=zaten_var; else sudo -n adduser -D -g {aciklama} -s /bin/sh \"$u\" || exit 1; d=acildi; fi\necho \"kullanici=$u\"\necho \"durum=$d\"\necho \"uid=$(id -u \"$u\")\""
+  },
+  "kuru": {
+    "linux": "u={kullanici}\nif id \"$u\" >/dev/null 2>&1; then echo durum=zaten_var; else echo durum=acilacak; fi"
+  },
+  "geri_al": {
+    "debian": "sudo -n userdel {kullanici}",
+    "rhel": "sudo -n userdel {kullanici}",
+    "alpine": "sudo -n deluser {kullanici}"
+  },
+  "zaman_asimi": 60
+}

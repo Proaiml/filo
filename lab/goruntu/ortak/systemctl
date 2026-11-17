@@ -1,0 +1,16 @@
+#!/bin/sh
+# systemctl yerine geçen ince katman (Debian ve AlmaLinux konteynerleri): işi filo-svc yapar.
+eylem=""; ad=""
+for a in "$@"; do
+  case "$a" in
+    -*) ;;
+    *) if [ -z "$eylem" ]; then eylem="$a"; elif [ -z "$ad" ]; then ad="$a"; fi ;;
+  esac
+done
+case "$eylem" in
+  start|stop|restart|status|is-active) exec /usr/local/sbin/filo-svc "$eylem" "$ad" ;;
+  is-enabled) [ -f "/etc/filo-svc/${ad%.service}.cmd" ] && { echo enabled; exit 0; }; echo disabled; exit 1 ;;
+  enable|disable|daemon-reload) exit 0 ;;
+  list-units|"") /usr/local/sbin/filo-svc list x | while read n s; do echo "$n.service loaded $s"; done ;;
+  *) echo "systemctl: '$eylem' bu laboratuvarda desteklenmiyor" >&2; exit 1 ;;
+esac

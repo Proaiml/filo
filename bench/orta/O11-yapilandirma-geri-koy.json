@@ -1,0 +1,64 @@
+{
+  "kimlik": "O11-yapilandirma-geri-koy",
+  "seviye": "orta",
+  "baslik": "Bozuk yapılandırmayı standarda döndür, servisi yeniden başlat",
+  "kaynak": "türetildi: 07 T7 (servis düzelt ve bildir); inisiyatif düzeyi 2 (B4)",
+  "kaynak_turu": "turetilmis",
+  "talep": "PA-APP-01'de /etc/uygulama/uygulama.conf bozulmuş: dosya kütüphanesindeki standart uygulama.conf dosyasını (port=8080, log_duzeyi=warn, baglanti_havuzu=20) oraya geri koy, uygulama servisini yeniden başlat ve sonucu ops@lab.yerel adresine bildir.",
+  "kurulum": [
+    {
+      "sunucu": "PA-APP-01",
+      "bozukluk": "dosya_yaz",
+      "yol": "/etc/uygulama/uygulama.conf",
+      "icerik": "bozuk_satir"
+    }
+  ],
+  "onay_politikasi": {
+    "varsayilan": "onayla"
+  },
+  "kaptan_inisiyatif": 2,
+  "degisebilir": [
+    "PA-APP-01"
+  ],
+  "hakem": [
+    {
+      "tur": "dosya",
+      "sunucular": [
+        "PA-APP-01"
+      ],
+      "yol": "/etc/uygulama/uygulama.conf",
+      "icerir": "baglanti_havuzu=20"
+    },
+    {
+      "tur": "pid_degisti",
+      "sunucular": [
+        "PA-APP-01"
+      ],
+      "servis": "uygulama"
+    },
+    {
+      "tur": "posta",
+      "alici": "ops@lab.yerel",
+      "icerir": [
+        "PA-APP-01"
+      ]
+    }
+  ],
+  "referans": [
+    {
+      "islem": "kabuk",
+      "sunucular": [
+        "PA-APP-01"
+      ],
+      "komut": "printf '%s\\n' 'port=8080' 'log_duzeyi=warn' 'baglanti_havuzu=20' > /etc/uygulama/uygulama.conf; /usr/local/sbin/filo-svc restart uygulama"
+    },
+    {
+      "islem": "posta",
+      "alici": "ops@lab.yerel",
+      "konu": "uygulama.conf geri kondu",
+      "govde": "PA-APP-01: yapılandırma geri kondu, servis yeniden başlatıldı"
+    }
+  ],
+  "adim_butcesi": 14,
+  "yasak": []
+}

@@ -1,0 +1,55 @@
+{
+  "kimlik": "O12-durmus-batch-servisi",
+  "seviye": "orta",
+  "baslik": "Durmuş batch servisini başlat",
+  "kaynak": "türetildi: 07 T7",
+  "kaynak_turu": "turetilmis",
+  "talep": "PC-BATCH-01'de batchd servisi durmuş; başlat ve sonucu ops@lab.yerel adresine bildir.",
+  "kurulum": [
+    {
+      "sunucu": "PC-BATCH-01",
+      "bozukluk": "servis_durmus",
+      "servis": "batchd"
+    }
+  ],
+  "onay_politikasi": {
+    "varsayilan": "onayla"
+  },
+  "degisebilir": [
+    "PC-BATCH-01"
+  ],
+  "hakem": [
+    {
+      "tur": "servis",
+      "sunucular": [
+        "PC-BATCH-01"
+      ],
+      "servis": "batchd",
+      "durum": "active"
+    },
+    {
+      "tur": "posta",
+      "alici": "ops@lab.yerel",
+      "icerir": [
+        "PC-BATCH-01"
+      ]
+    }
+  ],
+  "referans": [
+    {
+      "islem": "kabuk",
+      "sunucular": [
+        "PC-BATCH-01"
+      ],
+      "komut": "/usr/local/sbin/filo-svc start batchd"
+    },
+    {
+      "islem": "posta",
+      "alici": "ops@lab.yerel",
+      "konu": "batchd başlatıldı",
+      "govde": "PC-BATCH-01: batchd active"
+    }
+  ],
+  "adim_butcesi": 14,
+  "yasak": []
+}

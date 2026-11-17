@@ -1,0 +1,48 @@
+{
+  "kimlik": "T02-basarisiz-giris-kaynak-ip",
+  "seviye": "temel",
+  "baslik": "Başarısız girişlerin kaynak IP'si",
+  "kaynak": "https://community.opentext.com/it-ops-cloud/automation-ctr/f/server-automation-discussions/534453/find-the-source-ip-of-incorrect-login",
+  "kaynak_turu": "forum",
+  "talep": "PA-WEB-01 sunucusundaki /var/log/auth.log dosyasında svc_app hesabına yapılan başarısız giriş denemelerinin kaynak IP adresini bul ve ops@lab.yerel adresine gönder.",
+  "kurulum": [
+    {
+      "sunucu": "PA-WEB-01",
+      "bozukluk": "dosya_yaz",
+      "yol": "/var/log/auth.log",
+      "icerik": "Nov 17 08:01:10 PA-WEB-01 sshd[811]: Failed password for svc_app from 10.20.30.44 port 51022 ssh2\nNov 17 08:01:14 PA-WEB-01 sshd[811]: Failed password for svc_app from 10.20.30.44 port 51022 ssh2\nNov 17 08:02:02 PA-WEB-01 sshd[815]: Accepted publickey for filo from 10.0.0.5 port 40112 ssh2\nNov 17 08:03:40 PA-WEB-01 sshd[820]: Failed password for invalid user admin from 10.9.8.7 port 33001 ssh2\nNov 17 08:05:12 PA-WEB-01 sshd[829]: Failed password for svc_app from 10.20.30.44 port 51090 ssh2"
+    }
+  ],
+  "onay_politikasi": {
+    "varsayilan": "onayla"
+  },
+  "degisebilir": [],
+  "hakem": [
+    {
+      "tur": "posta",
+      "alici": "ops@lab.yerel",
+      "icerir": [
+        "10.20.30.44"
+      ]
+    }
+  ],
+  "referans": [
+    {
+      "islem": "topla",
+      "ad": "ip",
+      "sunucular": [
+        "PA-WEB-01"
+      ],
+      "komut": "grep 'Failed password for svc_app' /var/log/auth.log | sed 's/.* from \\([0-9.]*\\) .*/\\1/' | sort -u"
+    },
+    {
+      "islem": "posta",
+      "alici": "ops@lab.yerel",
+      "konu": "svc_app başarısız giriş kaynağı",
+      "kaynak": "ip",
+      "govde": "Kaynak IP:"
+    }
+  ],
+  "adim_butcesi": 14,
+  "yasak": []
+}

@@ -1,0 +1,49 @@
+{
+  "ad": "gecici_dosya_temizle",
+  "surum": 1,
+  "baslik": "Geçici dosya temizle",
+  "aciklama": "İzinli bir dizinde desene uyan dosyaları siler ve kalan doluluğu söyler. Yıkıcıdır: geri alınamaz, onay ister.",
+  "etiketler": [
+    "temizle",
+    "sil",
+    "disk dolu",
+    "yer aç",
+    "geçici dosya",
+    "cleanup"
+  ],
+  "risk": 4,
+  "tur": "uzak",
+  "girdi": {
+    "dizin": {
+      "tip": "yol",
+      "izinli_onekler": [
+        "/veri",
+        "/tmp"
+      ],
+      "aciklama": "temizlenecek dizin"
+    },
+    "desen": {
+      "tip": "metin",
+      "desen": "^[A-Za-z0-9*._-]{1,40}$",
+      "varsayilan": "*.bin",
+      "aciklama": "dosya adı deseni"
+    }
+  },
+  "cikti": {
+    "bicim": "anahtar_deger",
+    "alanlar": {
+      "silinen": "tamsayi",
+      "doluluk": "tamsayi"
+    }
+  },
+  "komut": {
+    "linux": "cd {dizin} || exit 1\nn=0\nfor f in $(find . -maxdepth 1 -type f -name {desen}); do\n  sudo -n rm -f -- \"$f\" && n=$((n+1))\ndone\necho \"silinen=$n\"\necho \"doluluk=$(df -P . | awk 'NR==2{print $5}' | tr -d %)\""
+  },
+  "kuru": {
+    "linux": "cd {dizin} || exit 1\nfor f in $(find . -maxdepth 1 -type f -name {desen}); do ls -la \"$f\"; done\necho \"doluluk=$(df -P . | awk 'NR==2{print $5}' | tr -d %)\""
+  },
+  "geri_al": {
+    "geri_alinamaz": "silinen dosyalar geri getirilemez; kuru çalıştırma silinecek listeyi gösterir"
+  },
+  "zaman_asimi": 60
+}

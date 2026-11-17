@@ -1,0 +1,62 @@
+{
+  "ad": "dosya_dagit",
+  "surum": 1,
+  "baslik": "Dosya dağıt",
+  "aciklama": "Dosya kütüphanesindeki bir dosyayı hedef yola koyar; varsa eskisini .filo-yedek olarak saklar ve özetini doğrular. Hedef bir dizinse dosya o dizine kendi adıyla konur.",
+  "etiketler": [
+    "dosya",
+    "dağıt",
+    "kopyala",
+    "yapılandırma",
+    "config",
+    "deploy",
+    "geri koy",
+    "yerine koy",
+    "standart dosya"
+  ],
+  "risk": 2,
+  "tur": "uzak",
+  "girdi": {
+    "dosya": {
+      "tip": "secim",
+      "kaynak": "dosyalar",
+      "aciklama": "dosya kütüphanesinden dosya adı"
+    },
+    "hedef": {
+      "tip": "yol",
+      "izinli_onekler": [
+        "/etc/uygulama",
+        "/opt/uygulama",
+        "/veri",
+        "/etc/motd"
+      ],
+      "aciklama": "hedef yol"
+    },
+    "kip": {
+      "tip": "metin",
+      "desen": "^0[0-7]{3}$",
+      "varsayilan": "0644",
+      "aciklama": "dosya kipi"
+    }
+  },
+  "cikti": {
+    "bicim": "anahtar_deger",
+    "alanlar": {
+      "hedef": "metin",
+      "ozet": "metin"
+    },
+    "beklenen": {
+      "ozet": "{_ozet}"
+    }
+  },
+  "komut": {
+    "linux": "h={hedef}\n[ -d \"$h\" ] && h=\"$h/\"{dosya}\nt=$(mktemp)\necho {_icerik} | base64 -d > \"$t\" || exit 1\nif [ -f \"$h\" ]; then sudo -n cp -p \"$h\" \"$h.filo-yedek\" || exit 1; fi\nsudo -n install -m {kip} \"$t\" \"$h\"\nrc=$?\nrm -f \"$t\"\n[ $rc -eq 0 ] || exit $rc\necho \"hedef=$h\"\necho \"ozet=$(sha256sum \"$h\" | cut -d' ' -f1)\""
+  },
+  "kuru": {
+    "linux": "h={hedef}\n[ -d \"$h\" ] && h=\"$h/\"{dosya}\nif [ -f \"$h\" ]; then echo durum=degisecek; echo \"mevcut_ozet=$(sha256sum \"$h\" | cut -d' ' -f1)\";\nelse echo durum=yeni_dosya; fi\necho yeni_ozet={_ozet}"
+  },
+  "geri_al": {
+    "linux": "h={hedef}\n[ -d \"$h\" ] && h=\"$h/\"{dosya}\nif [ -f \"$h.filo-yedek\" ]; then sudo -n mv \"$h.filo-yedek\" \"$h\"; else sudo -n rm -f \"$h\"; fi\necho \"geri_alindi=$h\""
+  },
+  "zaman_asimi": 60
+}

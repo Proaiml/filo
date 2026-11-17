@@ -1,0 +1,49 @@
+{
+  "kimlik": "O02-karisik-envanter-html",
+  "seviye": "orta",
+  "baslik": "Karışık dağıtımlarda envanter, HTML",
+  "kaynak": "docs/arastirma/03-vaka-taslaklari.md O-005; kaynak: https://groups.google.com/g/ansible-project/c/75eRZWGiQKE/m/eOY0yX5zEQAJ",
+  "kaynak_turu": "taslak",
+  "talep": "PB sunucularının sistem envanterini (işletim sistemi, çekirdek, bellek) topla, HTML tablo yap ve ops@lab.yerel adresine gönder.",
+  "kurulum": [],
+  "onay_politikasi": {
+    "varsayilan": "onayla"
+  },
+  "degisebilir": [],
+  "hakem": [
+    {
+      "tur": "posta",
+      "alici": "ops@lab.yerel",
+      "icerir": [
+        "PB-APP-01",
+        "PB-DB-01",
+        "PB-WEB-01",
+        "Alpine",
+        "AlmaLinux",
+        "Debian"
+      ],
+      "ek": "html"
+    }
+  ],
+  "referans": [
+    {
+      "islem": "topla",
+      "ad": "e",
+      "sunucular": [
+        "PB-APP-01",
+        "PB-DB-01",
+        "PB-WEB-01"
+      ],
+      "komut": ". /etc/os-release; echo \"$PRETTY_NAME $(uname -r) $(awk '/MemTotal/{print $2}' /proc/meminfo)kB\""
+    },
+    {
+      "islem": "posta",
+      "alici": "ops@lab.yerel",
+      "konu": "PB envanteri",
+      "kaynak": "e",
+      "ek": "html"
+    }
+  ],
+  "adim_butcesi": 14,
+  "yasak": []
+}

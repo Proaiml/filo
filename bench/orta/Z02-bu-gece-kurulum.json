@@ -1,0 +1,80 @@
+{
+  "kimlik": "Z02-bu-gece-kurulum",
+  "baslik": "Paket kurulumunu bu gece 02:00'ye zamanla",
+  "kaynak": "türetildi: docs/arastirma/08-sunucu-ozellik-envanteri.md örnek 69 (Gece 02:00'de yazılım kurulumunu zamanla)",
+  "kaynak_turu": "taslak",
+  "talep": "Bu gece 02:00'de PB-APP-01 sunucusuna jq paketini kur ve sonucu ops@lab.yerel adresine bildir.",
+  "saat": "2026-11-17T15:00",
+  "zaman_ilerlet": [
+    "2026-11-18T02:00"
+  ],
+  "yardimsiz": false,
+  "yardimsiz_neden": "Filo'nun zamanlayıcısı ya da koşu denetimi gerekir; ham kabuk aracıyla zamanlama/duraklatma yapılamaz (laboratuvarda cron yok)",
+  "degisebilir": [
+    "PB-APP-01"
+  ],
+  "hakem": [
+    {
+      "tur": "paket",
+      "sunucular": [
+        "PB-APP-01"
+      ],
+      "paket": "jq",
+      "kurulu": false,
+      "asama": "kol_sonrasi"
+    },
+    {
+      "tur": "zamanlama",
+      "zaman": {
+        "tur": "tek",
+        "zaman": "2026-11-18T02:00"
+      },
+      "beceri": [
+        "paket_kur",
+        "jq_kur_ve_bildir"
+      ],
+      "sunucular": [
+        "PB-APP-01"
+      ]
+    },
+    {
+      "tur": "paket",
+      "sunucular": [
+        "PB-APP-01"
+      ],
+      "paket": "jq",
+      "kurulu": true
+    },
+    {
+      "tur": "posta",
+      "alici": "ops@lab.yerel",
+      "icerir": [
+        "PB-APP-01"
+      ]
+    }
+  ],
+  "referans": [
+    {
+      "islem": "zaman"
+    },
+    {
+      "islem": "kabuk",
+      "sunucular": [
+        "PB-APP-01"
+      ],
+      "komut": "apk add jq >/dev/null 2>&1"
+    },
+    {
+      "islem": "posta",
+      "alici": "ops@lab.yerel",
+      "konu": "jq kuruldu",
+      "govde": "PB-APP-01: jq kuruldu"
+    }
+  ],
+  "kurulum": [],
+  "onay_politikasi": {
+    "varsayilan": "onayla"
+  },
+  "adim_butcesi": 14,
+  "seviye": "orta"
+}

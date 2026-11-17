@@ -1,0 +1,27 @@
+{
+ "aciklama": "Bakım ve yasak (blackout) pencereleri. Yasak pencerede sunucuyu değiştiren iş (risk 2+) başlamaz; yasak_politikasi: bekle (pencere kapanınca) | sor (operatöre) | atla. Konsolda Bakım pencereleri sayfasından düzenlenir.",
+ "yasak_politikasi": "bekle",
+ "pencereler": [
+  {
+   "ad": "app-pazar",
+   "tur": "bakim",
+   "kapsam": "grup:app",
+   "tekrar": {"tur": "haftalik", "baslangic": "03:00", "sure_dk": 120, "gunler": ["pazar"]},
+   "aciklama": "Uygulama sunucularının haftalık bakım penceresi"
+  },
+  {
+   "ad": "web-cumartesi",
+   "tur": "bakim",
+   "kapsam": "grup:web",
+   "tekrar": {"tur": "haftalik", "baslangic": "02:00", "sure_dk": 240, "gunler": ["cumartesi"]},
+   "aciklama": "Web sunucularının haftalık bakım penceresi"
+  },
+  {
+   "ad": "yil-sonu-dondurma",
+   "tur": "yasak",
+   "kapsam": "grup:prod",
+   "tekrar": {"tur": "tek", "baslangic": "2026-12-28T00:00", "bitis": "2027-01-04T08:00"},
+   "aciklama": "Yıl sonu değişiklik dondurması: üretim sunucularında değişiklik yapılmaz"
+  }
+ ]
+}

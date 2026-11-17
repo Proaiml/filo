@@ -1,0 +1,38 @@
+{
+  "ad": "komut_calistir",
+  "surum": 1,
+  "baslik": "Komut çalıştır (salt-okur)",
+  "aciklama": "Salt-okur izin listesindeki bir komutu çalıştırır: dosya ya da günlük okuma ve içinde arama (cat, grep, tail, cut, sort, uniq), sistem bilgisi (hostname, uptime, df, ps, ss, systemctl status ...). Hazır becerisi olmayan okuma/arama işleri içindir. Yazan komut reddedilir.",
+  "etiketler": [
+    "komut",
+    "çalıştır",
+    "salt-okur",
+    "oku",
+    "bak",
+    "göster",
+    "teşhis",
+    "günlük",
+    "log",
+    "grep",
+    "ara",
+    "bul",
+    "dosya içeriği",
+    "uptime"
+  ],
+  "risk": 0,
+  "tur": "uzak",
+  "girdi": {
+    "komut": {
+      "tip": "komut",
+      "aciklama": "salt-okur kabuk komutu"
+    }
+  },
+  "cikti": {
+    "bicim": "ham",
+    "bos_olamaz": true
+  },
+  "komut": {
+    "linux": "sh -c {komut}"
+  },
+  "zaman_asimi": 60
+}

@@ -1,0 +1,62 @@
+{
+  "ad": "standart_sunucu_teslimi",
+  "surum": 1,
+  "baslik": "Standart sunucu teslimi",
+  "aciklama": "Yeni sunucuya standart ürünleri kurar ve doğrular: erişim, envanter, standart paketler (jq, tree), paket doğrulama, motd dağıtımı, uygulama servisi kontrolü.",
+  "etiketler": [
+    "teslim",
+    "yeni sunucu",
+    "standart",
+    "kurulum",
+    "ürünler",
+    "provisioning",
+    "hazırla"
+  ],
+  "risk": 3,
+  "tur": "zincir",
+  "zaman_asimi": 600,
+  "adimlar": [
+    {
+      "beceri": "erisim_sinamasi"
+    },
+    {
+      "beceri": "sistem_envanteri"
+    },
+    {
+      "beceri": "paket_kur",
+      "parametre": {
+        "paketler": [
+          "jq",
+          "tree"
+        ]
+      }
+    },
+    {
+      "beceri": "paket_dogrula",
+      "parametre": {
+        "paketler": [
+          "jq",
+          "tree"
+        ]
+      }
+    },
+    {
+      "beceri": "dosya_dagit",
+      "parametre": {
+        "dosya": "motd.txt",
+        "hedef": "/etc/motd",
+        "kip": "0644"
+      }
+    },
+    {
+      "beceri": "servis_durumu",
+      "parametre": {
+        "servis": "uygulama"
+      }
+    }
+  ],
+  "cikti": {
+    "bicim": "ham"
+  },
+  "girdi": {}
+}

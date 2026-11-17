@@ -1,0 +1,74 @@
+{
+  "kimlik": "I09-olu-ajan-ssh-yedegi",
+  "seviye": "ileri",
+  "baslik": "Ajanı ölmüş sunucuda iş SSH yedeğinden tamamlanır",
+  "kaynak": "türetildi: B2 (ajan yoksa SSH); 07 T4",
+  "kaynak_turu": "turetilmis",
+  "talep": "Adı PA ile başlayan sunucularda uygulama_surumu betiğini çalıştır, sonucu CSV yap ve ops@lab.yerel adresine gönder.",
+  "kurulum": [
+    {
+      "sunucu": "PA-APP-01",
+      "bozukluk": "ajan_kur"
+    },
+    {
+      "sunucu": "PA-APP-02",
+      "bozukluk": "ajan_kur"
+    },
+    {
+      "sunucu": "PA-DB-01",
+      "bozukluk": "ajan_kur"
+    },
+    {
+      "sunucu": "PA-WEB-01",
+      "bozukluk": "ajan_kur"
+    },
+    {
+      "sunucu": "PA-DB-01",
+      "bozukluk": "ajan_oldur"
+    }
+  ],
+  "onay_politikasi": {
+    "varsayilan": "onayla"
+  },
+  "degisebilir": [
+    "PA-APP-01",
+    "PA-APP-02",
+    "PA-DB-01",
+    "PA-WEB-01"
+  ],
+  "hakem": [
+    {
+      "tur": "posta_csv",
+      "alici": "ops@lab.yerel",
+      "satirlar": {
+        "PA-APP-01": "1.4.2",
+        "PA-APP-02": "1.4.2",
+        "PA-DB-01": "1.4.2",
+        "PA-WEB-01": "1.4.2"
+      }
+    }
+  ],
+  "referans": [
+    {
+      "islem": "topla",
+      "ad": "s",
+      "sunucular": [
+        "PA-APP-01",
+        "PA-APP-02",
+        "PA-DB-01",
+        "PA-WEB-01"
+      ],
+      "komut": "sed -n 's/^surum=//p' /opt/uygulama/surum.txt"
+    },
+    {
+      "islem": "posta",
+      "alici": "ops@lab.yerel",
+      "konu": "PA sürüm raporu",
+      "govde": "",
+      "kaynak": "s",
+      "ek": "csv"
+    }
+  ],
+  "adim_butcesi": 14,
+  "yasak": []
+}

@@ -1,0 +1,54 @@
+{
+  "ad": "paket_kur",
+  "surum": 1,
+  "baslik": "Paket kur",
+  "aciklama": "Paketleri dağıtımın paket yöneticisiyle kurar (apt-get / dnf / apk farkını beceri çözer) ve kurulu sürümleri döndürür.",
+  "etiketler": [
+    "paket",
+    "kur",
+    "yükle",
+    "install",
+    "yazılım",
+    "apt",
+    "dnf",
+    "apk",
+    "ürün"
+  ],
+  "risk": 3,
+  "tur": "uzak",
+  "zaman_asimi": 240,
+  "girdi": {
+    "paketler": {
+      "tip": "liste",
+      "desen": "paket",
+      "en_cok": 10,
+      "aciklama": "paket adları (ör. jq, tree)"
+    }
+  },
+  "cikti": {
+    "bicim": "satirlar",
+    "ayirici": "|",
+    "alanlar": {
+      "paket": "metin",
+      "surum": "metin"
+    },
+    "yasak": {
+      "surum": "yok"
+    }
+  },
+  "komut": {
+    "debian": "sudo -n env DEBIAN_FRONTEND=noninteractive apt-get install -y -q {paketler} >/tmp/filo-paket.log 2>&1\nrc=$?\n[ $rc -eq 0 ] || { tail -5 /tmp/filo-paket.log >&2; }\nfor p in {paketler}; do\n  v=$(dpkg-query -W -f='${Version}' \"$p\" 2>/dev/null) || v=yok; [ -n \"$v\" ] || v=yok\n  echo \"$p|$v\"\ndone\nexit $rc",
+    "rhel": "sudo -n dnf install -y -q {paketler} >/tmp/filo-paket.log 2>&1\nrc=$?\n[ $rc -eq 0 ] || { tail -5 /tmp/filo-paket.log >&2; }\nfor p in {paketler}; do\n  v=$(rpm -q --qf '%{VERSION}-%{RELEASE}' \"$p\" 2>/dev/null) || v=yok\n  echo \"$p|$v\"\ndone\nexit $rc",
+    "alpine": "sudo -n apk add -q {paketler} >/tmp/filo-paket.log 2>&1\nrc=$?\n[ $rc -eq 0 ] || { tail -5 /tmp/filo-paket.log >&2; }\nfor p in {paketler}; do\n  if apk info -e \"$p\" >/dev/null 2>&1; then v=$(apk info \"$p\" 2>/dev/null | head -1 | cut -d' ' -f1); else v=yok; fi\n  echo \"$p|$v\"\ndone\nexit $rc"
+  },
+  "kuru": {
+    "debian": "apt-get install -s {paketler} 2>&1 | grep -E '^(Inst|E:)' | head -20; true",
+    "rhel": "sudo -n dnf install --assumeno {paketler} 2>&1 | tail -15; true",
+    "alpine": "sudo -n apk add --simulate {paketler} 2>&1 | tail -10; true"
+  },
+  "geri_al": {
+    "debian": "sudo -n env DEBIAN_FRONTEND=noninteractive apt-get remove -y -q {paketler}",
+    "rhel": "sudo -n dnf remove -y -q {paketler}",
+    "alpine": "sudo -n apk del -q {paketler}"
+  }
+}

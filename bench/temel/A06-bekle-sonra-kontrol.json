@@ -1,0 +1,57 @@
+{
+  "kimlik": "A06-bekle-sonra-kontrol",
+  "baslik": "Bekleme adımı: yeniden başlat, bekle, durumu kontrol et",
+  "kaynak": "türetildi: docs/arastirma/09-akis-ozellik-envanteri.md (akış öğeleri: bekleme/sleep); 11-ozellik-haritasi.md bölüm 3",
+  "kaynak_turu": "turetilmis",
+  "talep": "PA-APP-01'de uygulama servisini yeniden başlat, 10 saniye bekle, sonra servisin durumunu kontrol et ve sonucu ops@lab.yerel adresine bildir.",
+  "degisebilir": [
+    "PA-APP-01"
+  ],
+  "hakem": [
+    {
+      "tur": "pid_degisti",
+      "sunucular": [
+        "PA-APP-01"
+      ],
+      "servis": "uygulama"
+    },
+    {
+      "tur": "posta",
+      "alici": "ops@lab.yerel",
+      "icerir": [
+        "PA-APP-01",
+        "active"
+      ]
+    }
+  ],
+  "referans": [
+    {
+      "islem": "kabuk",
+      "sunucular": [
+        "PA-APP-01"
+      ],
+      "komut": "/usr/local/sbin/filo-svc restart uygulama; sleep 10"
+    },
+    {
+      "islem": "topla",
+      "ad": "s",
+      "sunucular": [
+        "PA-APP-01"
+      ],
+      "komut": "/usr/local/sbin/filo-svc is-active uygulama"
+    },
+    {
+      "islem": "posta",
+      "alici": "ops@lab.yerel",
+      "kaynak": "s",
+      "konu": "uygulama",
+      "govde": "durum"
+    }
+  ],
+  "kurulum": [],
+  "onay_politikasi": {
+    "varsayilan": "onayla"
+  },
+  "adim_butcesi": 14,
+  "seviye": "temel"
+}

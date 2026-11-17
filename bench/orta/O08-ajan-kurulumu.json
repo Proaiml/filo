@@ -1,0 +1,58 @@
+{
+  "kimlik": "O08-ajan-kurulumu",
+  "seviye": "orta",
+  "baslik": "Filo ajanı kur ve durumunu bildir",
+  "kaynak": "türetildi: 07 T3/T4 (sunucu otomasyonu'da ajan kurulumu ve kaydı); B2",
+  "kaynak_turu": "turetilmis",
+  "talep": "PB-APP-01 ve PB-WEB-01 sunucularına Filo ajanını kur ve ajanların durumunu ops@lab.yerel adresine bildir.",
+  "kurulum": [],
+  "onay_politikasi": {
+    "varsayilan": "onayla"
+  },
+  "degisebilir": [
+    "PB-APP-01",
+    "PB-WEB-01"
+  ],
+  "yardimsiz": false,
+  "yardimsiz_neden": "Filo ajanının kaydı çekirdeğin kapısından tek kullanımlık belirteç ister; ham kabuk kolunun buna erişimi yok",
+  "ajan_kapisi": true,
+  "hakem": [
+    {
+      "tur": "komut",
+      "sunucular": [
+        "PB-APP-01",
+        "PB-WEB-01"
+      ],
+      "komut": "pgrep -f '/usr/local/bin/filo-ajan calis' >/dev/null && test -s /etc/filo-ajan/kimlik.json && echo tamam",
+      "icerir": "tamam"
+    },
+    {
+      "tur": "posta",
+      "alici": "ops@lab.yerel",
+      "icerir": [
+        "PB-APP-01",
+        "PB-WEB-01"
+      ]
+    }
+  ],
+  "referans": [
+    {
+      "islem": "lab",
+      "sunucu": "PB-APP-01",
+      "bozukluk": "ajan_kur"
+    },
+    {
+      "islem": "lab",
+      "sunucu": "PB-WEB-01",
+      "bozukluk": "ajan_kur"
+    },
+    {
+      "islem": "posta",
+      "alici": "ops@lab.yerel",
+      "konu": "ajan durumu",
+      "govde": "PB-APP-01 canli, PB-WEB-01 canli"
+    }
+  ],
+  "adim_butcesi": 14,
+  "yasak": []
+}

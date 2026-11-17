@@ -1,0 +1,37 @@
+{
+  "ad": "paket_onar",
+  "surum": 1,
+  "baslik": "Paket yöneticisini onar",
+  "aciklama": "Yarım kalmış paket işlemini tamamlar (dpkg --configure -a / rpm veritabanı / apk fix).",
+  "etiketler": [
+    "paket",
+    "onar",
+    "dpkg interrupted",
+    "yarım kurulum",
+    "kilit",
+    "fix"
+  ],
+  "risk": 3,
+  "tur": "uzak",
+  "zaman_asimi": 180,
+  "cikti": {
+    "bicim": "anahtar_deger",
+    "alanlar": {
+      "onarildi": "metin"
+    }
+  },
+  "komut": {
+    "debian": "sudo -n dpkg --configure -a >/tmp/filo-onar.log 2>&1 || { tail -5 /tmp/filo-onar.log >&2; exit 1; }\necho onarildi=evet",
+    "rhel": "sudo -n rpm --rebuilddb && sudo -n dnf clean all >/dev/null 2>&1 || exit 1\necho onarildi=evet",
+    "alpine": "sudo -n apk fix -q >/dev/null 2>&1 || exit 1\necho onarildi=evet"
+  },
+  "kuru": {
+    "debian": "ls /var/lib/dpkg/updates/ 2>/dev/null; sudo -n dpkg --audit 2>&1 | head -5; true",
+    "rhel": "echo 'rpm veritabanı yeniden kurulacak'",
+    "alpine": "echo 'apk fix çalışacak'"
+  },
+  "geri_al": {
+    "geri_alinamaz": "paket veritabanı onarımı geri alınmaz; kuru çalıştırma neyin onarılacağını gösterir"
+  },
+  "girdi": {}
+}

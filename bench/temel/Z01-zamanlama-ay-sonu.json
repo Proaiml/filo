@@ -1,0 +1,69 @@
+{
+  "kimlik": "Z01-zamanlama-ay-sonu",
+  "baslik": "Her ayın son günü çalışan zamanlanmış betik",
+  "kaynak": "https://community.opentext.com/it-ops-cloud/automation-ctr/f/server-automation-discussions/528295/how-to-schedule-script-ejecution-each-last-day-of-month",
+  "kaynak_turu": "forum",
+  "kaynak_notu": "05-forum-vakalari.md F-SV-018",
+  "talep": "PA grubundaki sunucularda uygulama_surumu betiğini her ayın son günü saat 23:00'te çalıştır ve sonucu ops@lab.yerel adresine bildir.",
+  "saat": "2026-11-17T15:00",
+  "zaman_ilerlet": [
+    "2026-11-30T23:00"
+  ],
+  "yardimsiz": false,
+  "yardimsiz_neden": "Filo'nun zamanlayıcısı ya da koşu denetimi gerekir; ham kabuk aracıyla zamanlama/duraklatma yapılamaz (laboratuvarda cron yok)",
+  "hakem": [
+    {
+      "tur": "posta_yok",
+      "alici": "ops@lab.yerel",
+      "asama": "kol_sonrasi"
+    },
+    {
+      "tur": "zamanlama",
+      "zaman": {
+        "tur": "aylik",
+        "gun": 31,
+        "saat": "23:00"
+      },
+      "beceri": "betik_calistir"
+    },
+    {
+      "tur": "posta",
+      "alici": "ops@lab.yerel",
+      "icerir": [
+        "PA-APP-01",
+        "PA-DB-01",
+        "1.4.2"
+      ]
+    }
+  ],
+  "referans": [
+    {
+      "islem": "zaman"
+    },
+    {
+      "islem": "topla",
+      "ad": "s",
+      "sunucular": [
+        "PA-APP-01",
+        "PA-APP-02",
+        "PA-DB-01",
+        "PA-WEB-01"
+      ],
+      "komut": "cat /opt/uygulama/surum.txt"
+    },
+    {
+      "islem": "posta",
+      "alici": "ops@lab.yerel",
+      "kaynak": "s",
+      "konu": "ay sonu surum raporu",
+      "govde": "PA surum raporu"
+    }
+  ],
+  "kurulum": [],
+  "onay_politikasi": {
+    "varsayilan": "onayla"
+  },
+  "degisebilir": [],
+  "adim_butcesi": 14,
+  "seviye": "temel"
+}

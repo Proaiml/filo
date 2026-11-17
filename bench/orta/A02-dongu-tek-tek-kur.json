@@ -1,0 +1,68 @@
+{
+  "kimlik": "A02-dongu-tek-tek-kur",
+  "baslik": "Döngü: paketleri tek tek kur, başarısız olanı atla",
+  "kaynak": "türetildi: docs/arastirma/09-akis-ozellik-envanteri.md 3#6-7 (döngü)",
+  "kaynak_turu": "taslak",
+  "talep": "PB-WEB-01 sunucusuna jq, yokpaket ve tree paketlerini tek tek kur; biri başarısız olursa diğerlerine devam et ve sonucu ops@lab.yerel adresine bildir.",
+  "degisebilir": [
+    "PB-WEB-01"
+  ],
+  "hakem": [
+    {
+      "tur": "paket",
+      "sunucular": [
+        "PB-WEB-01"
+      ],
+      "paket": "jq",
+      "kurulu": true
+    },
+    {
+      "tur": "paket",
+      "sunucular": [
+        "PB-WEB-01"
+      ],
+      "paket": "tree",
+      "kurulu": true
+    },
+    {
+      "tur": "posta",
+      "alici": "ops@lab.yerel",
+      "icerir": [
+        "PB-WEB-01",
+        "yokpaket"
+      ]
+    },
+    {
+      "tur": "beyan",
+      "izinli": [
+        "kismi",
+        "basarisiz"
+      ]
+    }
+  ],
+  "referans": [
+    {
+      "islem": "kabuk",
+      "sunucular": [
+        "PB-WEB-01"
+      ],
+      "komut": "DEBIAN_FRONTEND=noninteractive apt-get install -y jq tree >/dev/null 2>&1"
+    },
+    {
+      "islem": "posta",
+      "alici": "ops@lab.yerel",
+      "konu": "paketler",
+      "govde": "PB-WEB-01: jq ve tree kuruldu; yokpaket bulunamadı"
+    },
+    {
+      "islem": "beyan",
+      "durum": "kismi"
+    }
+  ],
+  "kurulum": [],
+  "onay_politikasi": {
+    "varsayilan": "onayla"
+  },
+  "adim_butcesi": 14,
+  "seviye": "orta"
+}

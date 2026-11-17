@@ -1,0 +1,41 @@
+{
+  "ad": "paket_dogrula",
+  "surum": 1,
+  "baslik": "Paket doğrula",
+  "aciklama": "Paketlerin kurulu olduğunu ve sürümlerini doğrular; kurulu olmayan paket 'yok' görünür ve adım başarısız sayılır.",
+  "etiketler": [
+    "paket",
+    "doğrula",
+    "kurulu mu",
+    "sürüm",
+    "kontrol",
+    "verify"
+  ],
+  "risk": 0,
+  "tur": "uzak",
+  "girdi": {
+    "paketler": {
+      "tip": "liste",
+      "desen": "paket",
+      "en_cok": 10,
+      "aciklama": "paket adları (ör. jq, tree)"
+    }
+  },
+  "cikti": {
+    "bicim": "satirlar",
+    "ayirici": "|",
+    "alanlar": {
+      "paket": "metin",
+      "surum": "metin"
+    },
+    "yasak": {
+      "surum": "yok"
+    }
+  },
+  "komut": {
+    "debian": "for p in {paketler}; do\n  v=$(dpkg-query -W -f='${Version}' \"$p\" 2>/dev/null) || v=yok; [ -n \"$v\" ] || v=yok\n  echo \"$p|$v\"\ndone",
+    "rhel": "for p in {paketler}; do\n  v=$(rpm -q --qf '%{VERSION}-%{RELEASE}' \"$p\" 2>/dev/null) || v=yok\n  echo \"$p|$v\"\ndone",
+    "alpine": "for p in {paketler}; do\n  if apk info -e \"$p\" >/dev/null 2>&1; then v=$(apk info \"$p\" 2>/dev/null | head -1 | cut -d' ' -f1); else v=yok; fi\n  echo \"$p|$v\"\ndone"
+  },
+  "zaman_asimi": 60
+}

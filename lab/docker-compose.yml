@@ -1,0 +1,121 @@
+# Filo laboratuvarı: 8 küçük Linux sunucusu (Debian, AlmaLinux, Alpine) ve sahte posta sunucusu (Mailpit).
+# Kurulum: python -m filo lab kur   (anahtarları üretir, imajları kurar, konteynerleri başlatır)
+# Portlar yalnız 127.0.0.1'e bağlıdır. Toplam bellek sınırı ~1.6 GB.
+name: filo-lab
+
+x-debian: &debian
+  image: filo-lab/debian:1
+  pull_policy: never
+  mem_limit: 128m
+  cpus: 0.5
+  tmpfs: ["/veri:size=16m,mode=0755"]
+  volumes:
+    - ./anahtar/filo_lab.pub:/etc/filo/authorized_keys:ro
+    - ./anahtar/ssh_host_ed25519_key:/etc/filo/hostkey:ro
+  restart: "no"
+
+x-alma: &alma
+  image: filo-lab/alma:1
+  pull_policy: never
+  mem_limit: 256m
+  cpus: 0.5
+  tmpfs: ["/veri:size=16m,mode=0755"]
+  volumes:
+    - ./anahtar/filo_lab.pub:/etc/filo/authorized_keys:ro
+    - ./anahtar/ssh_host_ed25519_key:/etc/filo/hostkey:ro
+  restart: "no"
+
+x-alpine: &alpine
+  image: filo-lab/alpine:1
+  pull_policy: never
+  mem_limit: 96m
+  cpus: 0.5
+  tmpfs: ["/veri:size=16m,mode=0755"]
+  volumes:
+    - ./anahtar/filo_lab.pub:/etc/filo/authorized_keys:ro
+    - ./anahtar/ssh_host_ed25519_key:/etc/filo/hostkey:ro
+  restart: "no"
+
+services:
+  pa-app-01:
+    <<: *debian
+    build: { context: ./goruntu, dockerfile: debian.Dockerfile }
+    pull_policy: missing
+    container_name: filo-pa-app-01
+    hostname: PA-APP-01
+    environment: { FILO_SERVISLER: "uygulama" }
+    ports: ["127.0.0.1:2201:22"]
+  pa-app-02:
+    <<: *alma
+    build: { context: ./goruntu, dockerfile: alma.Dockerfile }
+    pull_policy: missing
+    container_name: filo-pa-app-02
+    hostname: PA-APP-02
+    environment: { FILO_SERVISLER: "uygulama" }
+    ports: ["127.0.0.1:2202:22"]
+  pa-db-01:
+    <<: *alpine
+    build: { context: ./goruntu, dockerfile: alpine.Dockerfile }
+    pull_policy: missing
+    container_name: filo-pa-db-01
+    hostname: PA-DB-01
+    environment: { FILO_SERVISLER: "uygulama,dbd" }
+    ports: ["127.0.0.1:2203:22"]
+  pa-web-01:
+    <<: *debian
+    container_name: filo-pa-web-01
+    hostname: PA-WEB-01
+    environment: { FILO_SERVISLER: "uygulama,webd" }
+    ports: ["127.0.0.1:2204:22"]
+  pb-app-01:
+    <<: *alpine
+    container_name: filo-pb-app-01
+    hostname: PB-APP-01
+    environment: { FILO_SERVISLER: "uygulama" }
+    ports: ["127.0.0.1:2205:22"]
+  pb-db-01:
+    <<: *alma
+    container_name: filo-pb-db-01
+    hostname: PB-DB-01
+    environment: { FILO_SERVISLER: "uygulama,dbd" }
+    ports: ["127.0.0.1:2206:22"]
+  pb-web-01:
+    <<: *debian
+    container_name: filo-pb-web-01
+    hostname: PB-WEB-01
+    environment: { FILO_SERVISLER: "uygulama,webd" }
+    ports: ["127.0.0.1:2207:22"]
+  pc-batch-01:
+    <<: *alpine
+    container_name: filo-pc-batch-01
+    hostname: PC-BATCH-01
+    # C1: bu sunucuda filo yalnız root'a parolasız sudo yapabilir; başka kullanıcı kimliği "yetki yok" verir
+    environment: { FILO_SERVISLER: "uygulama,batchd", FILO_SUDO: "kok" }
+    ports: ["127.0.0.1:2208:22"]
+  # "Yeni" sunucular: varsayılan olarak başlamaz; `python -m filo lab yeni-sunucu <ad>` açar ve envantere ekler
+  # (ayarlar/envanter.ek.json). Teslim politikası senaryoları içindir (B3).
+  pa-web-02:
+    <<: *debian
+    profiles: ["yeni"]
+    container_name: filo-pa-web-02
+    hostname: PA-WEB-02
+    environment: { FILO_SERVISLER: "uygulama,webd" }
+    ports: ["127.0.0.1:2209:22"]
+  pb-app-02:
+    <<: *alpine
+    profiles: ["yeni"]
+    container_name: filo-pb-app-02
+    hostname: PB-APP-02
+    environment: { FILO_SERVISLER: "uygulama" }
+    ports: ["127.0.0.1:2210:22"]
+  mailpit:
+    image: axllent/mailpit:v1.21.8
+    container_name: filo-mailpit
+    mem_limit: 96m
+    cpus: 0.5
+    environment:
+      MP_SMTP_AUTH_ACCEPT_ANY: "1"
+      MP_SMTP_AUTH_ALLOW_INSECURE: "1"
+      MP_MAX_MESSAGES: "2000"
+    ports: ["127.0.0.1:11025:1025", "127.0.0.1:18025:8025"]
+    restart: "no"

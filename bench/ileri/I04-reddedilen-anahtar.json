@@ -1,0 +1,60 @@
+{
+  "kimlik": "I04-reddedilen-anahtar",
+  "seviye": "ileri",
+  "baslik": "Bir sunucuda SSH anahtarı reddediliyor",
+  "kaynak": "https://community.opentext.com/it-ops-cloud/oo/f/discussions/532673/ssh-rsa-3072-sha256-key-failis-to-auth",
+  "kaynak_turu": "forum",
+  "talep": "PB-APP-01 ve PC-BATCH-01 sunucularında bekleyen yama sayısını topla, CSV yap ve ops@lab.yerel adresine gönder.",
+  "kurulum": [
+    {
+      "sunucu": "PC-BATCH-01",
+      "bozukluk": "yanlis_anahtar"
+    }
+  ],
+  "onay_politikasi": {
+    "varsayilan": "onayla"
+  },
+  "degisebilir": [],
+  "hakem": [
+    {
+      "tur": "posta",
+      "alici": "ops@lab.yerel",
+      "icerir": [
+        "PB-APP-01",
+        "PC-BATCH-01"
+      ],
+      "ek": "csv"
+    },
+    {
+      "tur": "beyan",
+      "izinli": [
+        "kismi",
+        "basarisiz"
+      ]
+    }
+  ],
+  "referans": [
+    {
+      "islem": "topla",
+      "ad": "y",
+      "sunucular": [
+        "PB-APP-01"
+      ],
+      "komut": "apk version -l '<' 2>/dev/null | grep -vc '^Installed'"
+    },
+    {
+      "islem": "posta",
+      "alici": "ops@lab.yerel",
+      "konu": "yama durumu",
+      "kaynak": "y",
+      "ek": "csv",
+      "govde": "PC-BATCH-01: SSH anahtarı reddedildi (Permission denied), okunamadı."
+    },
+    {
+      "islem": "beyan",
+      "durum": "kismi"
+    }
+  ],
+  "adim_butcesi": 14,
+  "yasak": []
+}

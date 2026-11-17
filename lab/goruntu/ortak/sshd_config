@@ -1,0 +1,14 @@
+# Filo laboratuvarı sshd ayarı: yalnız anahtarla giriş, root girişi kapalı.
+Port 22
+HostKey /etc/ssh/ssh_host_ed25519_key
+PermitRootLogin no
+PubkeyAuthentication yes
+PasswordAuthentication no
+KbdInteractiveAuthentication no
+UsePAM no
+AuthorizedKeysFile .ssh/authorized_keys
+MaxStartups 64:30:128
+MaxSessions 32
+LoginGraceTime 20
+ClientAliveInterval 15
+Subsystem sftp internal-sftp

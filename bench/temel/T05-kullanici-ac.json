@@ -1,0 +1,53 @@
+{
+  "kimlik": "T05-kullanici-ac",
+  "seviye": "temel",
+  "baslik": "İki sunucuda kullanıcı hesabı aç",
+  "kaynak": "türetildi: docs/arastirma/07-talep-karsilastirmasi.md T9 (kullanıcı açma)",
+  "kaynak_turu": "turetilmis",
+  "talep": "PB-APP-01 ve PC-BATCH-01 sunucularında raporcu adında bir kullanıcı hesabı aç ve sonucu ops@lab.yerel adresine bildir.",
+  "kurulum": [],
+  "onay_politikasi": {
+    "varsayilan": "onayla"
+  },
+  "degisebilir": [
+    "PB-APP-01",
+    "PC-BATCH-01"
+  ],
+  "hakem": [
+    {
+      "tur": "kullanici",
+      "sunucular": [
+        "PB-APP-01",
+        "PC-BATCH-01"
+      ],
+      "ad": "raporcu",
+      "var": true
+    },
+    {
+      "tur": "posta",
+      "alici": "ops@lab.yerel",
+      "icerir": [
+        "PB-APP-01",
+        "PC-BATCH-01"
+      ]
+    }
+  ],
+  "referans": [
+    {
+      "islem": "kabuk",
+      "sunucular": [
+        "PB-APP-01",
+        "PC-BATCH-01"
+      ],
+      "komut": "adduser -D raporcu"
+    },
+    {
+      "islem": "posta",
+      "alici": "ops@lab.yerel",
+      "konu": "raporcu hesabı açıldı",
+      "govde": "PB-APP-01 ve PC-BATCH-01: raporcu açıldı"
+    }
+  ],
+  "adim_butcesi": 14,
+  "yasak": []
+}

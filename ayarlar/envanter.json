@@ -1,0 +1,14 @@
+{
+  "aciklama": "Filo laboratuvarı envanteri. Kimlik alanı bir profil ADIDIR (ayarlar/kimlikler.json); anahtarın kendisi burada değil.",
+  "sunucular": [
+    {"ad": "PA-APP-01", "os": "linux", "aile": "debian", "adres": "127.0.0.1", "port": 2201, "kullanici": "filo", "kimlik": "lab-anahtar", "tasiyici": "ssh", "gruplar": ["pa", "app", "test"], "oznitelikler": {"ortam": "test", "rol": "uygulama", "konum": "ist"}, "konteyner": "filo-pa-app-01"},
+    {"ad": "PA-APP-02", "os": "linux", "aile": "rhel", "adres": "127.0.0.1", "port": 2202, "kullanici": "filo", "kimlik": "lab-anahtar", "tasiyici": "ssh", "gruplar": ["pa", "app", "test"], "oznitelikler": {"ortam": "test", "rol": "uygulama", "konum": "ist"}, "konteyner": "filo-pa-app-02"},
+    {"ad": "PA-DB-01", "os": "linux", "aile": "alpine", "adres": "127.0.0.1", "port": 2203, "kullanici": "filo", "kimlik": "lab-anahtar", "tasiyici": "ssh", "gruplar": ["pa", "db", "test"], "oznitelikler": {"ortam": "test", "rol": "veritabani", "konum": "ist"}, "konteyner": "filo-pa-db-01"},
+    {"ad": "PA-WEB-01", "os": "linux", "aile": "debian", "adres": "127.0.0.1", "port": 2204, "kullanici": "filo", "kimlik": "lab-anahtar", "tasiyici": "ssh", "gruplar": ["pa", "web", "test"], "oznitelikler": {"ortam": "test", "rol": "web", "konum": "ist"}, "konteyner": "filo-pa-web-01"},
+    {"ad": "PB-APP-01", "os": "linux", "aile": "alpine", "adres": "127.0.0.1", "port": 2205, "kullanici": "filo", "kimlik": "lab-anahtar", "tasiyici": "ssh", "gruplar": ["pb", "app", "prod"], "oznitelikler": {"ortam": "prod", "rol": "uygulama", "konum": "ank"}, "konteyner": "filo-pb-app-01"},
+    {"ad": "PB-DB-01", "os": "linux", "aile": "rhel", "adres": "127.0.0.1", "port": 2206, "kullanici": "filo", "kimlik": "lab-anahtar", "tasiyici": "ssh", "gruplar": ["pb", "db", "prod"], "oznitelikler": {"ortam": "prod", "rol": "veritabani", "konum": "ank"}, "konteyner": "filo-pb-db-01"},
+    {"ad": "PB-WEB-01", "os": "linux", "aile": "debian", "adres": "127.0.0.1", "port": 2207, "kullanici": "filo", "kimlik": "lab-anahtar", "tasiyici": "ssh", "gruplar": ["pb", "web", "prod"], "oznitelikler": {"ortam": "prod", "rol": "web", "konum": "ank"}, "konteyner": "filo-pb-web-01"},
+    {"ad": "PC-BATCH-01", "os": "linux", "aile": "alpine", "adres": "127.0.0.1", "port": 2208, "kullanici": "filo", "kimlik": "lab-anahtar", "tasiyici": "ssh", "gruplar": ["pc", "batch", "prod"], "oznitelikler": {"ortam": "prod", "rol": "batch", "konum": "izm"}, "konteyner": "filo-pc-batch-01"},
+    {"ad": "PW-WIN-01", "os": "windows", "aile": "windows", "adres": "localhost", "port": 5985, "kullanici": "", "kimlik": "win-oturum", "tasiyici": "winrm", "gruplar": ["pw", "windows", "test"], "oznitelikler": {"ortam": "test", "rol": "uygulama", "konum": "yerel"}, "konteyner": ""}
+  ]
+}
