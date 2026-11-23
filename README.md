@@ -1,8 +1,7 @@
 # Filo
 
-Sunucu otomasyonu (sunucu otomasyonu sınıfı) ve runbook otomasyonu (akış otomasyonu sınıfı) adminlik işlerini
-bir yapay zekâ ajanına yaptıran, modelden bağımsız, konsollu bir harness ve onun bench'i. Filo sunucu/akış'yu yönetmez; o
-ürünlerin yaptığı işi kendi katmanıyla yapar: sunucularda çalışan Go ajanı (`filo-ajan`), tipli beceri kataloğu, iki ajan.
+Sunucu otomasyonu ve akış (runbook) otomasyonu işlerini, adminlik görevlerini bir yapay zekâ ajanına yaptıran, modelden bağımsız, konsollu bir harness ve onun bench'i. Filo bu tür ürünleri yönetmez; onların
+yaptığı işi kendi katmanıyla yapar: sunucularda çalışan Go ajanı (`filo-ajan`), tipli beceri kataloğu, iki ajan.
 
 Dili anlamak, plan kurmak ve hatayı yorumlamak modelin işidir. Hedef çözümleme, paralel yürütme, şema denetimi, yetki,
 onay ve denetim izi kodun işidir.
