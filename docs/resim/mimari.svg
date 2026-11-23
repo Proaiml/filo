@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 470" font-family="Segoe UI, Arial, sans-serif">
+  <defs>
+    <marker id="ok" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#475569"/>
+    </marker>
+  </defs>
+  <rect width="960" height="470" fill="#ffffff"/>
+
+  <!-- Operatör -->
+  <rect x="20" y="180" width="150" height="84" rx="12" fill="#f1f5f9" stroke="#94a3b8"/>
+  <text x="95" y="212" text-anchor="middle" font-size="15" font-weight="600" fill="#0f172a">Operatör</text>
+  <text x="95" y="234" text-anchor="middle" font-size="12" fill="#475569">düz Türkçe talep</text>
+
+  <!-- Ajanlar -->
+  <rect x="215" y="60" width="200" height="110" rx="12" fill="#eff6ff" stroke="#2563eb"/>
+  <text x="315" y="92" text-anchor="middle" font-size="16" font-weight="700" fill="#1e3a8a">Kalfa</text>
+  <text x="315" y="114" text-anchor="middle" font-size="12" fill="#1e40af">yalnız hazır becerilerle</text>
+  <text x="315" y="132" text-anchor="middle" font-size="12" fill="#1e40af">iş konsolu</text>
+  <text x="315" y="152" text-anchor="middle" font-size="11" fill="#475569">beceri seç · parametre doldur</text>
+
+  <rect x="215" y="300" width="200" height="110" rx="12" fill="#fff7ed" stroke="#c2410c"/>
+  <text x="315" y="332" text-anchor="middle" font-size="16" font-weight="700" fill="#7c2d12">Kaptan</text>
+  <text x="315" y="354" text-anchor="middle" font-size="12" fill="#9a3412">akış kurar, teşhis koyar</text>
+  <text x="315" y="372" text-anchor="middle" font-size="12" fill="#9a3412">beceriyi yeniden yazabilir</text>
+  <text x="315" y="392" text-anchor="middle" font-size="11" fill="#475569">inisiyatif düzeyi 0–3</text>
+
+  <!-- Çekirdek -->
+  <rect x="475" y="120" width="230" height="230" rx="14" fill="#f8fafc" stroke="#0f172a" stroke-width="1.5"/>
+  <text x="590" y="150" text-anchor="middle" font-size="15" font-weight="700" fill="#0f172a">Çekirdek (kod)</text>
+  <text x="590" y="178" text-anchor="middle" font-size="12" fill="#334155">hedef çözümü ve dondurma</text>
+  <text x="590" y="200" text-anchor="middle" font-size="12" fill="#334155">risk düzeyi ve onay kapısı</text>
+  <text x="590" y="222" text-anchor="middle" font-size="12" fill="#334155">çalıştırma kimliği</text>
+  <text x="590" y="244" text-anchor="middle" font-size="12" fill="#334155">zamanlama ve bakım pencereleri</text>
+  <text x="590" y="266" text-anchor="middle" font-size="12" fill="#334155">duraklat · sürdür · devret</text>
+  <text x="590" y="288" text-anchor="middle" font-size="12" fill="#334155">denetim izi (değiştirilemez kayıt)</text>
+  <text x="590" y="326" text-anchor="middle" font-size="11" fill="#64748b">model kararlarını doğrular, sınırları uygular</text>
+
+  <!-- Taşıyıcılar ve sunucular -->
+  <rect x="770" y="60" width="170" height="110" rx="12" fill="#ecfdf5" stroke="#15803d"/>
+  <text x="855" y="92" text-anchor="middle" font-size="15" font-weight="700" fill="#14532d">Filo ajanı</text>
+  <text x="855" y="114" text-anchor="middle" font-size="12" fill="#166534">Go ile, sunucuda çalışır</text>
+  <text x="855" y="132" text-anchor="middle" font-size="11" fill="#166534">dışarı bağlanır, imzalı işler</text>
+
+  <rect x="770" y="300" width="170" height="110" rx="12" fill="#f5f3ff" stroke="#6d28d9"/>
+  <text x="855" y="332" text-anchor="middle" font-size="15" font-weight="700" fill="#4c1d95">SSH · WinRM</text>
+  <text x="855" y="354" text-anchor="middle" font-size="12" fill="#5b21b6">ajan yoksa yedek yol</text>
+  <text x="855" y="372" text-anchor="middle" font-size="11" fill="#5b21b6">ilk kurulum ve onarım</text>
+
+  <!-- Oklar -->
+  <line x1="170" y1="200" x2="212" y2="130" stroke="#475569" stroke-width="2" marker-end="url(#ok)"/>
+  <line x1="170" y1="240" x2="212" y2="350" stroke="#475569" stroke-width="2" marker-end="url(#ok)"/>
+  <line x1="415" y1="115" x2="472" y2="175" stroke="#475569" stroke-width="2" marker-end="url(#ok)"/>
+  <line x1="415" y1="355" x2="472" y2="295" stroke="#475569" stroke-width="2" marker-end="url(#ok)"/>
+  <line x1="705" y1="150" x2="767" y2="115" stroke="#475569" stroke-width="2" marker-end="url(#ok)"/>
+  <line x1="705" y1="300" x2="767" y2="345" stroke="#475569" stroke-width="2" marker-end="url(#ok)"/>
+
+  <!-- Sunuculara -->
+  <rect x="770" y="200" width="170" height="60" rx="10" fill="#ffffff" stroke="#94a3b8" stroke-dasharray="4 3"/>
+  <text x="855" y="226" text-anchor="middle" font-size="13" font-weight="600" fill="#0f172a">hedef sunucular</text>
+  <text x="855" y="246" text-anchor="middle" font-size="11" fill="#475569">Linux · Windows</text>
+
+  <line x1="855" y1="172" x2="855" y2="198" stroke="#475569" stroke-width="2" marker-end="url(#ok)"/>
+  <line x1="855" y1="300" x2="855" y2="262" stroke="#475569" stroke-width="2" marker-end="url(#ok)"/>
+
+  <!-- Model kapısı -->
+  <rect x="20" y="20" width="420" height="36" rx="8" fill="#fefce8" stroke="#ca8a04"/>
+  <text x="230" y="43" text-anchor="middle" font-size="12" fill="#713f12">model kapısı: yerel (Ollama, OpenAI uyumlu) · Claude API · Claude Code aboneliği</text>
+  <line x1="315" y1="56" x2="315" y2="60" stroke="#ca8a04" stroke-width="2"/>
+  <line x1="315" y1="410" x2="315" y2="420" stroke="#ca8a04" stroke-width="0"/>
+
+  <!-- Alt not -->
+  <text x="480" y="448" text-anchor="middle" font-size="12" fill="#475569">Model dili anlar ve dar kararlar verir; hedef, şema, yetki, onay ve denetim kodla yapılır.</text>
+</svg>
